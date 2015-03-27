@@ -1,5 +1,5 @@
 #Attention aucun commits directement dans le master
-Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle est finie faite un pull request vers le master. Ça nous évitera des marges conflits
+Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle est finie faite un pull request vers le master. Ça nous évitera des merges conflits
 
 #PRESENTATION ENTREPRISE
 
@@ -11,7 +11,7 @@ Créée en 2007 et maintenant forte de plus de 50 collaborateurs, notre entrepri
 
 #PRESENTATION DU PROJET
 
-Dans ce document, le projet de réseau social d’entreprise sera fait référence en tant que « application », 
+Dans ce document, le projet de réseau social d’entreprise sera fait référence en tant que « application »,
 « logiciel », « RSE » ou encore « site » (de par sa nature web).
 
 ##OBJECTIF DU RESEAU SOCIAL D’ENTREPRISE
@@ -79,7 +79,7 @@ Un groupe de projet est une mise en commun de contenus et de connaissances entre
 ##ADMINISTRATION
 
 L’administration du site et de ses utilisateurs devra pouvoir se faire directement sur la plateforme dans un module spécialement prévu à cet effet.
- 
+
 Celle-ci sera réservée à des comptes possédant un droit d’administration, et inaccessible aux autre utilisateurs.
 
 L’administrateur devra pouvoir bloquer un compte, le supprimer, le modifier, modifier/supprimer des commentaires, modifier/supprimer des groupes, consulter les logs de connexion de chaque utilisateur et enfin pouvoir consulter l’historique de la messagerie instantanée.
