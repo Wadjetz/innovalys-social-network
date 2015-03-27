@@ -1,3 +1,6 @@
+#Attention aucun commits directement dans le master
+Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle est finie faite un pull request vers le master. Ça nous évitera des marges conflits
+
 #PRESENTATION ENTREPRISE
 
 INNOVALYS est une société de conseil dans les hautes technologies. Nous accompagnons les grands acteurs de l'économie dans leurs projets par notre expertise technique et des modes d'intervention adaptés aux besoins de nos clients.
