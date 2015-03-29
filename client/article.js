@@ -11,9 +11,11 @@ var Article = {
         }
     },
     controller: function (article) {
+        console.log("Article controller", article)
         Article.vm.init(article);
     },
     view: function (ctrl) {
+        console.log("Article view", Article.vm.article());
         return (
             u.col(12, 8, 8, 8, [
                 m('h1.title', Article.vm.article().title),
