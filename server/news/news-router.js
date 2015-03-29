@@ -1,11 +1,13 @@
 var router = require("express").Router();
 var newsModel = require('./news-model');
 var moment = require('moment');
+var utils = require('../config/utils');
 
 router.post('/', function(req, res) {
     // TODO validate data
     // TODO validate date moment.isValid()
     var news = {
+        slug: utils.slug(req.body.title),
         title: req.body.title,
         body: req.body.body,
         publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS")
@@ -18,11 +20,13 @@ router.post('/', function(req, res) {
 });
 
 router.get('/', function (req, res) {
-    newsModel.findAllNews(0, function (err, news, fields) {
+    // TODO validate data
+    var page = req.query.page;
+    newsModel.findAllNews(page, function (err, news, fields) {
         if (err) res({error: err});
-        res.json(news);
+        else if (news === undefined) res.json([]);
+        else res.json(news);
     })
 })
 
 module.exports = router;
-

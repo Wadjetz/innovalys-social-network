@@ -1,19 +1,19 @@
 var m = require('mithril');
 var Header = require('./header');
-var NewsList = require('./news-list');
-
+var NewsList = require('./news/news-list');
 
 var Home = {
-    headerCtrl: Header.controller(),
-    newsListCtrl: NewsList.controller(),
     controller: function () {
-        // TODO
+        return {
+            headerCtrl: Header.controller(),
+            newsListCtrl: NewsList.controller()
+        }
     },
     view: function (ctrl) {
         return (
             m('div', [
-                Header.view(Home.headerCtrl),
-                NewsList.view(Home.newsListCtrl)
+                Header.view(ctrl.headerCtrl),
+                NewsList.view(ctrl.newsListCtrl)
             ])
         );
     }

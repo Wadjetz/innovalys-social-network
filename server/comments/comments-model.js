@@ -1,6 +1,6 @@
 var db = require('../config/database');
 
-module.exports.findAllByArticleId = function (articleId, callback) {
+module.exports.findAllByArticleId = function (articleId, page, callback) {
     // TODO
     callback(null);
 };

@@ -1,9 +1,11 @@
 var m = require('mithril');
-var u = require('./utils/utils');
-var NewsAPI = require('./services/news-api');
 var moment = require('moment');
-var Header = require('./header');
 var markdown = require("markdown").markdown;
+
+var u = require('../utils/utils');
+var Header = require('../header');
+
+var NewsAPI = require('./news-api');
 
 var CreateNews = {
     vm: {

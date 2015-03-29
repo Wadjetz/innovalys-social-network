@@ -6,7 +6,8 @@ module.exports.findOneById = function (id, callback) {
 };
 
 module.exports.findAllNews = function (page, callback) {
-    var sql = "SELECT * FROM news ORDER BY news.created DESC LIMIT 10 OFFSET ? ";
+    // TODO offset from request
+    var sql = "SELECT * FROM news ORDER BY news.created DESC LIMIT 10 OFFSET 0 ";
     var data = [page];
     db.query(sql, data, function (error, results, fields) {
         if (error) console.error(error);
