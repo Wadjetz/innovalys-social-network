@@ -24,7 +24,7 @@ var Article = {
 };
 
 module.exports = Article;
-},{"./utils/utils":7,"mithril":8}],2:[function(require,module,exports){
+},{"./utils/utils":10,"mithril":11}],2:[function(require,module,exports){
 var m = require('mithril');
 
 // TODO "Divisez ce machin en petits machins" by M. GOY
@@ -52,13 +52,11 @@ var Header = {
                                 m('a[href=#]', "Home")),
                             m('li',
                                 m('a[href=#]', "Groups")),
-                            m('li',
-                                m('a[href=#]', "Admin")),
                             m('li.dropdown', [
-                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, "Options ", m('span.caret')),
+                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, "Admin ", m('span.caret')),
                                 m('ul.dropdown-menu', [
                                     m('li',
-                                        m('a[href=#]', "L1")),
+                                        m("a[href='/signup']", {config: m.route}, "Enregistrer")),
                                     m('li',
                                         m('a[href=#]', "L2")),
                                     m('li',
@@ -93,7 +91,7 @@ var Header = {
 };
 
 module.exports = Header;
-},{"mithril":8}],3:[function(require,module,exports){
+},{"mithril":11}],3:[function(require,module,exports){
 var m = require('mithril');
 var Header = require('./header');
 var NewsList = require('./news-list');
@@ -117,7 +115,7 @@ var Home = {
 
 module.exports = Home;
 
-},{"./header":2,"./news-list":6,"mithril":8}],4:[function(require,module,exports){
+},{"./header":2,"./news-list":6,"mithril":11}],4:[function(require,module,exports){
 var m = require('mithril');
 var u = require('./utils/utils');
 
@@ -162,18 +160,20 @@ var Login = {
 };
 
 module.exports = Login;
-},{"./utils/utils":7,"mithril":8}],5:[function(require,module,exports){
+},{"./utils/utils":10,"mithril":11}],5:[function(require,module,exports){
 var m = require('mithril');
-var home = require('./home');
-var login = require('./login');
+var Home = require('./home');
+var Login = require('./login');
+var Signup = require('./signup');
 
 m.route.mode = "hash";
 m.route(document.body, "/", {
-    "/": home,
-    "/login": login
+    "/": Home,
+    "/login": Login,
+    "/signup": Signup
 });
 
-},{"./home":3,"./login":4,"mithril":8}],6:[function(require,module,exports){
+},{"./home":3,"./login":4,"./signup":9,"mithril":11}],6:[function(require,module,exports){
 var m = require('mithril');
 var Article = require('./article');
 
@@ -212,7 +212,166 @@ var NewsList = {
 };
 
 module.exports = NewsList;
-},{"./article":1,"mithril":8}],7:[function(require,module,exports){
+},{"./article":1,"mithril":11}],7:[function(require,module,exports){
+module.exports.baseUrl = "http://localhost:8888";
+
+module.exports.prepareRequest = function (method, path) {
+    return {
+        method: method,
+        url: path,
+        extract: function(xhr) {
+            if (xhr.status === 401) {
+                console.error("Unauthorised method", method, "path", path, "response:",
+                    xhr.status, xhr.responseText);
+                m.route('/login');
+            }
+            return xhr.responseText;
+        }
+    }
+};
+},{}],8:[function(require,module,exports){
+var m = require('mithril');
+var Config = require('./config');
+
+
+module.exports.roles = {
+    ADMIN: "admin",
+    RH: "rh",
+    CHEF: "chef",
+    USER: "user"
+};
+
+module.exports.status_connection = {
+    OFFLINE: "offline",
+    ONLINE: "online",
+    BUSY: "busy",
+    ABSENT: "absent"
+};
+
+module.exports.signup = function (newUser) {
+    var config = Config.prepareRequest("POST", "/signup");
+    config.data = newUser;
+    return m.request(config);
+}
+
+},{"./config":7,"mithril":11}],9:[function(require,module,exports){
+var m = require('mithril');
+var u = require('./utils/utils');
+var userClient = require('./services/user-api');
+
+var Signup = {
+    email: m.prop("egor@egor.fr"),
+    role: m.prop("user"),
+    first_name: m.prop("egor"),
+    last_name: m.prop("ber"),
+    birthday_date: m.prop("2000-03-04"),
+    adress: m.prop("17 rue bidon"),
+    function: m.prop("Dev"),
+    description: m.prop("description"),
+    arrival_date: m.prop("2015-03-04"),
+    submit: function (e) {
+        e.preventDefault();
+        // TODO Verifications des données
+        var newUser = {
+            "email": Signup.email(),
+            "role": Signup.role(),
+            "first_name": Signup.first_name(),
+            "last_name": Signup.last_name(),
+            "birthday_date": Signup.birthday_date(),
+            "adress": Signup.adress(),
+            "function": Signup.function(),
+            "description": Signup.description(),
+            "arrival_date": Signup.arrival_date()
+        }
+        console.log(newUser);
+        userClient.signup(newUser).then(function (result) {
+            console.log("result", result);
+        });
+    },
+    controller: function () {
+        // body...
+    },
+    view: function () {
+        return (
+            m('.container', u.col(12, 12, 6, 6, [
+                m('h1', "Enregistrer un nouvel utilisateur"),
+                m('.form-login', [
+                    m('.form-group', [
+                        m('label[for=email]', "Email"),
+                        m('input[type=text]#email.form-control', {
+                            placeholder: "Email",
+                            onchange: m.withAttr("value", this.email),
+                            value: this.email()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=role]', "Role"),
+                        m('input[type=text]#role.form-control', {
+                            placeholder: "Role",
+                            onchange: m.withAttr("value", this.role),
+                            value: this.role()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=first_name]', "Prenom"),
+                        m('input[type=text]#first_name.form-control', {
+                            placeholder: "Prenom",
+                            onchange: m.withAttr("value", this.first_name),
+                            value: this.first_name()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=last_name]', "Nom"),
+                        m('input[type=text]#last_name.form-control', {
+                            placeholder: "Nom",
+                            onchange: m.withAttr("value", this.last_name),
+                            value: this.last_name()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=birthday_date]', "Date de naissance"),
+                        m('input[type=date]#birthday_date.form-control', {
+                            placeholder: "Date de naissance",
+                            onchange: m.withAttr("value", this.birthday_date),
+                            value: this.birthday_date()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=function]', "Poste"),
+                        // TODO transformer en select
+                        m('input[type=text]#function.form-control', {
+                            placeholder: "Poste",
+                            onchange: m.withAttr("value", this.function),
+                            value: this.function()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=arrival_date]', "Date d'arrivée"),
+                        m('input[type=date]#arrival_date.form-control', {
+                            placeholder: "Date d'arrivée",
+                            onchange: m.withAttr("value", this.arrival_date),
+                            value: this.arrival_date()
+                        })
+                    ]),
+                    m('.form-group', [
+                        m('label[for=description]', "Description"),
+                        m('textarea#description.form-control', {
+                            placeholder: "Description",
+                            onchange: m.withAttr("value", this.description),
+                            value: this.description()
+                        })
+                    ]),
+                    m('button.btn.btn-default', {
+                        onclick: this.submit
+                    }, "Enregestrer")
+                ])
+            ]))
+        );
+    }
+};
+
+module.exports = Signup;
+},{"./services/user-api":8,"./utils/utils":10,"mithril":11}],10:[function(require,module,exports){
 var m = require('mithril');
 
 module.exports.col = function (xs, sm, md, lg, body) {
@@ -224,7 +383,7 @@ module.exports.col = function (xs, sm, md, lg, body) {
 };
 
 
-},{"mithril":8}],8:[function(require,module,exports){
+},{"mithril":11}],11:[function(require,module,exports){
 var m = (function app(window, undefined) {
 	var OBJECT = "[object Object]", ARRAY = "[object Array]", STRING = "[object String]", FUNCTION = "function";
 	var type = {}.toString;

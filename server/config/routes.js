@@ -1,12 +1,8 @@
 var User = require('../models/user');
-var UserRole = require('../models/user-role');
-var UserStatus = require('../models/user-status-connection');
+var bcrypt = require('bcrypt');
+var generatePassword = require('password-generator');
 
 module.exports = function (app, express, passport) {
-    // app.post('/login', passport.authenticate('local', {
-    //     failureRedirect: '/login',
-    //     successRedirect: '/user'
-    // }));
 
     app.post('/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
@@ -26,42 +22,25 @@ module.exports = function (app, express, passport) {
         })(req, res, next);
     });
 
-    app.post('/user-role', function (req, res) {
-        var name = req.body.name;
-        console.log("Post /user-role name = ", name);
-        UserRole.create(name, function (err, result) {
-            console.log("UserRole.create result = ", result);
-            if (err) return res.end(err);
-            return res.end(result + "");
-        })
-    });
-
-    app.post('/user-status', function (req, res) {
-        var name = req.body.name;
-        console.log("Post /user-role name = ", name);
-        UserStatus.create(name, function (err, result) {
-            console.log("UserRole.create result = ", result);
-            if (err) return res.end(err);
-            return res.end(result + "");
-        })
-    });
-
     app.post('/signup', function (req, res) {
         var user = {
-            email: "egor@egor.fr",
-            username: "egor",
-            password: "root",
-            first_name: "Egor",
-            last_name: "Berezovskiy",
-            birthday_date: "1988-05-06",
-            description: "Boss",
-            user_role_id: 1,
-            user_status_connection_id: 1
+            email: req.body.email,
+            role: req.body.role,
+            username: req.body.username,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            birthday_date: req.body.birthday_date,
+            description: req.body.description
         }
-        User.create(user, function (err, result) {
-            if (err) return res.end(err + "");
-            return res.end(result + "");
-        })
+        // TODO chiffrer le password avec bcrypt
+        user.password = generatePassword(6, false);
+        user.username = user.first_name.substring(0, 3) + "_" + user.last_name.substring(0, 3)
+
+        res.json(user); // TODO test
+        // User.create(user, function (err, result) {
+        //     if (err) console.error(err),
+        //     res.json(result);
+        // })
     });
 }
 

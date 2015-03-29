@@ -1,9 +1,11 @@
 var m = require('mithril');
-var home = require('./home');
-var login = require('./login');
+var Home = require('./home');
+var Login = require('./login');
+var Signup = require('./signup');
 
 m.route.mode = "hash";
 m.route(document.body, "/", {
-    "/": home,
-    "/login": login
+    "/": Home,
+    "/login": Login,
+    "/signup": Signup
 });

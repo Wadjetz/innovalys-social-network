@@ -25,13 +25,11 @@ var Header = {
                                 m('a[href=#]', "Home")),
                             m('li',
                                 m('a[href=#]', "Groups")),
-                            m('li',
-                                m('a[href=#]', "Admin")),
                             m('li.dropdown', [
-                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, "Options ", m('span.caret')),
+                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, "Admin ", m('span.caret')),
                                 m('ul.dropdown-menu', [
                                     m('li',
-                                        m('a[href=#]', "L1")),
+                                        m("a[href='/signup']", {config: m.route}, "Enregistrer")),
                                     m('li',
                                         m('a[href=#]', "L2")),
                                     m('li',
