@@ -1,5 +1,6 @@
 var m = require('mithril');
 var u = require('./utils/utils');
+var markdown = require("markdown").markdown;
 
 var Article = {
     vm: {
@@ -16,7 +17,7 @@ var Article = {
         return (
             u.col(12, 8, 8, 8, [
                 m('h1.title', Article.vm.article().title),
-                m('.body.markdown', Article.vm.article().body)
+                m('.body.markdown', m.trust(markdown.toHTML(Article.vm.article().body)))
             ])
         );
     }

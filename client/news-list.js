@@ -1,23 +1,18 @@
 var m = require('mithril');
 var Article = require('./article');
+var NewsAPI = require('./services/news-api');
 
 var NewsList = {
     vm: {
         news: m.prop([]),
         init: function () {
             // TODO recuperes les news sur le server
-            NewsList.vm.news([
-                Article.controller({
-                    id: 1,
-                    title: "Article 1",
-                    body: "Super Article"
-                }),
-                Article.controller({
-                    id: 2,
-                    title: "Article 1",
-                    body: "Super Article"
-                })
-            ]);
+            NewsAPI.getAllNews(0).then(function (news) {
+                console.log(news);
+                NewsList.vm.news(news.map(function (article, i) {
+                    return Article.controller(article)
+                }))
+            });
         }
     },
     controller: function () {

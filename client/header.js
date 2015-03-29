@@ -1,10 +1,12 @@
 var m = require('mithril');
-
+var UserRoles = require('./services/user-api').roles;
 // TODO "Divisez ce machin en petits machins" by M. GOY
 
 var Header = {
+    role: m.prop(UserRoles.USER),
     controller: function () {
-        // TODO
+        // TODO get role from server
+        Header.role(UserRoles.ADMIN)
     },
     view: function (ctrl) {
         return (
@@ -26,7 +28,7 @@ var Header = {
                             m('li',
                                 m('a[href=#]', "Groups")),
                             m('li.dropdown', [
-                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, "Admin ", m('span.caret')),
+                                m('a[href=#].dropdown-toggle', {'data-toggle': "dropdown"}, UserRoles.ADMIN, m('span.caret')),
                                 m('ul.dropdown-menu', [
                                     m('li',
                                         m("a[href='/signup']", {config: m.route}, "Enregistrer")),
@@ -35,7 +37,11 @@ var Header = {
                                     m('li',
                                         m('a[href=#]', "L3"))
                                 ])
-                            ])
+                            ]),
+                            (((Header.role() === UserRoles.ADMIN) || (Header.role() === UserRoles.RH))
+                                ? m('li', m("a[href='/news/create']", {config: m.route}, "New Article"))
+                                : null
+                            )
                         ]),
                         m('form.navbar-form.navbar-left', [
                             m('.form-group', [

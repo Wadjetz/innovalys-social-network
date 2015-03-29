@@ -1,9 +1,10 @@
 var User = require('../models/user');
 var bcrypt = require('bcrypt');
 var generatePassword = require('password-generator');
+var NewsRouter = require('../news/news-router');
 
 module.exports = function (app, express, passport) {
-
+    app.use('/news', NewsRouter);
     app.post('/login', function(req, res, next) {
         passport.authenticate('local', function(err, user, info) {
             console.log("login", user);
