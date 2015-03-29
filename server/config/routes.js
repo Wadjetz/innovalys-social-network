@@ -3,16 +3,6 @@ var UserRole = require('../models/user-role');
 var UserStatus = require('../models/user-status-connection');
 
 module.exports = function (app, express, passport) {
-    app.get('/', function (req, res) {
-        User.findOneById(1, function (err, result) {
-            res.end("Hello World " + result);
-        })
-    });
-
-    app.get('/user', isLoggedIn, function (req, res) {
-        res.end("Welcome");
-    });
-
     // app.post('/login', passport.authenticate('local', {
     //     failureRedirect: '/login',
     //     successRedirect: '/user'

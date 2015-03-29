@@ -4,7 +4,6 @@ var session = require('express-session');
 var methodOverride = require("method-override");
 
 module.exports = function (app, express, passport) {
-    app.use(express.static(__dirname + '/public'));
     app.use(methodOverride());
     app.use(cookieParser());
     app.use(session({ secret: '6rHUy(*))72zer-,gRZefdd()', saveUninitialized: true, resave: true }));
