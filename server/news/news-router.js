@@ -29,4 +29,14 @@ router.get('/', function (req, res) {
     })
 })
 
+router.get('/:slug', function (req, res) {
+    // TODO validate data
+    var slug = req.params.slug;
+    newsModel.findOneBySlug(slug, function (err, news, fields) {
+        if (err) res({error: err});
+        else if (news === undefined) res.json([]);
+        else res.json(news);
+    })
+})
+
 module.exports = router;
