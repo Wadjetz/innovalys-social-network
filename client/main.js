@@ -10,6 +10,7 @@ var Link          = Router.Link;
 var Articles = require('./articles/Articles');
 var SingleArticle = require('./articles/SingleArticle');
 var Groupes = require('./groupes/Groupes');
+var SingleGroupe = require('./groupes/SingleGroupe');
 var Auth = require('./auth/Auth');
 var User = require('./user/User');
 
@@ -21,8 +22,10 @@ var App = React.createClass({
             <h1>Hello</h1>
             <ul>
                 <li><Link to="articles">Articles</Link></li>
+                <li><Link to="singleArticle" params={{slug: 'toto'}}>Articles Toto</Link></li>
                 <li><Link to="auth">auth</Link></li>
                 <li><Link to="groupes">groupes</Link></li>
+                <li><Link to="singleGroupe" params={{slug: 'toto'}}> single groupes</Link></li>
                 <li><Link to="user">user</Link></li>
             </ul>
             <RouteHandler />
@@ -38,6 +41,7 @@ var Routes = (
         <Route name="singleArticle" handler={SingleArticle} path="/articles/:slug" />
         <Route name="auth" handler={Auth} path="/auth" />
         <Route name="groupes" handler={Groupes} path="/groupes" />
+        <Route name="singleGroupe" handler={SingleGroupe} path="/groupes/:slug" />
         <Route name="user" handler={User} path="/user" />
     </Route>
 );

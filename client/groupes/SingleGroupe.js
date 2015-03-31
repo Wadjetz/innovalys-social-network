@@ -2,14 +2,14 @@
 
 var React = require('react/addons');
 
-var Groupes = React.createClass({
+var SingleGroupe = React.createClass({
     render: function() {
             return (
                 <div>
-                    <h2>Groupes</h2>
+                    <h2>SingleGroupe</h2>
                 </div>
             );
         }
 });
 
-module.exports = Groupes;
+module.exports = SingleGroupe;
