@@ -1,6 +1,6 @@
 /*** @jsx React.DOM */
 
-var React = require('react/addons');
+var React = require('react');
 
 var Groupes = React.createClass({
     render: function() {

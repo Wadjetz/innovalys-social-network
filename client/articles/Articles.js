@@ -1,47 +1,50 @@
-var React = require('react/addons');
+var React = require('react');
 var Reflux = require('reflux');
-var articlesStore = require('./ArticlesStore');
-var actions = require('../actions');
+var ArticlesStore = require('./ArticlesStore');
+var ArticlesActions = require('./ArticlesActions');
+var ArticleView = require('./ArticleView');
+
+var Grid = require('react-bootstrap/lib/Grid');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
 
 var Articles = React.createClass({
     mixins: [
         Reflux.ListenerMixin
     ],
     getInitialState: function() {
-        actions.m1("coucou")
+        ArticlesActions.loadArticles()
         return {
-            m1: '',
-            m2: ''
+            articles: []
         };
     },
-    onM1: function (m1) {
-        console.log("Articles onM1", "m1", m1);
-        this.setState({
-            m1: m1
-        });
-        actions.m2('next')
-    },
-    onM2: function (m2) {
-        console.log("Articles onM1", "m2", m2);
-        this.setState({
-            m2: m2
-        });
-    },
     componentDidMount: function() {
-        this.unsubscribeM1 = articlesStore.listen(this.onM1);
-        this.unsubscribeM2 = articlesStore.listen(this.onM2);
+        this.unLoadArticles = ArticlesStore.listen(this.onLoadArticles);
     },
     componentWillUnmount: function() {
-        this.unsubscribeM1();
-        this.unsubscribeM2();
+        this.unLoadArticles();
     },
     render: function() {
-        console.log("Articles", "render");
+        var articles = this.state.articles.map(function (article) {
+            return (
+                <ArticleView article={article} key={article.id} />
+            );
+        });
         return (
-            <div>
-                <h2>Articles m1={this.state.m1} m2={this.state.m2}</h2>
-            </div>
+            <Grid fluid>
+                <Row>
+                    <Col xs={12}>
+                        {articles}
+                    </Col>
+                </Row>
+            </Grid>
         );
+    },
+    onLoadArticles: function (articles) {
+        console.log("Articles", "onLoadArticles", articles);
+        this.setState({
+            articles: articles
+        });
     }
 });
 
