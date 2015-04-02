@@ -1,26 +1,16 @@
 var db = require('../config/database');
 
-module.exports.findOneById = function (id, callback) {
+module.exports.findAllByUserId = function (articleId, page, callback) {
     // TODO
     callback(null);
 };
 
-module.exports.findAll = function (callback) {
+module.exports.addUser = function (articleId, page, callback) {
     // TODO
     callback(null);
 };
 
-module.exports.addNewUser = function (userId, groupeId, callback) {
-    // TODO
-    callback(null);
-};
-
-module.exports.removeUser = function (userId, groupeId, callback) {
-    // TODO
-    callback(null);
-};
-
-module.exports.addUser = function (userId, groupeId, callback) {
+module.exports.delteUser = function (articleId, page, callback) {
     // TODO
     callback(null);
 };
@@ -39,5 +29,3 @@ module.exports.delete = function (id, callback) {
     // TODO
     callback(null);
 }
-
-
