@@ -3,12 +3,10 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var methodOverride = require("method-override");
 
-module.exports = function (app, express, passport) {
+module.exports = function (app, express, auth) {
     app.use(methodOverride());
     app.use(cookieParser());
     app.use(session({ secret: '6rHUy(*))72zer-,gRZefdd()', saveUninitialized: true, resave: true }));
-    app.use(passport.initialize());
-    app.use(passport.session());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 

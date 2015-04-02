@@ -1,5 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
+var markdown = require("markdown").markdown;
 var Link = Router.Link;
 
 var ArticleView = React.createClass({

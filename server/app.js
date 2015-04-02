@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
-var passport = require('./config/auth');
+var auth = require('./config/auth');
 
-require('./config/config')(app, express, passport);
-require('./config/routes')(app, express, passport);
+require('./config/config')(app, express, auth);
+require('./config/routes')(app, express, auth);
 module.exports = app;
