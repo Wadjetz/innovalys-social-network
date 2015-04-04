@@ -39,16 +39,14 @@ module.exports.findOneByUserName = function (username, callback) {
         if (error) console.error(error);
         callback(error, results, fields);
     });
-}
+};
 
 module.exports.create = function (user, callback) {
     console.log(user);
     var sql = "INSERT INTO users SET ?";
-    var data = [user]
+    var data = [user];
     db.query(sql, data, function (error, results, fields) {
         if (error) console.error(error);
         callback(error, results, fields);
     });
 };
-
-

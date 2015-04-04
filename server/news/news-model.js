@@ -12,7 +12,7 @@ module.exports.findOneBySlug = function (slug, callback) {
         if (error) console.error(error);
         callback(error, results, fields);
     });
-}
+};
 
 module.exports.findAllNews = function (page, callback) {
     // TODO offset from request
@@ -42,11 +42,9 @@ module.exports.create = function (news, callback) {
 module.exports.update = function (comment, callback) {
     // TODO
     callback(null);
-}
+};
 
 module.exports.delete = function (id, callback) {
     // TODO
     callback(null);
-}
-
-
+};

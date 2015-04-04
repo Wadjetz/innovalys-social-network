@@ -33,7 +33,7 @@ function signupValidator(req, res, next) {
             });
         }
     });
-};
+}
 
 router.post('/signup', signupValidator, function (req, res) {
     var newUser = req._new_user;
@@ -107,7 +107,7 @@ function loginValidator(req, res, next) {
             });
         }
     });
-};
+}
 
 router.post('/login', loginValidator, function(req, res, next) {
     var user = req._login;

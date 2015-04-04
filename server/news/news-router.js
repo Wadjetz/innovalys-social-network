@@ -11,8 +11,8 @@ router.post('/', function(req, res) {
         title: req.body.title,
         body: req.body.body,
         publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS")
-    }
-    console.log("news route create", news)
+    };
+    console.log("news route create", news);
     newsModel.create(news, function (err, results, fields) {
         if (err) res({error: err});
         res.json({"affectedRows": results.affectedRows});
@@ -26,8 +26,8 @@ router.get('/', function (req, res) {
         if (err) res({error: err});
         else if (news === undefined) res.json([]);
         else res.json(news);
-    })
-})
+    });
+});
 
 router.get('/:slug', function (req, res) {
     // TODO validate data
@@ -36,7 +36,7 @@ router.get('/:slug', function (req, res) {
         if (err) res({error: err});
         else if (news === undefined) res.json([]);
         else res.json(news);
-    })
-})
+    });
+});
 
 module.exports = router;

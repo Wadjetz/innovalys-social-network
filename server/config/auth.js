@@ -1,5 +1,4 @@
 var UserModel = require('../user/user-model');
-var _ = require('lodash');
 
 function isAuth(username, callback) {
     if (username === undefined) {
@@ -44,7 +43,7 @@ module.exports.withRole = function (roles) {
                         if (roles[i] === user[0].role) {
                             flag = true;
                         }
-                    };
+                    }
                     if (flag === true) {
                         req.$user = user[0];
                         next();
@@ -56,5 +55,5 @@ module.exports.withRole = function (roles) {
                 res.sendStatus(401);
             }
         });
-    }
+    };
 };
