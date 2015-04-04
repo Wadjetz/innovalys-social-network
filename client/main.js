@@ -21,6 +21,7 @@ var Groupes = require('./groupes/Groupes');
 var SingleGroupe = require('./groupes/SingleGroupe');
 var Auth = require('./auth/Auth');
 var User = require('./user/User');
+var Signup = require('./user/Signup');
 
 
 var App = React.createClass({
@@ -35,6 +36,7 @@ var App = React.createClass({
                         <DropdownButton eventKey={3} title='Options'>
                             <li><Link to="createArticle">Create Article</Link></li>
                             <li><Link to="auth">Auth (Login, Signup, Logout)</Link></li>
+                            <li><Link to="signup">Signup</Link></li>
                             <li><Link to="singleGroupe" params={{slug: 'toto'}}>single groupes</Link></li>
                         </DropdownButton>
                     </Nav>
@@ -59,6 +61,7 @@ var Routes = (
         <Route name="groupes" handler={Groupes} path="/groupes" />
         <Route name="singleGroupe" handler={SingleGroupe} path="/groupes/:slug" />
         <Route name="user" handler={User} path="/user" />
+        <Route name="signup" handler={Signup} path="/signup" />
     </Route>
 );
 
