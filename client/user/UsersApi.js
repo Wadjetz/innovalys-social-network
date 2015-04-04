@@ -18,6 +18,6 @@ module.exports.create = function (user, callback) {
 module.exports.login = function (user, callback) {
     request.post(baseUrl + '/users/login').send(user).end(function (err, res) {
         //console.log("UserApi", "login", "res", res, "err", err, "user", user);
-        callback(res);
+        callback(res.body);
     });
 };

@@ -2,6 +2,7 @@ var React = require('react/addons');
 var Reflux = require('reflux');
 var moment = require('moment');
 var utils = require('../../commun/utils');
+var If = require('../If');
 
 var UsersActions = require('./UsersActions');
 var UsersStore = require('./UsersStore');
@@ -11,6 +12,7 @@ var Row = require('react-bootstrap/lib/Row');
 var Col = require('react-bootstrap/lib/Col');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
+var Alert = require('react-bootstrap/lib/Alert');
 
 var Signup = React.createClass({
     mixins: [
@@ -18,11 +20,17 @@ var Signup = React.createClass({
         React.addons.LinkedStateMixin
     ],
     render: function() {
+        // TODO add validators
         return (
             <Grid>
                 <Row>
                     <Col xs={12}>
                         <h1>Create new user</h1>
+                        <If condition={this.state.result.error}>
+                            <Alert bsStyle='danger'>
+                                {this.state.result.message}
+                            </Alert>
+                        </If>
                         <Row>
                             <Col xs={12} sm={6}>
                                 <Input
@@ -128,10 +136,20 @@ var Signup = React.createClass({
             function: "",
             description: "",
             arrival_date: moment().format(utils.mysqlDateFormat),
+            result: {
+                error: false,
+                message: ""
+            }
         };
     },
     onCreateUser: function (result) {
         console.log("Signup", "onCreateUser", "result=", result);
+        this.setState({
+            result: {
+                error: result.error,
+                message: "Errors"
+            }
+        });
     },
     componentDidMount: function() {
         this.unCreateUser = UsersStore.listen(this.onCreateUser);

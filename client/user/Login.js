@@ -1,6 +1,7 @@
 var React = require('react/addons');
 var Reflux = require('reflux');
 var utils = require('../../commun/utils');
+var If = require('../If');
 
 var UsersActions = require('./UsersActions');
 var UsersStore = require('./UsersStore');
@@ -10,6 +11,7 @@ var Row = require('react-bootstrap/lib/Row');
 var Col = require('react-bootstrap/lib/Col');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
+var Alert = require('react-bootstrap/lib/Alert');
 
 var Login = React.createClass({
     mixins: [
@@ -20,8 +22,13 @@ var Login = React.createClass({
         return (
             <Grid>
                 <Row>
-                    <Col xs={12}>
+                    <Col xs={12} md={6} mdOffset={3}>
                         <h1>Login</h1>
+                        <If condition={this.state.result.error}>
+                            <Alert bsStyle='danger'>
+                                {this.state.result.message}
+                            </Alert>
+                        </If>
                         <Input
                             type='text'
                             placeholder='Login'
@@ -55,10 +62,16 @@ var Login = React.createClass({
         return {
             login: "",
             password: "",
+            result: {
+                error: false,
+                message: ""
+            }
         };
     },
     onLogin: function (result) {
-        console.log("Login", "onLogin", "result=", result);
+        this.setState({
+            result: result
+        });
     },
     componentDidMount: function() {
         this.unLogin = UsersStore.listen(this.onLogin);
