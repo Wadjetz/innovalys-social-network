@@ -31,12 +31,13 @@ var App = React.createClass({
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
                             <li><Link to="groupes">Groupes</Link></li>
-                            <DropdownButton eventKey={3} title='Options'>
-                                <li><Link to="createArticle">Create Article</Link></li>
-                                <li><Link to="auth">Auth (Login, Signup, Logout)</Link></li>
-                                <li><Link to="signup">Signup</Link></li>
+                            <DropdownButton eventKey={3} title='Admin'>
                                 <li><Link to="login">Login</Link></li>
                                 <li><Link to="singleGroupe" params={{slug: 'toto'}}>single groupes</Link></li>
+                            </DropdownButton>
+                            <DropdownButton eventKey={4} title='RH'>
+                                <li><Link to="createArticle">Create Article</Link></li>
+                                <li><Link to="signup">Create User</Link></li>
                             </DropdownButton>
                         </Nav>
                         <Nav navbar right>
@@ -50,7 +51,8 @@ var App = React.createClass({
     },
     getInitialState: function() {
         return {
-            loading: true
+            connected: false,
+            role: 'Guest'
         };
     },
     onUnauthorized: function () {
