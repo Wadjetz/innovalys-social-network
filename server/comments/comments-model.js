@@ -1,11 +1,11 @@
 var db = require('../config/database');
 
-module.exports.findAllByArticleId = function (articleId, page, callback) {
+module.exports.findAllByArticleId = function (articleId, callback) {
     // TODO
     callback(null);
 };
 
-module.exports.create = function (user, callback) {
+module.exports.create = function (comment, user, callback) {
     // TODO
     callback(null);
 };

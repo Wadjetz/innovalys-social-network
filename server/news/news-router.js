@@ -1,7 +1,7 @@
 var router = require("express").Router();
 var newsModel = require('./news-model');
 var moment = require('moment');
-var utils = require('../config/utils');
+var utils = require('../../commun/utils');
 
 router.post('/', function(req, res) {
     // TODO validate data
