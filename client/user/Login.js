@@ -1,22 +1,25 @@
-var React = require('react/addons');
+var React  = require('react/addons');
 var Reflux = require('reflux');
-var utils = require('../../commun/utils');
-var If = require('../If');
+var Router = require('react-router');
+var utils  = require('../../commun/utils');
 
 var UsersActions = require('./UsersActions');
-var UsersStore = require('./UsersStore');
+var UsersStore   = require('./UsersStore');
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
+var Grid   = require('react-bootstrap/lib/Grid');
+var Row    = require('react-bootstrap/lib/Row');
+var Col    = require('react-bootstrap/lib/Col');
+var Input  = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
-var Alert = require('react-bootstrap/lib/Alert');
+var Alert  = require('react-bootstrap/lib/Alert');
+
+var If = require('../If');
 
 var Login = React.createClass({
     mixins: [
         Reflux.ListenerMixin,
-        React.addons.LinkedStateMixin
+        React.addons.LinkedStateMixin,
+        Router.Navigation
     ],
     render: function() {
         return (
@@ -69,9 +72,14 @@ var Login = React.createClass({
         };
     },
     onLogin: function (result) {
-        this.setState({
-            result: result
-        });
+        console.log("onLogin", result);
+        if (result.error) {
+            this.setState({
+                result: result
+            });
+        } else {
+            this.context.router.transitionTo('articles');
+        }
     },
     componentDidMount: function() {
         this.unLogin = UsersStore.listen(this.onLogin);

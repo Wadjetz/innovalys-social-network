@@ -1,13 +1,13 @@
 var React = require('react');
 
-var Auth = React.createClass({
+var Forbidden = React.createClass({
     render: function() {
             return (
                 <div>
-                    <h2>Auth</h2>
+                    <h2>Forbidden</h2>
                 </div>
             );
         }
 });
 
-module.exports = Auth;
+module.exports = Forbidden;

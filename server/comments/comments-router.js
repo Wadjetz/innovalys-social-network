@@ -25,8 +25,7 @@ router.get('/:articleId', function (req, res) {
         if (err) res({error: err});
         else if (comment === undefined) res.json([]);
         else res.json(comment);
-    })
-})
+    });
+});
 
 module.exports = router;
-

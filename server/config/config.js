@@ -2,7 +2,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var methodOverride = require("method-override");
-var morgan = require('morgan')
+var morgan = require('morgan');
 
 module.exports = function (app, express, auth) {
     app.use(methodOverride());
@@ -26,4 +26,4 @@ module.exports = function (app, express, auth) {
     });
 
     app.use(morgan('dev'));
-}
+};

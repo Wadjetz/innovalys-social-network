@@ -6,6 +6,7 @@ var async = require('async');
 var utils = require('../../commun/utils');
 var userValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
+var auth = require('../config/auth');
 
 function signupValidator(req, res, next) {
     var newUser = {
@@ -32,7 +33,7 @@ function signupValidator(req, res, next) {
             });
         }
     });
-};
+}
 
 router.post('/signup', signupValidator, function (req, res) {
     var newUser = req._new_user;
@@ -89,15 +90,15 @@ router.post('/signup', signupValidator, function (req, res) {
 });
 
 function loginValidator(req, res, next) {
-    var user = {
+    var login = {
         username: req.body.login,
         password: req.body.password
     };
 
-    userValidator.validateLogin(user, function (validatorRes) {
+    userValidator.validateLogin(login, function (validatorRes) {
         if (validatorRes === undefined) {
-            console.log("loginValidator", validatorRes, user);
-            req._user = user;
+            console.log("loginValidator", validatorRes, login);
+            req._login = login;
             next();
         } else {
             res.json({
@@ -106,11 +107,10 @@ function loginValidator(req, res, next) {
             });
         }
     });
-};
+}
 
 router.post('/login', loginValidator, function(req, res, next) {
-    var user = req._user;
-    console.log("login", user);
+    var user = req._login;
     var jsonError = {
         error: true,
         message: "Login ou password invalide"
@@ -123,12 +123,25 @@ router.post('/login', loginValidator, function(req, res, next) {
         } else {
             bcrypt.compare(user.password, findUser[0].password, function(compareErr, compareRes) {
                 if (compareRes === true) {
-                    res.json({ error: false });
+                    req.session.username = findUser[0].username;
+                    res.json({
+                        error: false,
+                        message: "Hello"
+                    });
                 } else {
                     res.json(jsonError);
                 }
             });
         }
+    });
+});
+
+router.get('/', auth.withRole([UserModel.roles.RH]), function (req, res) {
+    res.json({
+        error: false,
+        message: "",
+        username: req.session.username,
+        user: req.$user
     });
 });
 

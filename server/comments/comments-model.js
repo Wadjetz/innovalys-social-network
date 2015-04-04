@@ -13,11 +13,9 @@ module.exports.create = function (comment, user, callback) {
 module.exports.update = function (comment, callback) {
     // TODO
     callback(null);
-}
+};
 
 module.exports.delete = function (id, callback) {
     // TODO
     callback(null);
-}
-
-
+};
