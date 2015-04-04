@@ -25,6 +25,7 @@
     "markdown": "^0.5.0",
     "method-override": "2.3.2",
     "moment": "^2.9.0",
+    "morgan": "^1.5.2",
     "multer": "0.1.8",
     "mysql": "2.6.1",
     "password-generator": "^0.2.4",
