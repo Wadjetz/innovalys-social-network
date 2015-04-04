@@ -1,3 +1,6 @@
+var moment = require('moment');
+
+module.exports.mysqlDateFormat = "YYYY-MM-DD";
 
 module.exports.slug = function(str) {
   str = str.replace(/^\s+|\s+$/g, ''); // trim

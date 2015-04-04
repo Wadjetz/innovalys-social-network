@@ -1,5 +1,8 @@
-var React = require('react');
+var React = require('react/addons');
 var markdown = require("markdown").markdown;
+
+var moment = require('moment');
+var utils = require('../../commun/utils');
 
 var ArticlesActions = require('./ArticlesActions');
 
@@ -10,6 +13,7 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
 var CreateArticle = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
     submit: function () {
         // TODO validate data
         var newArticle = {
@@ -24,15 +28,8 @@ var CreateArticle = React.createClass({
         return {
             title: "",
             body: "",
-            publish: ""
+            publish: moment().format(utils.mysqlDateFormat)
         };
-    },
-    handleChange: function () {
-        this.setState({
-            title: this.refs.title.getValue(),
-            body: this.refs.body.getValue(),
-            publish: this.refs.publish.getValue()
-        });
     },
     render: function() {
         return (
@@ -42,26 +39,23 @@ var CreateArticle = React.createClass({
                         <h1>Create new Article</h1>
                         <Input
                             type='text'
-                            value={this.state.title}
                             placeholder='Title'
                             label='Title'
                             ref='title'
-                            onChange={this.handleChange}
+                            valueLink={this.linkState('title')}
                         />
                         <Input
                             type='textarea'
                             rows={20}
-                            value={this.state.body}
                             label='Body'
                             ref='body'
-                            onChange={this.handleChange}
+                            valueLink={this.linkState('body')}
                         />
                         <Input
                             type='date'
                             ref='publish'
                             label='Publish'
-                            value={this.state.publish}
-                            onChange={this.handleChange}
+                            valueLink={this.linkState('publish')}
                         />
                         <Button bsStyle='success' onClick={this.submit}>Save</Button>
                     </Col>
