@@ -13,7 +13,6 @@ Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle
 
 ```sh
 npm install -g nodemon
-npm update
 npm install
 ```
 
