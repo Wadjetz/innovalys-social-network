@@ -1,6 +1,45 @@
 #Attention aucun commits directement dans le master
 Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle est finie faite un pull request vers le master. Ça nous évitera des merges conflits
 
+# Installation du l'environement de dev
+
+## Installer
+* [node.js](https://nodejs.org/)
+* [MySQL](https://www.mysql.fr/)
+
+# Activer
+
+## Executer les commandes
+
+```sh
+npm install -g nodemon
+npm update
+npm install
+```
+
+## Lancer le server
+
+```sh
+nodemon server.js
+```
+
+## Lancer le client
+
+```sh
+npm run watch
+```
+
+## Builder l'application
+
+```sh
+npm run build
+```
+
+## Tester l'application
+```sh
+npm run test
+```
+
 #PRESENTATION ENTREPRISE
 
 INNOVALYS est une société de conseil dans les hautes technologies. Nous accompagnons les grands acteurs de l'économie dans leurs projets par notre expertise technique et des modes d'intervention adaptés aux besoins de nos clients.
