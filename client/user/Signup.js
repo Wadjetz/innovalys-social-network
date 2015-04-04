@@ -1,6 +1,10 @@
 var React = require('react/addons');
+var Reflux = require('reflux');
 var moment = require('moment');
 var utils = require('../../commun/utils');
+
+var UsersActions = require('./UsersActions');
+var UsersStore = require('./UsersStore');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row = require('react-bootstrap/lib/Row');
@@ -9,7 +13,10 @@ var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
 var Signup = React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [
+        Reflux.ListenerMixin,
+        React.addons.LinkedStateMixin
+    ],
     render: function() {
         return (
             <Grid>
@@ -107,8 +114,8 @@ var Signup = React.createClass({
             description: this.state.description,
             arrival_date: this.state.arrival_date,
         };
-        //ArticlesActions.createArticle(newArticle);
         console.log("Sigup", "submit", newUser);
+        UsersActions.createUser(newUser);
     },
     getInitialState: function() {
         return {
@@ -122,6 +129,15 @@ var Signup = React.createClass({
             description: "",
             arrival_date: moment().format(utils.mysqlDateFormat),
         };
+    },
+    onCreateUser: function (result) {
+        console.log("Signup", "onCreateUser", "result=", result);
+    },
+    componentDidMount: function() {
+        this.unCreateUser = UsersStore.listen(this.onCreateUser);
+    },
+    componentWillUnmount: function() {
+        this.unCreateUser();
     },
 });
 

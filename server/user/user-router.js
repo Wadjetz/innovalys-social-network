@@ -25,7 +25,10 @@ router.post('/signup', function (req, res) {
 
     console.log(newUser);
     UserModel.create(newUser, function (result) {
-        res.json(newUser);
+        res.json({
+            error: result,
+            newUser: newUser
+        });
     });
 });
 
