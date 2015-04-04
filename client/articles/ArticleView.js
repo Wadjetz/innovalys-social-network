@@ -10,7 +10,7 @@ var ArticleView = React.createClass({
         return (
             <div>
                 <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>
-                <p>{article.body}</p>
+                <div dangerouslySetInnerHTML={{__html: markdown.toHTML(article.body) }}></div>
             </div>
         );
     },

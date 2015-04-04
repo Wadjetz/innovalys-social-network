@@ -7,13 +7,6 @@ var Route         = Router.Route;
 var DefaultRoute  = Router.DefaultRoute;
 var Link          = Router.Link;
 
-var Navbar = require('react-bootstrap/lib/Navbar');
-var Nav = require('react-bootstrap/lib/Nav');
-var DropdownButton = require('react-bootstrap/lib/DropdownButton');
-var CollapsableNav = require('react-bootstrap/lib/CollapsableNav');
-var NavItem = require('react-bootstrap/lib/NavItem');
-var MenuItem = require('react-bootstrap/lib/MenuItem');
-
 var Articles = require('./articles/Articles');
 var SingleArticle = require('./articles/SingleArticle');
 var CreateArticle = require('./articles/CreateArticle');
@@ -23,36 +16,8 @@ var Auth = require('./auth/Auth');
 var User = require('./user/User');
 var Login = require('./user/Login');
 var Signup = require('./user/Signup');
-
-
-var App = React.createClass({
-    render: function() {
-        return (
-            <div>
-            <Navbar brand='Innovalys' toggleNavKey={0} fluid>
-                <CollapsableNav eventKey={0}> {/* This is the eventKey referenced */}
-                    <Nav navbar>
-                        <li><Link to="articles">Articles</Link></li>
-                        <li><Link to="groupes">Groupes</Link></li>
-                        <DropdownButton eventKey={3} title='Options'>
-                            <li><Link to="createArticle">Create Article</Link></li>
-                            <li><Link to="auth">Auth (Login, Signup, Logout)</Link></li>
-                            <li><Link to="signup">Signup</Link></li>
-                            <li><Link to="login">Login</Link></li>
-                            <li><Link to="singleGroupe" params={{slug: 'toto'}}>single groupes</Link></li>
-                        </DropdownButton>
-                    </Nav>
-                    <Nav navbar right>
-                        <li><Link to="user">User</Link></li>
-                    </Nav>
-                </CollapsableNav>
-            </Navbar>
-            <RouteHandler />
-            </div>
-        );
-    }
-});
-
+var App = require('./App');
+var Forbidden = require('./Forbidden');
 
 var Routes = (
     <Route handler={App} path="/">
@@ -65,6 +30,8 @@ var Routes = (
         <Route name="user" handler={User} path="/user" />
         <Route name="signup" handler={Signup} path="/signup" />
         <Route name="login" handler={Login} path="/login" />
+        <Route name="forbidden" handler={Forbidden} path="/forbidden" />
+        <DefaultRoute handler={Articles} />
     </Route>
 );
 

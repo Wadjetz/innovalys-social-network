@@ -2,6 +2,9 @@ var router = require("express").Router();
 var newsModel = require('./news-model');
 var moment = require('moment');
 var utils = require('../../commun/utils');
+var UserModel = require('../user/user-model');
+
+var auth = require('../config/auth');
 
 router.post('/', function(req, res) {
     // TODO validate data
@@ -19,7 +22,7 @@ router.post('/', function(req, res) {
     });
 });
 
-router.get('/', function (req, res) {
+router.get('/', auth.withUser, /*auth.withRole([UserModel.roles.RH]),*/ function (req, res) {
     // TODO validate data
     var page = req.query.page;
     newsModel.findAllNews(page, function (err, news, fields) {

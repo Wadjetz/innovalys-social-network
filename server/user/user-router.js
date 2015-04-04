@@ -6,7 +6,7 @@ var async = require('async');
 var utils = require('../../commun/utils');
 var userValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
-var Auth = require('../config/auth');
+var auth = require('../config/auth');
 
 function signupValidator(req, res, next) {
     var newUser = {
@@ -136,7 +136,7 @@ router.post('/login', loginValidator, function(req, res, next) {
     });
 });
 
-router.get('/', Auth.withRole([UserModel.roles.RH]), function (req, res) {
+router.get('/', auth.withRole([UserModel.roles.RH]), function (req, res) {
     res.json({
         error: false,
         message: "",
