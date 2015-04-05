@@ -1,6 +1,5 @@
 var Reflux = require('reflux');
 
-var AppActions      = require('../AppActions');
 var CommentsActions = require('./CommentsActions');
 var CommentsApi     = require('./CommentsApi');
 

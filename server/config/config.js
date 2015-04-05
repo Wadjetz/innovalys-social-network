@@ -4,7 +4,7 @@ var session = require('express-session');
 var methodOverride = require("method-override");
 var morgan = require('morgan');
 
-module.exports = function (app, express, auth) {
+module.exports = function (app, express) {
     app.use(methodOverride());
     app.use(cookieParser());
     app.use(session({ secret: '6rHUy(*))72zer-,gRZefdd()', saveUninitialized: true, resave: true }));

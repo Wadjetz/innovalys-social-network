@@ -30,7 +30,7 @@ module.exports.findAllGroupeNews = function (callback) {
 };
 
 module.exports.create = function (news, callback) {
-    console.log("news model create", news);
+    //console.log("news model create", news);
     var sql = "INSERT INTO news SET ?";
     var data = [news];
     db.query(sql, data, function (error, results, fields) {

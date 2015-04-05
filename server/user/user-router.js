@@ -23,7 +23,7 @@ function signupValidator(req, res, next) {
 
     userValidator.signupValidator(newUser, function (validatorRes) {
         if (validatorRes === undefined) {
-            console.log("signupValidator", validatorRes, newUser);
+            //console.log("signupValidator", validatorRes, newUser);
             req._new_user = newUser;
             next();
         } else {
@@ -54,7 +54,7 @@ router.post('/signup', signupValidator, function (req, res) {
             });
         }
     }, function(asyncErr, asyncRes) {
-        console.log(asyncRes);
+        //console.log(asyncRes);
         if (asyncErr) console.error(asyncErr);
         if (asyncRes.isExist > 0) {
             res.status(400).json({ error: "User already existe" });
@@ -85,7 +85,7 @@ function loginValidator(req, res, next) {
 
     userValidator.validateLogin(login, function (validatorRes) {
         if (validatorRes === undefined) {
-            console.log("loginValidator", validatorRes, "login", login);
+            //console.log("loginValidator", validatorRes, "login", login);
             req._login = login;
             next();
         } else {
@@ -97,7 +97,7 @@ function loginValidator(req, res, next) {
 router.post('/login', loginValidator, function(req, res, next) {
     var user = req._login;
     var jsonError = { error: "Login ou password invalide" };
-    console.log("user", user, "email.toLowerCase()", user.email.toLowerCase())
+    //console.log("user", user, "email.toLowerCase()", user.email.toLowerCase())
 
     UserModel.findOneByEmail(user.email.toLowerCase(), function (findError, findUser) {
         if (findError) console.error(findError);

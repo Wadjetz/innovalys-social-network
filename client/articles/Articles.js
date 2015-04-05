@@ -12,6 +12,8 @@ var Col  = require('react-bootstrap/lib/Col');
 var Loader = require('halogen').GridLoader;
 var If     = require('../If');
 
+var Chat = require('../chat/Chat');
+
 var Articles = React.createClass({
     mixins: [
         Reflux.ListenerMixin
@@ -32,8 +34,11 @@ var Articles = React.createClass({
                     </Row>
                 </If>
                 <Row>
-                    <Col xs={12}>
+                    <Col xs={8}>
                         {articles}
+                    </Col>
+                    <Col xs={4}>
+                        <Chat />
                     </Col>
                 </Row>
             </Grid>
