@@ -27,17 +27,17 @@ var Login = React.createClass({
                 <Row>
                     <Col xs={12} md={6} mdOffset={3}>
                         <h1>Login</h1>
-                        <If condition={this.state.result.error}>
+                        <If condition={this.state.error !== ""}>
                             <Alert bsStyle='danger'>
-                                {this.state.result.message}
+                                {this.state.error}
                             </Alert>
                         </If>
                         <Input
                             type='text'
-                            placeholder='Login'
-                            label='Login'
-                            ref='login'
-                            valueLink={this.linkState('login')}
+                            placeholder='Email'
+                            label='Email'
+                            ref='email'
+                            valueLink={this.linkState('email')}
                         />
                         <Input
                             type='password'
@@ -55,27 +55,25 @@ var Login = React.createClass({
     submit: function () {
         // TODO validate data
         var user = {
-            login: this.state.login,
+            email: this.state.email,
             password: this.state.password,
         };
-        console.log("Login", "submit", user);
+        console.log("Login.submit", "user", user);
         UsersActions.login(user);
     },
     getInitialState: function() {
+        // TODO remove mock
         return {
-            login: "",
-            password: "",
-            result: {
-                error: false,
-                message: ""
-            }
+            email: "egor@neon.fr",
+            password: "BMi1z2Rn",
+            error: ""
         };
     },
     onLogin: function (result) {
-        console.log("onLogin", result);
+        console.log("Login.onLogin", result);
         if (result.error) {
             this.setState({
-                result: result
+                error: result.error
             });
         } else {
             this.context.router.transitionTo('articles');

@@ -3,7 +3,12 @@ var Reflux = require('reflux');
 var UsersActions = Reflux.createActions({
     "loadUsers": {},
     "createUser": {},
-    "login": {},
+    "login": {
+        children: [
+            "completed",
+            "failed"
+        ]
+    },
     "updateUser": {},
     "deleteUser": {}
 });

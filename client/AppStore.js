@@ -3,7 +3,7 @@ var AppActions = require('./AppActions');
 
 var AppStore = Reflux.createStore({
     init: function () {
-        console.log("AppStore", "init");
+        //console.log("AppStore", "init");
         this.listenTo(AppActions.unauthorized, this.onUnauthorized);
         this.listenTo(AppActions.forbidden, this.onForbidden);
     },

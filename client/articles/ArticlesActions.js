@@ -1,11 +1,16 @@
 var Reflux = require('reflux');
 
 var ArticlesActions = Reflux.createActions({
-    "loadArticles": {},
-    "loading": {},
-    "createArticle": {},
-    "updateArticle": {},
-    "deleteArticle": {}
+    'loadArticles': {},
+    'loadSingleArticle': {
+        children: [
+            "completed",
+            "failed"
+        ]
+    },
+    'createArticle': {},
+    'updateArticle': {},
+    'deleteArticle': {}
 });
 
 module.exports = ArticlesActions;

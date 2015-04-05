@@ -19,25 +19,32 @@ module.exports.findOneById = function (id, callback) {
     var data = [id];
     db.query(sql, data, function (error, results, fields) {
         if (error) console.error(error);
-        callback(error, results, fields);
+        callback(error, results[0], fields);
     });
 };
 
-module.exports.isExist = function (username, callback) {
-    var sql = "SELECT COUNT(*) AS is_exist FROM users WHERE username = ?";
-    var data = [username];
+module.exports.isExist = function (email, callback) {
+    var sql = "SELECT COUNT(*) AS is_exist FROM users WHERE email = ?";
+    var data = [email];
     db.query(sql, data, function (error, results, fields) {
-        if (error) console.error(error);
-        callback(error, results[0].is_exist, fields);
+        console.log('results', results);
+        if (error) {
+            console.error(error);
+            callback(error, null);
+        } else {
+            callback(error, results[0].is_exist, fields);
+        }
     });
 };
 
-module.exports.findOneByUserName = function (username, callback) {
-    var sql = "SELECT * FROM users WHERE username = ?";
-    var data = [username];
+module.exports.findOneByEmail = function (email, callback) {
+    var sql = "SELECT * FROM users WHERE email = ?";
+    var data = [email];
     db.query(sql, data, function (error, results, fields) {
-        if (error) console.error(error);
-        callback(error, results, fields);
+        console.log('results', results, "error", error);
+        if (error) console.error(error)
+        if (results.length > 0) callback(error, results[0], fields);
+        else callback(error, null, fields);
     });
 };
 
