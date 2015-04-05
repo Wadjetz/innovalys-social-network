@@ -43,12 +43,12 @@ var SingleArticle = React.createClass({
                 <Row>
                     <Col xs={12}>
                         <If condition={this.state.article !== null}>
-                            <CreateComment article={this.state.article} />
+                            <Comments article={this.state.article} />
                         </If>
                     </Col>
                     <Col xs={12}>
                         <If condition={this.state.article !== null}>
-                            <Comments article={this.state.article} />
+                            <CreateComment article={this.state.article} />
                         </If>
                     </Col>
                 </Row>

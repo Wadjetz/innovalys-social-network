@@ -1,4 +1,5 @@
 var React = require('react/addons');
+var Reflux = require('reflux');
 
 var moment = require('moment');
 var utils = require('../../commun/utils');
@@ -13,7 +14,8 @@ var Button = require('react-bootstrap/lib/Button');
 
 var CreateComment = React.createClass({
     mixins: [
-        React.addons.LinkedStateMixin
+        React.addons.LinkedStateMixin,
+        Reflux.listenTo(CommentsActions.createComment.completed, 'onCreateCommentCompleted'),
     ],
     submit: function () {
         // TODO validate data
@@ -35,7 +37,7 @@ var CreateComment = React.createClass({
                 <Col xs={12}>
                     <h4>Create new comment</h4>
                     <Input
-                        type='text'
+                        type='textarea'
                         placeholder='Content'
                         label='Content'
                         ref='content'
@@ -45,6 +47,9 @@ var CreateComment = React.createClass({
                 </Col>
             </Row>
         );
+    },
+    onCreateCommentCompleted: function (newComment) {
+        console.log("CreateComment.onCreateCommentCompleted", "newComment", newComment);
     }
 });
 

@@ -43,17 +43,23 @@ router.post('/', commentsValidator, auth.withUser, function (req, res) {
     var comment = req._new_comment;
     comment.users_id = user.id;
     console.log("comments route create", comment, "user", user);
-    commentsModel.create(comment, function (err, results) {
+    commentsModel.create(comment, function (createErr, createRes) {
         // TODO remove private information
-        if (err) {
+        if (createErr && (createRes.affectedRows === 0)) {
             res.status(400).json({
                 error: true,
-                message: err
+                message: createErr
             });
         } else {
-            res.json({
-                error: false,
-                message: results
+            commentsModel.findOneById(createRes.insertId, function (findErr, findRes) {
+                if (findErr && (findRes.length === 0)) {
+                    res.status(400).json({
+                        error: true,
+                        message: createErr
+                    });
+                } else {
+                    res.json(findRes[0]);
+                }
             });
         }
     });
