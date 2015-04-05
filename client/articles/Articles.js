@@ -23,7 +23,7 @@ var Articles = React.createClass({
             );
         });
         return (
-            <Grid fluid>
+            <Grid>
                 <If condition={this.state.loading}>
                     <Row>
                         <Col xs={2} mdOffset={5}>

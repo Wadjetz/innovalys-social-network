@@ -1,19 +1,20 @@
 var request = require('superagent');
 var baseUrl = require('../conf').baseUrl;
+var utils = require('../utils');
 
 module.exports.getAll = function (callback) {
     request.get(baseUrl + '/news')
     .end(function (err, res) {
         //console.log("ArticleApi.getAll", "err", err, "res", res);
-        callback(err, res.body);
+        utils.handleErrors(err, res, callback);
     });
 };
 
 module.exports.get = function (slug, callback) {
     request.get(baseUrl + '/news/' + slug)
     .end(function (err, res) {
-        console.log("ArticleApi.get", "err", err, "res", res, "slug", slug);
-        callback(err, res.body);
+        //console.log("ArticleApi.get", "err", err, "res", res, "slug", slug);
+        utils.handleErrors(err, res, callback);
     });
 };
 

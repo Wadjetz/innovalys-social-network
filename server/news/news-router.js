@@ -37,10 +37,11 @@ router.get('/', auth.withUser, function (req, res) {
 router.get('/:slug', auth.withUser, function (req, res) {
     // TODO validate data
     var slug = req.params.slug;
-    newsModel.findOneBySlug(slug, function (err, news, fields) {
-        if (err) res({error: err});
-        else if (news === undefined) res.json([]);
-        else res.json(news);
+    newsModel.findOneBySlug(slug, function (err, news) {
+        if (err) res.sendStatus(500).json(err); // TODO remove private information
+        else if (news === undefined || news === null) ;
+        else if (news.length > 0) res.json(news[0]);
+        else res.sendStatus(405);
     });
 });
 

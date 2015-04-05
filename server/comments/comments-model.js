@@ -1,8 +1,9 @@
 var db = require('../config/database');
 
 module.exports.findAllByNewsId = function (news_id, page, callback) {
-    var sql = "SELECT comments.*, users.id, users.username, users.status_profile, users.status_connection, users.function ";
-    sql    += "FROM comments JOIN users ON comments.users_id = users.id WHERE news_id = ? ;"
+    var sql = "SELECT comments.id, comments.content, comments.created, comments.updated, ";
+    sql += "users.id AS user_id, users.email, users.status_profile, users.status_connection, users.function ";
+    sql += "FROM comments JOIN users ON comments.users_id = users.id WHERE news_id = ? ;";
     var data = [news_id];
     db.query(sql, data, function (error, results, fields) {
         if (error) console.error(error);

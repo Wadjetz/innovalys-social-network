@@ -4,6 +4,10 @@ var Reflux = require('reflux');
 var ArticlesActions = require('./ArticlesActions');
 var ArticleView     = require('./ArticleView');
 
+var Comments      = require('../comments/Comments');
+var CreateComment = require('../comments/CreateComment');
+
+
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
@@ -19,12 +23,7 @@ var SingleArticle = React.createClass({
         router: React.PropTypes.func
     },
     render: function() {
-        console.log("SingleArticle.render", this.state.article)
-        var articleView = this.state.article.map(function (article) {
-            return (
-                <ArticleView article={article} key={article.id} />
-            );
-        });
+        console.log("SingleArticle.render", this.state.article);
         return (
             <Grid>
                 <If condition={this.state.loading}>
@@ -36,9 +35,24 @@ var SingleArticle = React.createClass({
                 </If>
                 <Row>
                     <Col xs={12}>
-                        {articleView}
+                        <If condition={this.state.article !== null}>
+                            <ArticleView article={this.state.article} />
+                        </If>
                     </Col>
                 </Row>
+                <Row>
+                    <Col xs={12}>
+                        <If condition={this.state.article !== null}>
+                            <CreateComment article={this.state.article} />
+                        </If>
+                    </Col>
+                    <Col xs={12}>
+                        <If condition={this.state.article !== null}>
+                            <Comments article={this.state.article} />
+                        </If>
+                    </Col>
+                </Row>
+
             </Grid>
         );
     },
@@ -53,7 +67,7 @@ var SingleArticle = React.createClass({
         console.log("getInitialState.slug", this.context.router.getCurrentParams().slug);
         ArticlesActions.loadSingleArticle(this.context.router.getCurrentParams().slug, []);
         return {
-            article: [],
+            article: null,
             loading: true
         };
     }

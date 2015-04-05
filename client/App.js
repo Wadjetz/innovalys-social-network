@@ -56,11 +56,11 @@ var App = React.createClass({
         };
     },
     onUnauthorized: function () {
-        console.log("App", "unauthorized");
+        //console.log("App", "unauthorized");
         this.context.router.transitionTo('login');
     },
     onForbidden: function () {
-        console.log("App", "Forbidden");
+        //console.log("App", "Forbidden");
         this.context.router.transitionTo('forbidden');
     }
 });
