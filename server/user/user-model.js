@@ -27,7 +27,7 @@ module.exports.isExist = function (email, callback) {
     var sql = "SELECT COUNT(*) AS is_exist FROM users WHERE email = ?";
     var data = [email];
     db.query(sql, data, function (error, results, fields) {
-        console.log('results', results);
+        //console.log('results', results);
         if (error) {
             console.error(error);
             callback(error, null);
@@ -41,7 +41,7 @@ module.exports.findOneByEmail = function (email, callback) {
     var sql = "SELECT * FROM users WHERE email = ?";
     var data = [email];
     db.query(sql, data, function (error, results, fields) {
-        console.log('results', results, "error", error);
+        //console.log('results', results, "error", error);
         if (error) console.error(error)
         if (results.length > 0) callback(error, results[0], fields);
         else callback(error, null, fields);
@@ -49,7 +49,7 @@ module.exports.findOneByEmail = function (email, callback) {
 };
 
 module.exports.create = function (user, callback) {
-    console.log(user);
+    //console.log(user);
     var sql = "INSERT INTO users SET ?";
     var data = [user];
     db.query(sql, data, function (error, results, fields) {

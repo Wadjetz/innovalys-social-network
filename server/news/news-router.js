@@ -17,7 +17,7 @@ router.post('/', auth.withRole([UserModel.roles.RH]), function(req, res) {
         publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS"),
         users_id: user.id
     };
-    console.log("news route create", "news", news, "user", user);
+    //console.log("news route create", "news", news, "user", user);
     newsModel.create(news, function (err, results, fields) {
         if (err) res({error: err});
         res.json({"affectedRows": results.affectedRows});
