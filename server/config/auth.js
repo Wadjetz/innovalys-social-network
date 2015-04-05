@@ -1,9 +1,9 @@
 var UserModel = require('../user/user-model');
 
-function isAuth(username, callback) {
-    if (username === undefined) {
+function isAuth(email, callback) {
+    if (email === undefined) {
         callback(false);
-    } else if (username === "") {
+    } else if (email === "") {
         callback(false);
     } else {
         callback(true);
@@ -11,7 +11,7 @@ function isAuth(username, callback) {
 }
 
 module.exports.auth = function (req, res, next) {
-    isAuth(req.session.username, function (isAuth) {
+    isAuth(req.session.email, function (isAuth) {
         if(isAuth) {
             next();
         } else {
@@ -21,11 +21,16 @@ module.exports.auth = function (req, res, next) {
 };
 
 module.exports.withUser = function (req, res, next) {
-    isAuth(req.session.username, function (isAuth) {
+    isAuth(req.session.email, function (isAuth) {
         if(isAuth) {
-            UserModel.findOneByUserName(req.session.username, function (error, user) {
-                req.$user = user;
-                next();
+            UserModel.findOneByEmail(req.session.email, function (error, user) {
+                if (error) {
+                    res.sendStatus(500);
+                }
+                if (user) {
+                    req.$user = user;
+                    next();
+                }
             });
         } else {
             res.sendStatus(401);
@@ -35,20 +40,25 @@ module.exports.withUser = function (req, res, next) {
 
 module.exports.withRole = function (roles) {
     return function authorized(req, res, next) {
-        isAuth(req.session.username, function (isAuth) {
+        isAuth(req.session.email, function (isAuth) {
             if(isAuth) {
-                UserModel.findOneByUserName(req.session.username, function (error, user) {
-                    var flag = false;
-                    for (var i = roles.length - 1; i >= 0; i--) {
-                        if (roles[i] === user[0].role) {
-                            flag = true;
-                        }
+                UserModel.findOneByEmail(req.session.email, function (error, user) {
+                    if (error) {
+                        res.sendStatus(500);
                     }
-                    if (flag === true) {
-                        req.$user = user[0];
-                        next();
-                    } else {
-                        res.sendStatus(403);
+                    if (user) {
+                        var flag = false;
+                        for (var i = roles.length - 1; i >= 0; i--) {
+                            if (roles[i] === user.role) {
+                                flag = true;
+                            }
+                        }
+                        if (flag === true || user.role === UserModel.roles.ADMIN) {
+                            req.$user = user[0];
+                            next();
+                        } else {
+                            res.sendStatus(403);
+                        }
                     }
                 });
             } else {

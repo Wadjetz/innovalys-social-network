@@ -39,7 +39,7 @@ module.exports.signupValidator = function (newUser, callback) {
 module.exports.validateLogin = function (login, callback) {
     // TODO Configure validator
     var constraints = {
-        username: {
+        email: {
             presence: true
         },
         password: {
