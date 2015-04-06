@@ -2,6 +2,8 @@ var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
 
+var utils = require('../../commun/utils');
+
 var auth        = require('../config/auth');
 var GroupsModel = require('./groups-model');
 var UserModel   = require('../user/user-model');
@@ -46,6 +48,7 @@ function groupsValidator(req, res, next) {
 router.post('/', groupsValidator, auth.withUser, function (req, res) {
     var user = req.$user;
     var group = req._new_group;
+    group.slug = utils.slug(group.name);
     group.users_id = user.id;
     GroupsModel.create(group, function (err, result) {
         console.log("err", err, "result", result);

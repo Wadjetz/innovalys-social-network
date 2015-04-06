@@ -31,6 +31,7 @@ var App = React.createClass({
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
                             <li><Link to="groups">Groups</Link></li>
+                            <li><Link to="createGroup">Create Group</Link></li>
                             <DropdownButton eventKey={3} title='Admin'>
                                 <li><Link to="login">Login</Link></li>
                                 <li><Link to="singleGroup" params={{slug: 'toto'}}>single groupes</Link></li>

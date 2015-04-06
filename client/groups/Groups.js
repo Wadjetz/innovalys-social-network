@@ -22,7 +22,7 @@ var Groups = React.createClass({
     render: function() {
         var groups = this.state.groups.map(function (group, i) {
             return (
-                <GroupView group={article} key={i} />
+                <GroupView group={group} key={i} />
             );
         });
         return (

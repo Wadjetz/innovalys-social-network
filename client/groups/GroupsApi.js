@@ -22,7 +22,7 @@ module.exports.create = function (group, callback) {
     request.post(baseUrl + '/groups')
     .send(group)
     .end(function (err, res) {
-        console.log("GroupsApi.create", "err", err, "res", res, "article", article);
+        console.log("GroupsApi.create", "err", err, "res", res, "group", group);
         utils.handleErrors(err, res, callback);
     });
 };

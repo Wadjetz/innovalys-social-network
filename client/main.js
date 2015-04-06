@@ -12,6 +12,7 @@ var SingleArticle = require('./articles/SingleArticle');
 var CreateArticle = require('./articles/CreateArticle');
 var Groups = require('./groups/Groups');
 var SingleGroup = require('./groups/SingleGroup');
+var CreateGroup = require('./groups/CreateGroup');
 var User = require('./user/User');
 var Login = require('./user/Login');
 var Signup = require('./user/Signup');
@@ -25,6 +26,7 @@ var Routes = (
         <Route name="singleArticle" handler={SingleArticle} path="/articles/:slug" />
         <Route name="groups" handler={Groups} path="/groups" />
         <Route name="singleGroup" handler={SingleGroup} path="/groups/:slug" />
+        <Route name="createGroup" handler={CreateGroup} path="create/group" />
         <Route name="user" handler={User} path="/user" />
         <Route name="signup" handler={Signup} path="/signup" />
         <Route name="login" handler={Login} path="/login" />
