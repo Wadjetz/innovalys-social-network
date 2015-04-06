@@ -23,6 +23,6 @@ module.exports.create = function (article, callback) {
     .send(article)
     .end(function (err, res) {
         //console.log("ArticleApi.create", "err", err, "res", res, "article", article);
-        callback(err, res.body);
+        utils.handleErrors(err, res, callback);
     });
 };

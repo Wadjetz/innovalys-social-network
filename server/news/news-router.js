@@ -6,27 +6,61 @@ var UserModel = require('../user/user-model');
 
 var auth = require('../config/auth');
 
-router.post('/', auth.withRole([UserModel.roles.RH]), function(req, res) {
-    // TODO validate data
-    // TODO validate date moment.isValid()
-    var user = req.$user;
+var validate = require("validate.js");
+validate.moment = moment;
+
+function newsValidator (req, res, next) {
     var news = {
         slug: utils.slug(req.body.title),
         title: req.body.title,
         body: req.body.body,
-        publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS"),
-        users_id: user.id
+        publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS")
     };
-    //console.log("news route create", "news", news, "user", user);
+
+    // TOTO Move this in commun module
+    var constraints = {
+        title: {
+            presence: true,
+        },
+        body: {
+            presence: true,
+        },
+        publish: {
+            presence: true,
+        }
+    };
+    var validatorRes = validate(news, constraints);
+    if (validatorRes === undefined) {
+        //console.log("signupValidator", validatorRes, newComment);
+        req._new_news = news;
+        next();
+    } else {
+        res.status(400).json({
+            error: true,
+            message: validatorRes
+        });
+    }
+}
+
+router.post('/', newsValidator, auth.withRole([UserModel.roles.RH]), function(req, res) {
+    var user = req.$user;
+    var news = req._new_news;
+    console.log("news route create", "news", news, "user", user);
+    news.users_id = user.id;
     newsModel.create(news, function (err, results, fields) {
         if (err) res({error: err});
-        res.json({"affectedRows": results.affectedRows});
+        if (results.affectedRows === 1) {
+            res.status(201).json(news);
+        } else {
+            res.status(500).json({
+                error: "Not Created"
+            });
+        }
     });
 });
 
 router.get('/', auth.withUser, function (req, res) {
-    // TODO validate data
-    var page = req.query.page;
+    var page = req.query.page || 0;
     newsModel.findAllNews(page, function (err, news, fields) {
         if (err) res({error: err});
         else if (news === undefined) res.json([]);
@@ -35,7 +69,6 @@ router.get('/', auth.withUser, function (req, res) {
 });
 
 router.get('/:slug', auth.withUser, function (req, res) {
-    // TODO validate data
     var slug = req.params.slug;
     newsModel.findOneBySlug(slug, function (err, news) {
         if (err) res.sendStatus(500).json(err); // TODO remove private information

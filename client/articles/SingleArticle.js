@@ -3,10 +3,10 @@ var Reflux = require('reflux');
 
 var ArticlesActions = require('./ArticlesActions');
 var ArticleView     = require('./ArticleView');
+var ArticlesStore   = require('./ArticlesStore');
 
 var Comments      = require('../comments/Comments');
 var CreateComment = require('../comments/CreateComment');
-
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
@@ -17,13 +17,12 @@ var If     = require('../If');
 
 var SingleArticle = React.createClass({
     mixins: [
-        Reflux.listenTo(ArticlesActions.loadSingleArticle.completed, 'onLoadCompletedSingleArticle'),
+        Reflux.connect(ArticlesStore)
     ],
     contextTypes: {
         router: React.PropTypes.func
     },
     render: function() {
-        console.log("SingleArticle.render", this.state.article);
         return (
             <Grid>
                 <If condition={this.state.loading}>
@@ -35,20 +34,20 @@ var SingleArticle = React.createClass({
                 </If>
                 <Row>
                     <Col xs={12}>
-                        <If condition={this.state.article !== null}>
-                            <ArticleView article={this.state.article} />
+                        <If condition={this.state.singleArticle !== null}>
+                            <ArticleView article={this.state.singleArticle} />
                         </If>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12}>
-                        <If condition={this.state.article !== null}>
-                            <Comments article={this.state.article} />
+                        <If condition={this.state.singleArticle !== null}>
+                            <Comments article={this.state.singleArticle} />
                         </If>
                     </Col>
                     <Col xs={12}>
-                        <If condition={this.state.article !== null}>
-                            <CreateComment article={this.state.article} />
+                        <If condition={this.state.singleArticle !== null}>
+                            <CreateComment article={this.state.singleArticle} />
                         </If>
                     </Col>
                 </Row>
@@ -56,20 +55,8 @@ var SingleArticle = React.createClass({
             </Grid>
         );
     },
-    onLoadCompletedSingleArticle: function (article) {
-        console.log("SingleArticle.onLoadCompletedSingleArticle", "article", article);
-        this.setState({
-            article: article,
-            loading: false
-        });
-    },
-    getInitialState: function () {
-        console.log("getInitialState.slug", this.context.router.getCurrentParams().slug);
-        ArticlesActions.loadSingleArticle(this.context.router.getCurrentParams().slug, []);
-        return {
-            article: null,
-            loading: true
-        };
+    componentWillMount: function() {
+        ArticlesActions.loadSingleArticle(this.context.router.getCurrentParams().slug);
     }
 });
 

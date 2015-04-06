@@ -4,30 +4,36 @@ var ArticlesApi = require('./ArticlesApi');
 var utils = require('../utils');
 
 var ArticlesStore = Reflux.createStore({
+    data: {
+        articles: [],
+        singleArticle: null,
+        loading: true
+    },
     init: function () {
-        //console.log("articlesStore", "init");
         this.listenTo(ArticlesActions.loadSingleArticle, this.onLoadSingleArticle);
         this.listenTo(ArticlesActions.loadArticles, this.onLoadArticles);
         this.listenTo(ArticlesActions.createArticle, this.onCreateArticle);
     },
+    getInitialState: function () {
+        return this.data;
+    },
     onLoadSingleArticle: function (slug) {
-        //console.log("ArticlesStore.onLoadSingleArticle", "slug", slug);
         ArticlesApi.get(slug, function (err, article) {
-            console.log("ArticlesStore.onLoadSingleArticle.get", "article", article, "err", err);
-            ArticlesActions.loadSingleArticle.completed(article);
+            this.data.singleArticle = article;
+            this.data.loading = false;
+            this.trigger(this.data);
         }.bind(this));
     },
     onLoadArticles: function () {
-        //console.log("ArticlesStore", "onLoadArticles");
         ArticlesApi.getAll(function (err, articles) {
-            this.trigger(articles);
+            this.data.articles = articles;
+            this.data.loading = false;
+            this.trigger(this.data);
         }.bind(this));
     },
     onCreateArticle: function (article) {
-        //console.log("ArticlesStore", "onCreateArticle", article);
-        ArticlesApi.create(article, function (result) {
-            console.log("ArticlesStore", "onCreateArticle", "create", result);
-            //this.trigger(article);
+        ArticlesApi.create(article, function (err, result) {
+            ArticlesActions.createArticle.completed(err, result);
         });
     }
 });

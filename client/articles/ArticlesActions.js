@@ -8,7 +8,11 @@ var ArticlesActions = Reflux.createActions({
             "failed"
         ]
     },
-    'createArticle': {},
+    'createArticle': {
+        children: [
+            "completed"
+        ]
+    },
     'updateArticle': {},
     'deleteArticle': {}
 });

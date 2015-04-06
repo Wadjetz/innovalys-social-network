@@ -6,7 +6,6 @@ var UserModel = require('../user/user-model');
 var auth = require('../config/auth');
 
 var validate = require("validate.js");
-var moment = require('moment');
 validate.moment = moment;
 
 function commentsValidator (req, res, next) {
@@ -31,7 +30,7 @@ function commentsValidator (req, res, next) {
         req._new_comment = newComment;
         next();
     } else {
-        res.json({
+        res.status(400).json({
             error: true,
             message: validatorRes
         });

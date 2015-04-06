@@ -1,6 +1,5 @@
 #!/bin/env node
 // Modules
-var http = require('http');
 var express = require('express');
 var app  = express();
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8888;

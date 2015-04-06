@@ -14,8 +14,7 @@ var Button = require('react-bootstrap/lib/Button');
 
 var CreateComment = React.createClass({
     mixins: [
-        React.addons.LinkedStateMixin,
-        Reflux.listenTo(CommentsActions.createComment.completed, 'onCreateCommentCompleted'),
+        React.addons.LinkedStateMixin
     ],
     submit: function () {
         // TODO validate data
@@ -47,9 +46,6 @@ var CreateComment = React.createClass({
                 </Col>
             </Row>
         );
-    },
-    onCreateCommentCompleted: function (newComment) {
-        console.log("CreateComment.onCreateCommentCompleted", "newComment", newComment);
     }
 });
 

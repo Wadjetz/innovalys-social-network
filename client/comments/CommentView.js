@@ -10,7 +10,6 @@ var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 var CommentView = React.createClass({
     render: function() {
         var comment = this.props.comment;
-        console.log("CommentView", "render", comment);
         return (
             <ListGroup>
                 <ListGroupItem header={comment.email}>
