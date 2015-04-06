@@ -54,7 +54,7 @@ module.exports.withRole = function (roles) {
                             }
                         }
                         if (flag === true || user.role === UserModel.roles.ADMIN) {
-                            req.$user = user[0];
+                            req.$user = user;
                             next();
                         } else {
                             res.sendStatus(403);

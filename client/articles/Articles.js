@@ -16,7 +16,7 @@ var Chat = require('../chat/Chat');
 
 var Articles = React.createClass({
     mixins: [
-        Reflux.ListenerMixin
+        Reflux.connect(ArticlesStore)
     ],
     render: function() {
         var articles = this.state.articles.map(function (article) {
@@ -44,26 +44,9 @@ var Articles = React.createClass({
             </Grid>
         );
     },
-    getInitialState: function() {
+    componentWillMount: function() {
         ArticlesActions.loadArticles();
-        return {
-            articles: [],
-            loading: true
-        };
-    },
-    componentDidMount: function() {
-        this.unLoadArticles = ArticlesStore.listen(this.onLoadArticles);
-    },
-    componentWillUnmount: function() {
-        this.unLoadArticles();
-    },
-    onLoadArticles: function (articles) {
-        console.log("Articles", "onLoadArticles", articles);
-        this.setState({
-            articles: articles,
-            loading: false
-        });
-    },
+    }
 });
 
 module.exports = Articles;
