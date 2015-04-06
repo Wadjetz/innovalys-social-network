@@ -30,10 +30,10 @@ var App = React.createClass({
                     <CollapsableNav eventKey={0}> {/* This is the eventKey referenced */}
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
-                            <li><Link to="groupes">Groupes</Link></li>
+                            <li><Link to="groups">Groups</Link></li>
                             <DropdownButton eventKey={3} title='Admin'>
                                 <li><Link to="login">Login</Link></li>
-                                <li><Link to="singleGroupe" params={{slug: 'toto'}}>single groupes</Link></li>
+                                <li><Link to="singleGroup" params={{slug: 'toto'}}>single groupes</Link></li>
                             </DropdownButton>
                             <DropdownButton eventKey={4} title='RH'>
                                 <li><Link to="createArticle">Create Article</Link></li>
