@@ -28,7 +28,7 @@ var Chat = React.createClass({
 	render: function () {
 		var messages = this.state.messages.map(function (message, i) {
 			return (
-				<div key={i}>{message}</div>
+				<div key={i}>{message.content}</div>
 			);
 		});
 		return (
@@ -40,7 +40,10 @@ var Chat = React.createClass({
 				<MessageSender />
 			</Row>
 		);
-	}
+	},
+	componentWillMount: function() {
+        ChatActions.loadMessages();
+    }
 });
 
 module.exports = Chat;

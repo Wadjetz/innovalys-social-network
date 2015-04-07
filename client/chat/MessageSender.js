@@ -24,7 +24,7 @@ var Chat = React.createClass({
 					valueLink={this.linkState('message')} />
 
   				<span className="input-group-btn">
-    				<button className="btn btn-success" onClick={this.submit}>Send</button>
+    				<button className="btn btn-success" disabled={this.state.message === ""} onClick={this.submit}>Send</button>
   				</span>
 			</div>
 		);

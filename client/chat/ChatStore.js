@@ -3,6 +3,7 @@ var Reflux = require('reflux');
 var socket = io('http://localhost');
 
 var ChatActions = require('./ChatActions');
+var ChatApi = require('./ChatApi');
 
 var ChatStore = Reflux.createStore({
     data: {
@@ -21,6 +22,10 @@ var ChatStore = Reflux.createStore({
     },
     onLoadMessages: function () {
 		console.log("ChatStore", "onLoadMessages");
+        ChatApi.getAllMessages(0, function (error, history) {
+            this.data.messages = this.data.messages.concat(history);
+            this.trigger(this.data);
+        }.bind(this));
     },
     onSendMessage: function (message) {
         console.log("ChatStore", "onSendMessage", message);
