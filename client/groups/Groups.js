@@ -1,27 +1,28 @@
+/*** @jsx React.DOM */
 var React  = require('react');
 var Reflux = require('reflux');
-
-var ArticlesStore   = require('./ArticlesStore');
-var ArticlesActions = require('./ArticlesActions');
-var ArticleView     = require('./ArticleView');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
+
+var GroupsStore   = require('./GroupsStore');
+var GroupsActions = require('./GroupsActions');
+var GroupView     = require('./GroupView');
 
 var Loader = require('halogen').GridLoader;
 var If     = require('../If');
 
 var Chat = require('../chat/Chat');
 
-var Articles = React.createClass({
+var Groups = React.createClass({
     mixins: [
-        Reflux.connect(ArticlesStore)
+        Reflux.connect(GroupsStore)
     ],
     render: function() {
-        var articles = this.state.articles.map(function (article, i) {
+        var groups = this.state.groups.map(function (group, i) {
             return (
-                <ArticleView article={article} key={i} />
+                <GroupView group={group} key={i} />
             );
         });
         return (
@@ -35,7 +36,7 @@ var Articles = React.createClass({
                 </If>
                 <Row>
                     <Col xs={8}>
-                        {articles}
+                        {groups}
                     </Col>
                     <Col xs={4}>
                         <Chat />
@@ -45,8 +46,8 @@ var Articles = React.createClass({
         );
     },
     componentWillMount: function() {
-        ArticlesActions.loadArticles();
+        GroupsActions.loadGroups();
     }
 });
 
-module.exports = Articles;
+module.exports = Groups;
