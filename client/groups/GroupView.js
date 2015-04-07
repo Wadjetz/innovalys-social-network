@@ -11,6 +11,7 @@ var GroupView = React.createClass({
         return (
             <div className="thumbnail">
                 <h2><Link to="singleGroup" params={{slug: group.slug}}>{group.name}</Link></h2>
+                <p>{group.description}</p>
             </div>
         );
     },

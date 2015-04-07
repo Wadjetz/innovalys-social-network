@@ -10,11 +10,26 @@ var UserModel   = require('../user/user-model');
 
 validate.moment = moment;
 
-router.get('/', function (req, res) {
+router.get('/', auth.withUser, function (req, res) {
+    var user = req.$user;
     var page = req.query.page || 0;
     GroupsModel.findAll(page, function (err, groups) {
         console.log("groups", groups);
         res.json(groups);
+    });
+});
+
+router.get('/:slug', auth.withUser, function (req, res) {
+    var user = req.$user;
+    var slug = req.params.slug;
+    GroupsModel.findOneBySlug(slug, function (err, group) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (group) {
+            res.json(group);
+        } else {
+            res.sendStatus(404)
+        }
     });
 });
 

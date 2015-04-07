@@ -5,6 +5,19 @@ module.exports.findOneById = function (id, callback) {
     callback(null);
 };
 
+module.exports.findOneBySlug = function (slug, callback) {
+    var sql = "SELECT * FROM groups WHERE groups.slug = ? ;";
+    var data = [slug];
+    db.query(sql, data, function (error, results, fields) {
+        if (error || (results.length === 0)) {
+            console.error(error);
+            callback(error, null, fields);
+        } else {
+            callback(error, results[0], fields);
+        }
+    });
+};
+
 module.exports.findAll = function (page, callback) {
     // TODO Suport of pagination
     var sql = "SELECT * FROM groups ORDER BY groups.created DESC LIMIT 10 OFFSET 0 ";
