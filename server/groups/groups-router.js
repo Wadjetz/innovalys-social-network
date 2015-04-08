@@ -71,4 +71,15 @@ router.post('/', groupsValidator, auth.withUser, function (req, res) {
     });
 });
 
+router.post('/join/:slug', auth.withUser, function (req, res) {
+    var user = req.$user;
+    var slug = req.params.slug;
+    GroupsModel.findOneBySlug(slug, function (err, group) {
+        // TODO handel errors
+        GroupsModel.addNewUser(user.id, group.id, function (addError, addRes) {
+            res.json(addRes);
+        });
+    });
+});
+
 module.exports = router;

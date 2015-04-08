@@ -40,8 +40,15 @@ module.exports.create = function (group, callback) {
 };
 
 module.exports.addNewUser = function (userId, groupeId, callback) {
-    // TODO
-    callback(null);
+    var users_groups = {
+        users_id: userId,
+        groupe_id: groupeId
+    }
+    var sql = "INSERT INTO users_groups SET ? ;";
+    var data = [users_groups];
+    db.query(sql, data, function (error, results, fields) {
+        callback(error, results, fields);
+    });
 };
 
 module.exports.removeUser = function (userId, groupeId, callback) {

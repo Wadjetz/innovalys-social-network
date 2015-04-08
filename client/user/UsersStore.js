@@ -9,16 +9,16 @@ var UsersStore = Reflux.createStore({
         this.listenTo(UsersActions.login, this.onLogin);
     },
     onCreateUser: function (user) {
-        UsersApi.create(user, function (result) {
+        UsersApi.create(user, (result) => {
             //console.log("UsersStore", "onCreateUser", "result", result, "user", user);
             this.trigger(result);
-        }.bind(this));
+        });
     },
     onLogin: function (user) {
-        UsersApi.login(user, function (result) {
+        UsersApi.login(user, (result) => {
             //console.log("UsersStore", "onLogin", "result", result, "user", user);
             this.trigger(result);
-        }.bind(this));
+        });
     }
 });
 

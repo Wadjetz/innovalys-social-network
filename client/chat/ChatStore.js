@@ -1,4 +1,5 @@
 var Reflux = require('reflux');
+var _ = require('lodash');
 
 var socket = io('http://localhost');
 
@@ -23,7 +24,8 @@ var ChatStore = Reflux.createStore({
     onLoadMessages: function () {
 		console.log("ChatStore", "onLoadMessages");
         ChatApi.getAllMessages(0, function (error, history) {
-            this.data.messages = this.data.messages.concat(history);
+            this.data.messages = _.uniq(this.data.messages.concat(history), 'id');
+            console.log("onLoadMessages", this.data.messages, history);
             this.trigger(this.data);
         }.bind(this));
     },

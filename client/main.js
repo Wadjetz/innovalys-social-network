@@ -35,6 +35,6 @@ var Routes = (
     </Route>
 );
 
-Router.run(Routes, function (Handler) {
+Router.run(Routes, (Handler) => {
     React.render(<Handler/>, document.getElementById('wrap'));
 });
