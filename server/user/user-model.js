@@ -15,7 +15,7 @@ module.exports.roles = {
 };
 
 module.exports.findOneById = function (id, callback) {
-    var sql = "SELECT * FROM users WHERE id = ?";
+    var sql = "SELECT * FROM users WHERE id = ? ;";
     var data = [id];
     db.query(sql, data, function (error, results, fields) {
         if (error) console.error(error);
