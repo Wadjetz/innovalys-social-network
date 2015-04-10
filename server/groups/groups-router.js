@@ -4,9 +4,10 @@ var validate = require("validate.js");
 
 var utils = require('../../commun/utils');
 
-var auth        = require('../config/auth');
-var GroupsModel = require('./groups-model');
-var UserModel   = require('../user/user-model');
+var auth         = require('../config/auth');
+var GroupsModel  = require('./groups-model');
+var MembersModel = require('./members-model');
+var UserModel    = require('../user/user-model');
 
 validate.moment = moment;
 
@@ -71,13 +72,25 @@ router.post('/', groupsValidator, auth.withUser, function (req, res) {
     });
 });
 
-router.post('/join/:slug', auth.withUser, function (req, res) {
+router.post('/members/join/:slug', auth.withUser, function (req, res) {
     var user = req.$user;
     var slug = req.params.slug;
     GroupsModel.findOneBySlug(slug, function (err, group) {
         // TODO handel errors
-        GroupsModel.addNewUser(user.id, group.id, function (addError, addRes) {
-            res.json(addRes);
+        MembersModel.create(user.id, group.id, function (createErr, createRes) {
+            res.json(createRes);
+        });
+    });
+});
+
+router.get('/members/:slug', auth.withUser, function (req, res) {
+    var user = req.$user;
+    var slug = req.params.slug;
+    GroupsModel.findOneBySlug(slug, function (err, group) {
+        // TODO handel errors
+        MembersModel.findByStatus(group.id, "pending", function (findErr, findRes) {
+            // TODO handel errors
+            res.json(findRes);
         });
     });
 });
