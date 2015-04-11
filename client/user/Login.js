@@ -1,7 +1,8 @@
 var React  = require('react/addons');
 var Reflux = require('reflux');
 var Router = require('react-router');
-var utils  = require('../../commun/utils');
+var validate = require("validate.js");
+var userValidator = require('../../commun/user-validator');
 
 var UsersActions = require('./UsersActions');
 var UsersStore   = require('./UsersStore');
@@ -22,6 +23,8 @@ var Login = React.createClass({
         Router.Navigation
     ],
     render: function() {
+        var validator = validate(this.state, userValidator.loginConstraints);
+        console.log(validator);
         return (
             <Grid>
                 <Row>
@@ -38,6 +41,7 @@ var Login = React.createClass({
                             label='Email'
                             ref='email'
                             valueLink={this.linkState('email')}
+                            bsStyle={ (validator && validator.email) ? "error": "success" }
                         />
                         <Input
                             type='password'
@@ -51,6 +55,9 @@ var Login = React.createClass({
                 </Row>
             </Grid>
         );
+    },
+    validateEmailState: function () {
+
     },
     submit: function () {
         // TODO validate data

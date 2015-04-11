@@ -36,15 +36,11 @@ module.exports.signupValidator = function (newUser, callback) {
     callback(validate(newUser, constraints));
 };
 
-module.exports.validateLogin = function (login, callback) {
-    // TODO Configure validator
-    var constraints = {
-        email: {
-            presence: true
-        },
-        password: {
-            presence: true,
-        }
-    };
-    callback(validate(login, constraints));
+module.exports.loginConstraints = {
+    email: {
+        presence: true
+    },
+    password: {
+        presence: true,
+    }
 };

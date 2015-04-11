@@ -12,3 +12,11 @@ module.exports.handleErrors = function (err, res, callback) {
 		callback(err, res.body);
 	}
 };
+
+module.exports.bootstrapValidator = function (isValide) {
+	if (isValide) {
+		return 'success';
+	} else {
+		return 'error';
+	}
+};

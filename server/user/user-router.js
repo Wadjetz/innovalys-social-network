@@ -1,5 +1,6 @@
 var router = require("express").Router();
 var bcrypt = require('bcrypt');
+var validate = require("validate.js");
 var generatePassword = require('password-generator');
 var moment = require('moment');
 var async = require('async');
@@ -83,15 +84,14 @@ function loginValidator(req, res, next) {
         password: req.body.password
     };
 
-    userValidator.validateLogin(login, function (validatorRes) {
-        if (validatorRes === undefined) {
-            //console.log("loginValidator", validatorRes, "login", login);
-            req._login = login;
-            next();
-        } else {
-            res.status(400).json({ error: "Login ou password invalide", errors: validatorRes });
-        }
-    });
+    var validatorRes = validate(login, userValidator.loginConstraints);
+    if (validatorRes === undefined) {
+        //console.log("loginValidator", validatorRes, "login", login);
+        req._login = login;
+        next();
+    } else {
+        res.status(400).json({ error: "Login ou password invalide", errors: validatorRes });
+    }
 }
 
 router.post('/login', loginValidator, function(req, res, next) {
