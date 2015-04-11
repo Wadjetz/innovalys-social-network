@@ -24,7 +24,11 @@ module.exports.create = function (message, callback) {
     var data = [message];
     db.query(sql, data, function (error, results, fields) {
         //console.log("messages.create", "error = ", error, "results = ", results);
-        if (error) console.error(error);
-        callback(error, results, fields);
+        if (error && results.affectedRows === 1) {
+            callback(error, results.insertId, fields);
+        } else {
+            console.error(error);
+            callback(error, null, fields);
+        }
     });
 };

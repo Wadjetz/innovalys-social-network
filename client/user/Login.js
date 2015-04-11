@@ -1,7 +1,8 @@
 var React  = require('react/addons');
 var Reflux = require('reflux');
 var Router = require('react-router');
-var utils  = require('../../commun/utils');
+var validate = require("validate.js");
+var userValidator = require('../../commun/user-validator');
 
 var UsersActions = require('./UsersActions');
 var UsersStore   = require('./UsersStore');
@@ -22,6 +23,8 @@ var Login = React.createClass({
         Router.Navigation
     ],
     render: function() {
+        var validator = validate(this.state, userValidator.loginConstraints);
+        console.log(validator);
         return (
             <Grid>
                 <Row>
@@ -38,6 +41,7 @@ var Login = React.createClass({
                             label='Email'
                             ref='email'
                             valueLink={this.linkState('email')}
+                            bsStyle={ (validator && validator.email) ? "error": "success" }
                         />
                         <Input
                             type='password'
@@ -52,6 +56,9 @@ var Login = React.createClass({
             </Grid>
         );
     },
+    validateEmailState: function () {
+
+    },
     submit: function () {
         // TODO validate data
         var user = {
@@ -59,14 +66,20 @@ var Login = React.createClass({
             password: this.state.password,
         };
         console.log("Login.submit", "user", user);
-        UsersActions.login(user);
+        var validator = validate(user, userValidator.loginConstraints);
+        if (validator) {
+            console.log(validator);
+        } else {
+            UsersActions.login(user);
+        }
     },
     getInitialState: function() {
         // TODO remove mock
         return {
             email: "egor@neon.fr",
             password: "BMi1z2Rn",
-            error: ""
+            error: "",
+            validator: validate(this, userValidator.loginConstraints)
         };
     },
     onLogin: function (result) {

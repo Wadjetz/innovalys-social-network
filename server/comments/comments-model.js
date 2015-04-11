@@ -26,8 +26,13 @@ module.exports.create = function (comment, callback) {
     var sql = "INSERT INTO comments SET ? ;";
     var data = [comment];
     db.query(sql, data, function (error, results, fields) {
-        if (error) console.error(error);
-        callback(error, results, fields);
+        //console.log('create', results, "error", error, "comment", comment);
+        if (error && results.affectedRows === 1) {
+            callback(error, results.insertId, fields);
+        } else {
+            console.error(error);
+            callback(error, null, fields);
+        }
     });
 };
 
