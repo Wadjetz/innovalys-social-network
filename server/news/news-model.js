@@ -34,8 +34,12 @@ module.exports.create = function (news, callback) {
     var sql = "INSERT INTO news SET ?";
     var data = [news];
     db.query(sql, data, function (error, results, fields) {
-        if (error) console.error(error);
-        callback(error, results, fields);
+        if (error && results.affectedRows === 1) {
+            callback(error, results.insertId, fields);
+        } else {
+            console.error(error);
+            callback(error, null, fields);
+        }
     });
 };
 
