@@ -21,6 +21,6 @@ app.get('/', function (req, res) {
 
 chat(io);
 
-http.listen(port, ip, function(){
-  console.log('listening on ' + ip + ":" + port);
+http.listen(port, function(){
+  console.log('listening on ' + port);
 });
