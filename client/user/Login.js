@@ -66,14 +66,20 @@ var Login = React.createClass({
             password: this.state.password,
         };
         console.log("Login.submit", "user", user);
-        UsersActions.login(user);
+        var validator = validate(user, userValidator.loginConstraints);
+        if (validator) {
+            console.log(validator);
+        } else {
+            UsersActions.login(user);
+        }
     },
     getInitialState: function() {
         // TODO remove mock
         return {
             email: "egor@neon.fr",
             password: "BMi1z2Rn",
-            error: ""
+            error: "",
+            validator: validate(this, userValidator.loginConstraints)
         };
     },
     onLogin: function (result) {
