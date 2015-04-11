@@ -91,6 +91,13 @@ var Signup = React.createClass({
                         </Row>
                         <Input
                             type='text'
+                            placeholder='Role'
+                            label='Role'
+                            ref='role'
+                            valueLink={this.linkState('role')}
+                        />
+                        <Input
+                            type='text'
                             placeholder='Adress'
                             label='Adress'
                             ref='adress'

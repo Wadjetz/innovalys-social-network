@@ -8,9 +8,6 @@ module.exports.signupValidator = function (newUser, callback) {
         email: {
             presence: true,
         },
-        role: {
-            presence: true,
-        },
         first_name: {
             presence: true,
         },
