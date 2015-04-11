@@ -1,4 +1,4 @@
 
 module.exports = {
-    baseUrl: "http://localhost:8888"
+    baseUrl: document.location.origin
 };
