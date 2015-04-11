@@ -1,7 +1,7 @@
 var Reflux = require('reflux');
 var _ = require('lodash');
 
-var socket = io(document.location.origin);
+var socket = io(document.location.host);
 
 var ChatActions = require('./ChatActions');
 var ChatApi = require('./ChatApi');
