@@ -23,8 +23,8 @@ module.exports.create = function (message, callback) {
     var sql = "INSERT INTO messages SET ?";
     var data = [message];
     db.query(sql, data, function (error, results, fields) {
-        //console.log("messages.create", "error = ", error, "results = ", results);
-        if (error && results.affectedRows === 1) {
+        console.log("messages.create", "error = ", error, "results = ", results);
+        if (!error && results && results.affectedRows === 1) {
             callback(error, results.insertId, fields);
         } else {
             console.error(error);

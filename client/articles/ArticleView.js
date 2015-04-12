@@ -7,7 +7,6 @@ var Link = Router.Link;
 var ArticleView = React.createClass({
     render: function() {
         var article = this.props.article;
-        console.log("ArticleView", "render", article);
         return (
             <div className="thumbnail">
                 <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>

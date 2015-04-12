@@ -42,24 +42,20 @@ router.post('/', commentsValidator, auth.withUser, function (req, res) {
     var comment = req._new_comment;
     comment.users_id = user.id;
     //console.log("comments route create", comment, "user", user);
-    commentsModel.create(comment, function (createErr, createRes) {
-        // TODO remove private information
-        if (createErr && (createRes.affectedRows === 0)) {
-            res.status(400).json({
-                error: true,
-                message: createErr
-            });
-        } else {
-            commentsModel.findOneById(createRes.insertId, function (findErr, findRes) {
-                if (findErr && (findRes.length === 0)) {
-                    res.status(400).json({
-                        error: true,
-                        message: createErr
-                    });
+    commentsModel.create(comment, function (createErr, insertedId) {
+        //console.log("comment create", "createErr", createErr, "insertedId", insertedId);
+        if (createErr) {
+            res.sendStatus(500).json(createErr);
+        } else if (insertedId) {
+            commentsModel.findOneById(insertedId, function (findErr, findRes) {
+                if (findErr) {
+                    res.sendStatus(500).json(findErr);
                 } else {
-                    res.json(findRes[0]);
+                    res.json(findRes);
                 }
             });
+        } else {
+            res.sendStatus(400).json(insertedId);
         }
     });
 });
@@ -70,10 +66,7 @@ router.get('/news/:news_id', auth.withUser, function (req, res) {
     //console.log("news_id", news_id, "page", page);
     commentsModel.findAllByNewsId(news_id, page, function (err, comments) {
         if (err) {
-            res.status(400).json({
-                error: true,
-                message: err
-            });
+            res.status(500).json(err);
         } else {
             res.json(comments);
         }

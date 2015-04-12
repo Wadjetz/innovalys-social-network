@@ -17,9 +17,9 @@ var Comments = React.createClass({
         Reflux.connect(CommentsStore)
     ],
     render: function() {
-        var comments = this.state.comments.map(function (comment) {
+        var comments = this.state.comments.map(function (comment, i) {
             return (
-                <CommentView comment={comment} key={comment.id} />
+                <CommentView comment={comment} key={i} />
             );
         });
         return (
