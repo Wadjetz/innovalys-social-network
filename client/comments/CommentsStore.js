@@ -32,6 +32,9 @@ var CommentsStore = Reflux.createStore({
                 this.trigger(this.data);
             }
         }.bind(this));
+    },
+    onRemoveComment: function (comment) {
+
     }
 });
 

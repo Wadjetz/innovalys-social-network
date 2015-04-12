@@ -14,16 +14,20 @@ var MenuItem = require('react-bootstrap/lib/MenuItem');
 
 var AppActions = require('./AppActions');
 var AppStore = require('./AppStore');
+var UsersActions = require('./user/UsersActions');
+var UsersStore = require('./user/UsersStore');
 
 var If = require('./If');
 
 var App = React.createClass({
     mixins: [
+        Reflux.connect(UsersStore),
         Reflux.listenTo(AppActions.forbidden, 'onForbidden'),
         Reflux.listenTo(AppActions.unauthorized, 'onUnauthorized'),
         Router.Navigation
     ],
     render: function() {
+        //console.log("App.render", "me", this.state.me);
         return (
             <div>
                 <Navbar brand='Innovalys' toggleNavKey={0} fluid>
@@ -40,7 +44,7 @@ var App = React.createClass({
                             </DropdownButton>
                         </Nav>
                         <Nav navbar right>
-                            <li><Link to="user">User</Link></li>
+                            <li><Link to="user">{ (this.state.me) ? this.state.me.first_name : "User" }</Link></li>
                         </Nav>
                     </CollapsableNav>
                 </Navbar>
@@ -48,18 +52,10 @@ var App = React.createClass({
             </div>
         );
     },
-    getInitialState: function() {
-        return {
-            connected: false,
-            role: 'Guest'
-        };
-    },
     onUnauthorized: function () {
-        //console.log("App", "unauthorized");
         this.context.router.transitionTo('login');
     },
     onForbidden: function () {
-        //console.log("App", "Forbidden");
         this.context.router.transitionTo('forbidden');
     }
 });

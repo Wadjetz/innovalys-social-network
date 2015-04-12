@@ -48,6 +48,10 @@ module.exports.update = function (comment, callback) {
 };
 
 module.exports.delete = function (id, callback) {
-    // TODO
-    callback(null);
+    var sql = "DELETE FROM comments WHERE comments.id = ? ;";
+    var data = [id];
+    db.query(sql, data, function (error, results, callback) {
+        console.log('Comments.delete', "results, results", "error", error, "id", id);
+        callback(error, results, fields);
+    });
 };

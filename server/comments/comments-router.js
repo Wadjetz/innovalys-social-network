@@ -73,4 +73,13 @@ router.get('/news/:news_id', auth.withUser, function (req, res) {
     });
 });
 
+router.delete('/:comment_id', auth.withUser, function (req, res) {
+    var user = req.$user;
+    var comment_id = req.params.comment_id;
+    commentsModel.findOneById(comment_id, function (findErr, findRes) {
+        console.log("Comments.delete.findById", comment_id, "findErr", findErr, "findRes", findRes);
+        res.json(findRes);
+    });
+});
+
 module.exports = router;

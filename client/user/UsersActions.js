@@ -9,6 +9,7 @@ var UsersActions = Reflux.createActions({
             "failed"
         ]
     },
+    "loadMe": {},
     "updateUser": {},
     "deleteUser": {}
 });
