@@ -45,16 +45,17 @@ function newsValidator (req, res, next) {
 router.post('/', newsValidator, auth.withRole([UserModel.roles.RH]), function(req, res) {
     var user = req.$user;
     var news = req._new_news;
-    console.log("news route create", "news", news, "user", user);
+    //console.log("news route create", "news", news, "user", user);
     news.users_id = user.id;
     newsModel.create(news, function (err, results, fields) {
-        if (err) res({error: err});
-        if (results.affectedRows === 1) {
-            res.status(201).json(news);
+        //console.log("news route create", "err", err, "results", results);
+        if (err) {
+            res.status(500).json(err);
+        } else if (results) {
+            // TODO get news from database
+            res.status(201).json(results);
         } else {
-            res.status(500).json({
-                error: "Not Created"
-            });
+            res.status(400)
         }
     });
 });
@@ -62,9 +63,11 @@ router.post('/', newsValidator, auth.withRole([UserModel.roles.RH]), function(re
 router.get('/', auth.withUser, function (req, res) {
     var page = req.query.page || 0;
     newsModel.findAllNews(page, function (err, news, fields) {
-        if (err) res({error: err});
-        else if (news === undefined) res.json([]);
-        else res.json(news);
+        if (err) {
+            res.sendStatus(500).json(err);
+        } else {
+            res.json(news)
+        }
     });
 });
 

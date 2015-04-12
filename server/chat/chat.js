@@ -3,7 +3,7 @@ var messagesModel = require('./messages-model');
 module.exports = function (io) {
 
     io.use(function (socket, next) {
-        console.log("USE");
+        console.log("io middleware");
         next();
     });
 
@@ -15,17 +15,19 @@ module.exports = function (io) {
                 content: msg,
                 users_id: 13
             };
-            messagesModel.create(newMessage, function (createError, results) {
+            messagesModel.create(newMessage, function (createError, insertId) {
+                //console.log("global_chat.create", "createError", createError, "insertId", insertId);
                 // TODO handle errors
-                messagesModel.getById(results.insertId, function (findError, createdMessage) {
+                messagesModel.getById(insertId, function (findError, createdMessage) {
+                    //console.log("global_chat.getById", "findError", findError, "createdMessage", createdMessage);
                     // TODO handle errors
                     io.emit('global_chat', createdMessage);
                 });
             });
         });
         //socket.broadcast.emit('hi');
-        socket.on('disconnect', function () {
-            console.log('user disconnected');
+        socket.on('disconnect', function (arg) {
+            console.log('user disconnected', arg);
         });
     });
 };

@@ -6,6 +6,7 @@ var moment = require('moment');
 var utils  = require('../../commun/utils');
 
 var ArticlesActions = require('./ArticlesActions');
+var UsersActions = require('../user/UsersActions');
 
 var Grid   = require('react-bootstrap/lib/Grid');
 var Row    = require('react-bootstrap/lib/Row');
@@ -90,6 +91,9 @@ var CreateArticle = React.createClass({
                 success: "Article Created successful"
             })
         }
+    },
+    componentWillMount: function () {
+        UsersActions.loadMe();
     },
     getInitialState: function() {
         return {

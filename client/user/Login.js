@@ -24,7 +24,6 @@ var Login = React.createClass({
     ],
     render: function() {
         var validator = validate(this.state, userValidator.loginConstraints);
-        console.log(validator);
         return (
             <Grid>
                 <Row>
@@ -65,7 +64,7 @@ var Login = React.createClass({
             email: this.state.email,
             password: this.state.password,
         };
-        console.log("Login.submit", "user", user);
+        //console.log("Login.submit", "user", user);
         var validator = validate(user, userValidator.loginConstraints);
         if (validator) {
             console.log(validator);
@@ -83,7 +82,7 @@ var Login = React.createClass({
         };
     },
     onLogin: function (result) {
-        console.log("Login.onLogin", result);
+        //console.log("Login.onLogin", result);
         if (result.error) {
             this.setState({
                 error: result.error

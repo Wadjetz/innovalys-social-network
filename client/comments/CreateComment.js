@@ -24,6 +24,9 @@ var CreateComment = React.createClass({
         };
         console.log("CreateComment.submit", "newComment", newComment);
         CommentsActions.createComment(newComment);
+        this.setState({
+            content: ""
+        });
     },
     getInitialState: function() {
         return {

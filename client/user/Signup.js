@@ -122,7 +122,7 @@ var Signup = React.createClass({
             description: this.state.description,
             arrival_date: this.state.arrival_date,
         };
-        console.log("Sigup", "submit", newUser);
+        //console.log("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
     },
     getInitialState: function() {
@@ -143,7 +143,7 @@ var Signup = React.createClass({
         };
     },
     onCreateUser: function (result) {
-        console.log("Signup", "onCreateUser", "result=", result);
+        //console.log("Signup", "onCreateUser", "result=", result);
         this.setState({
             result: {
                 error: result.error,

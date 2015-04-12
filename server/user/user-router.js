@@ -118,12 +118,21 @@ router.post('/login', loginValidator, function(req, res, next) {
     });
 });
 
-router.get('/', auth.withRole([UserModel.roles.RH]), function (req, res) {
+router.get('/me', auth.withRole([UserModel.roles.RH]), function (req, res) {
+    var user = req.$user;
     res.json({
-        error: false,
-        message: "",
-        username: req.session.username,
-        user: req.$user
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        birthday_date: user.birthday_date, // TODO Calculate age
+        status_profile: user.status_profile,
+        status_connection: user.status_connection,
+        function: user.function,
+        description: user.description,
+        arrival_date: user.arrival_date,
+        last_connection: user.last_connection
     });
 });
 

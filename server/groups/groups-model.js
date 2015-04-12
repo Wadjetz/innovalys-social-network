@@ -34,7 +34,7 @@ module.exports.create = function (group, callback) {
     var data = [group];
     db.query(sql, data, function (error, results, fields) {
         //console.log("create", "error = ", error, "results = ", results);
-        if (error && results.affectedRows === 1) {
+        if (error && results && results.affectedRows === 1) {
             callback(error, results.insertId, fields);
         } else {
             console.error(error);
