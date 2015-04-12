@@ -75,8 +75,8 @@ var Login = React.createClass({
     getInitialState: function() {
         // TODO remove mock
         return {
-            email: "egor@neon.fr",
-            password: "BMi1z2Rn",
+            email: "egor2@neon.fr",
+            password: "uYK4UQZ_",
             error: "",
             validator: validate(this, userValidator.loginConstraints)
         };

@@ -1,5 +1,6 @@
 var router = require("express").Router();
-var bcrypt = require('bcrypt');
+//var bcrypt = require('bcrypt');
+var passwordHash = require('password-hash');
 var validate = require("validate.js");
 var generatePassword = require('password-generator');
 var moment = require('moment');
@@ -46,6 +47,8 @@ router.post('/signup', signupValidator, function (req, res) {
             });
         },
         hash: function (callback) {
+            callback(null, passwordHash.generate(newUser.password));
+            /*
             bcrypt.genSalt(10, function (genSaltErr, salt) {
                 if (genSaltErr) console.error(genSaltErr);
                 bcrypt.hash(newUser.password, salt, function (hashError, hash) {
@@ -53,6 +56,7 @@ router.post('/signup', signupValidator, function (req, res) {
                     callback(hashError, hash);
                 });
             });
+            */
         }
     }, function(asyncErr, asyncRes) {
         //console.log(asyncRes);
@@ -61,9 +65,10 @@ router.post('/signup', signupValidator, function (req, res) {
             res.status(400).json({ error: "User already existe" });
         } else {
             newUser.password = asyncRes.hash;
+            console.log("newUser", newUser);
             UserModel.create(newUser, function (createErr, createRes) {
                 if (createErr) console.error(createErr);
-                if (createRes.affectedRows > 0) {
+                if (createRes) {
                     res.status(201).json({
                         access: {
                             email: newUser.email,
@@ -102,7 +107,8 @@ router.post('/login', loginValidator, function(req, res, next) {
     UserModel.findOneByEmail(user.email.toLowerCase(), function (findError, findUser) {
         if (findError) console.error(findError);
         if (findUser) {
-            bcrypt.compare(user.password, findUser.password, function(compareErr, compareRes) {
+            //bcrypt.compare(user.password, findUser.password, function(compareErr, compareRes) {
+                compareRes = passwordHash.verify(user.password, findUser.password);
                 if (compareRes === true) {
                     req.session.email = findUser.email;
                     res.json({
@@ -111,7 +117,7 @@ router.post('/login', loginValidator, function(req, res, next) {
                 } else {
                     res.status(400).json(jsonError);
                 }
-            });
+            //});
         } else {
             res.status(400).json(jsonError);
         }
