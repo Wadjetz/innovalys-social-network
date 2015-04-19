@@ -16,11 +16,17 @@ var Alert = require('react-bootstrap/lib/Alert');
 
 var Signup = React.createClass({
     mixins: [
-        Reflux.ListenerMixin,
+        Reflux.connect(UsersStore),
         React.addons.LinkedStateMixin
     ],
     render: function() {
         // TODO add validators
+        console.log("render", this.state);
+        var rolesView = this.state.roles.map(function (role, i) {
+            return (
+                <option value={role} key={i}>{role}</option>
+            );
+        });
         return (
             <Grid>
                 <Row>
@@ -89,21 +95,16 @@ var Signup = React.createClass({
                                 />
                             </Col>
                         </Row>
-                        <Input
-                            type='text'
-                            placeholder='Role'
-                            label='Role'
-                            ref='role'
-                            valueLink={this.linkState('role')}
-                        />
+                        <Input type='select' label='Select' placeholder='select' ref='role' valueLink={this.linkState('role')}>
+                            {rolesView}
+                        </Input>
                         <Input
                             type='text'
                             placeholder='Adress'
                             label='Adress'
                             ref='adress'
                             valueLink={this.linkState('adress')}
-                        />
-
+		    	/>
                         <Input
                             type='textarea'
                             placeholder='Description'
@@ -128,29 +129,13 @@ var Signup = React.createClass({
             function: this.state.function,
             description: this.state.description,
             arrival_date: this.state.arrival_date,
+            role: this.state.role
         };
-        //console.log("Sigup", "submit", newUser);
+        console.log("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
     },
-    getInitialState: function() {
-        return {
-            email: "",
-            first_name: "",
-            last_name: "",
-            birthday_date: moment().format(utils.mysqlDateFormat),
-            adress: "",
-            role: "",
-            function: "",
-            description: "",
-            arrival_date: moment().format(utils.mysqlDateFormat),
-            result: {
-                error: false,
-                message: ""
-            }
-        };
-    },
     onCreateUser: function (result) {
-        //console.log("Signup", "onCreateUser", "result=", result);
+        console.log("Signup", "onCreateUser", "result=", result);
         this.setState({
             result: {
                 error: result.error,
@@ -159,10 +144,7 @@ var Signup = React.createClass({
         });
     },
     componentDidMount: function() {
-        this.unCreateUser = UsersStore.listen(this.onCreateUser);
-    },
-    componentWillUnmount: function() {
-        this.unCreateUser();
+        UsersActions.loadRoles()
     },
 });
 

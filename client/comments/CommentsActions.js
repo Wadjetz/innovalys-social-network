@@ -2,15 +2,15 @@ var Reflux = require('reflux');
 
 var CommentsActions = Reflux.createActions({
     'loadComments': {
-		children: [
-			"completed",
-			"failed"
-		]
-	},
+        children: [
+            "completed",
+            "failed"
+        ]
+    },
     'createComment': {
         children: [
             "completed",
-			"failed"
+            "failed"
         ]
     },
     'updateComment': {},
