@@ -8,13 +8,15 @@ S'il y a des conflits, faites un merge de master vers votre branche avec 'git me
 ## Installer
 * [Node.js](https://nodejs.org/)
 * [MySQL](https://www.mysql.fr/)
-
+* [Python Windows] (https://www.python.org/downloads/windows/)
 # Activer
 
 ## Executer les commandes
 
 ```sh
-npm install -g nodemon
+npm install -g nodemon browserify watchify reactify 
+#windows/
+nom install esprima-fb base62 source-map envify
 npm install
 ```
 
