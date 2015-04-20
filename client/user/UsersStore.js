@@ -8,16 +8,16 @@ var UsersStore = Reflux.createStore({
     data: {
         me: null,
         roles: [],
-        email: "",
-        first_name: "",
-        last_name: "",
+        email: "email@domain.com",
+        first_name: "john",
+        last_name: "Doe",
         birthday_date: moment().format(utils.mysqlDateFormat),
-        adress: "",
-        function: "",
-        description: "",
+        adress: "rue bidon",
+        function: "esclave",
+        description: "fait rien du tout",
         arrival_date: moment().format(utils.mysqlDateFormat),
-        role: "user",
-        result: {
+        role: "user"
+        createdResult: {
             error: false,
             message: ""
         },

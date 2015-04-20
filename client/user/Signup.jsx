@@ -104,7 +104,7 @@ var Signup = React.createClass({
                             label='Adress'
                             ref='adress'
                             valueLink={this.linkState('adress')}
-		    	/>
+                        />
                         <Input
                             type='textarea'
                             placeholder='Description'
@@ -133,15 +133,6 @@ var Signup = React.createClass({
         };
         console.log("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
-    },
-    onCreateUser: function (result) {
-        console.log("Signup", "onCreateUser", "result=", result);
-        this.setState({
-            result: {
-                error: result.error,
-                message: "Errors"
-            }
-        });
     },
     componentDidMount: function() {
         UsersActions.loadRoles()
