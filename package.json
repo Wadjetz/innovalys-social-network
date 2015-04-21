@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "build": "browserify -t [ reactify --es6 --target es5] client/main.js -o public/main.js",
-    "watch": "watchify -t [ reactify --es6 --target es5] client/main.js -o public/main.js"
+    "build": "browserify --extension=.jsx -t [ reactify --es6 --target es5 --extension=.jsx ] client/main.js -o public/main.js",
+    "watch": "watchify --extension=.jsx -t [ reactify --es6 --target es5 --extension=.jsx ] client/main.js -o public/main.js"
   },
   "repository": {
     "type": "git",

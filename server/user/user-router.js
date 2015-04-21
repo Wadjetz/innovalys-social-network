@@ -124,6 +124,24 @@ router.post('/login', loginValidator, function(req, res, next) {
     });
 });
 
+router.get('/roles', function (req, res) {
+    var roles = UserModel.roles;
+    var result = [];
+    for (key in roles) {
+        result.push(roles[key]);
+    }
+    res.json(result);
+});
+
+router.get('/status-connection', function (req, res) {
+    var statusConnection = UserModel.status_connection;
+    var result = [];
+    for (key in statusConnection) {
+        result.push(statusConnection[key]);
+    }
+    res.json(result);
+});
+
 router.get('/me', auth.withRole([UserModel.roles.RH]), function (req, res) {
     var user = req.$user;
     res.json({
