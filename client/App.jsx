@@ -27,7 +27,7 @@ var App = React.createClass({
         Router.Navigation
     ],
     render: function() {
-        //console.log("App.render", "me", this.state.me);
+        console.debug("App.render", "me", this.state.me);
         return (
             <div>
                 <Navbar brand='Innovalys' toggleNavKey={0} fluid>
@@ -38,10 +38,12 @@ var App = React.createClass({
                                 <li><Link to="groups">Groups</Link></li>
                                 <li><Link to="createGroup">Create Group</Link></li>
                             </DropdownButton>
-                            <DropdownButton eventKey={4} title='RH'>
-                                <li><Link to="createArticle">Create Article</Link></li>
-                                <li><Link to="signup">Create User</Link></li>
-                            </DropdownButton>
+                            <If condition={this.state.me.role === "admin" || this.state.me.role === "rh"}>
+                                <DropdownButton eventKey={4} title='RH' navItem={true}>
+                                    <li><Link to="createArticle">Create Article</Link></li>
+                                    <li><Link to="signup">Create User</Link></li>
+                                </DropdownButton>
+                            </If>
                         </Nav>
                         <Nav navbar right>
                             <li><Link to="user">{ (this.state.me) ? this.state.me.first_name : "User" }</Link></li>
@@ -51,6 +53,9 @@ var App = React.createClass({
                 <RouteHandler />
             </div>
         );
+    },     
+    componentWillMount: function () {
+        UsersActions.loadMe();
     },
     onUnauthorized: function () {
         this.context.router.transitionTo('login');

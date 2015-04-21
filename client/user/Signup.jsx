@@ -182,9 +182,10 @@ var Signup = React.createClass({
             }
         });
     },
-    componentDidMount: function() {
+    componentWillMount: function () {
+        UsersActions.loadMe();
         UsersActions.loadRoles()
-    },
+    } 
 });
 
 module.exports = Signup;
