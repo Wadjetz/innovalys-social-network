@@ -8,23 +8,6 @@ var UsersStore = Reflux.createStore({
     data: {
         me: null,
         roles: [],
-        email: "email@domain.com",
-        first_name: "john",
-        last_name: "Doe",
-        birthday_date: moment().format(utils.mysqlDateFormat),
-        adress: "rue bidon",
-        function: "esclave",
-        description: "fait rien du tout",
-        arrival_date: moment().format(utils.mysqlDateFormat),
-        role: "user"
-        createdResult: {
-            error: false,
-            message: ""
-        },
-        access: {
-            email: "",
-            password: ""
-        }
     },
     init: function () {
         //console.log("UsersStore", "init");
@@ -37,10 +20,19 @@ var UsersStore = Reflux.createStore({
         return this.data;
     },
     onCreateUser: function (user) {
-        UsersApi.create(user, (result) => {
-            //console.log("UsersStore", "onCreateUser", "result", result, "user", user);
-            this.data.result = result;
-            this.trigger(this.data);
+        UsersApi.create(user, (err, result) => {
+            console.debug("UsersStore", "onCreateUser", "err", err, "result", result, "user", user);
+            if (err) {
+                UsersActions.createUser.failed(err.response.body); 
+            } else {
+                UsersActions.createUser.completed({
+                    error: true,
+                    access: {
+                        email: result.access.email,
+                        password: result.access.password
+                    }
+                });
+            }
         });
     },
     onLogin: function (user) {

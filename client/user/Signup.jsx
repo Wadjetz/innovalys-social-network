@@ -16,12 +16,15 @@ var Alert = require('react-bootstrap/lib/Alert');
 
 var Signup = React.createClass({
     mixins: [
+        React.addons.LinkedStateMixin,
+        Reflux.ListenerMixin,
         Reflux.connect(UsersStore),
-        React.addons.LinkedStateMixin
+        Reflux.listenTo(UsersActions.createUser.completed, 'onCreateUserCompleted'),
+        Reflux.listenTo(UsersActions.createUser.failed, 'onCreateUserFailed')
     ],
     render: function() {
         // TODO add validators
-        console.log("render", this.state);
+        console.info("render", this.state);
         var rolesView = this.state.roles.map(function (role, i) {
             return (
                 <option value={role} key={i}>{role}</option>
@@ -35,6 +38,11 @@ var Signup = React.createClass({
                         <If condition={this.state.result.error}>
                             <Alert bsStyle='danger'>
                                 {this.state.result.message}
+                            </Alert>
+                        </If>
+                        <If condition={this.state.creatingResult.error}>
+                            <Alert bsStyle='success'>
+                                {this.state.creatingResult.access.email} : {this.state.creatingResult.access.password}
                             </Alert>
                         </If>
                         <Row>
@@ -118,6 +126,31 @@ var Signup = React.createClass({
             </Grid>
         );
     },
+    getInitialState: function() {
+        // TODO remove data mock
+        return {
+            email: Math.random() + "@domain.com",
+            first_name: "First Name",
+            last_name: "Last Name",
+            birthday_date: moment().format(utils.mysqlDateFormat),
+            adress: "rue bidon",
+            role: "user",
+            function: "peon",
+            description: "descr",
+            arrival_date: moment().format(utils.mysqlDateFormat),
+            result: {
+                error: false,
+                message: ""
+            },
+            creatingResult: {
+                error: false,
+                access: {
+                    email: "",
+                    password: ""
+                }
+            }
+        };
+    },
     submit: function () {
         // TODO validate data
         var newUser = {
@@ -131,8 +164,23 @@ var Signup = React.createClass({
             arrival_date: this.state.arrival_date,
             role: this.state.role
         };
-        console.log("Sigup", "submit", newUser);
+        console.info("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
+    },
+    onCreateUserCompleted: function (result) {
+        console.debug("Signup.onCreateUserCompleted", "result", result);
+        this.setState({
+            creatingResult: result
+        });
+    },
+    onCreateUserFailed: function (error) {
+        console.debug("Signup.onCreateUserFailed", "error", error);
+        this.setState({
+            result: {
+                error: true,
+                message: "Errors"
+            }
+        });
     },
     componentDidMount: function() {
         UsersActions.loadRoles()
