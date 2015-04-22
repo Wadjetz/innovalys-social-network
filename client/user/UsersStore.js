@@ -6,7 +6,10 @@ var utils = require('../../commun/utils');
 
 var UsersStore = Reflux.createStore({
     data: {
-        me: null,
+        me: {
+            first_name: "User",
+            role: "user"
+        },
         roles: [],
     },
     init: function () {
@@ -37,7 +40,8 @@ var UsersStore = Reflux.createStore({
     },
     onLogin: function (user) {
         UsersApi.login(user, (result) => {
-            //console.log("UsersStore", "onLogin", "result", result, "user", user);
+            console.debug("UsersStore", "onLogin", "result", result, "user", user);
+            UsersActions.loadMe();
             this.trigger(result);
         });
     },
