@@ -26,3 +26,11 @@ module.exports.create = function (group, callback) {
         utils.handleErrors(err, res, callback);
     });
 };
+
+module.exports.join = function (group, callback) {
+    request.post("/groups/members/join/" + group.slug).send().end(function (err, res) {
+        console.debug("GroupsApi.join", "err", err, "res", "group", group);
+        utils.handleErrors(err, res, callback);
+    });
+};
+

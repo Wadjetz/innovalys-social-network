@@ -13,6 +13,12 @@ var GroupsActions = Reflux.createActions({
             "completed"
         ]
     },
+    'joinGroup': {
+        children: [
+            "completed",
+            "failed"
+        ]
+    },
     'updateGroup': {},
     'deleteGroup': {}
 });
