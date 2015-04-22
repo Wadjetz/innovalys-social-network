@@ -8,7 +8,15 @@ var UsersStore = Reflux.createStore({
     data: {
         me: {
             first_name: "User",
-            role: "user"
+            role: "user",
+            arrival_date: moment(),
+            birthday_date: moment(),
+            description: "",
+            email: "",
+            function: "",
+            last_connection: moment(),
+            status_connection: "",
+            status_profile: ""
         },
         roles: [],
     },
