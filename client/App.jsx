@@ -34,10 +34,12 @@ var App = React.createClass({
                     <CollapsableNav eventKey={0}> {/* This is the eventKey referenced */}
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
-                            <DropdownButton eventKey={3} title='Groups'>
-                                <li><Link to="groups">Groups</Link></li>
-                                <li><Link to="createGroup">Create Group</Link></li>
-                            </DropdownButton>
+                            <li><Link to="groups">Groups</Link></li>
+                            <If condition={this.state.me.role === "admin" || this.state.me.role === "chef"}>
+                                <DropdownButton eventKey={3} title='Chef de groupe' navItem={true}>
+                                    <li><Link to="createGroup">Create Group</Link></li>
+                                </DropdownButton>
+                            </If>
                             <If condition={this.state.me.role === "admin" || this.state.me.role === "rh"}>
                                 <DropdownButton eventKey={4} title='RH' navItem={true}>
                                     <li><Link to="createArticle">Create Article</Link></li>

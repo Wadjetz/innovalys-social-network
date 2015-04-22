@@ -21,7 +21,13 @@ var SingleGroup = React.createClass({
         router: React.PropTypes.func
     },
     render: function() {
-        console.log("SingleGroup.render", this.state.singleGroup);
+        console.debug("SingleGroup.render", this.state);
+        var group = this.state.singleGroup.group;
+        var membersView = this.state.singleGroup.members.map(function (memeber, i) {
+            return (
+                <div key={i}>{memeber.first_name}</div>
+            );
+        });
         return (
             <Grid>
                 <If condition={this.state.loading}>
@@ -32,10 +38,11 @@ var SingleGroup = React.createClass({
                     </Row>
                 </If>
                 <Row>
-                    <Col xs={12}>
-                        <If condition={this.state.singleGroup !== null}>
-                            <GroupView group={this.state.singleGroup} />
-                        </If>
+                    <Col xs={8}>
+                        <GroupView group={group} />
+                    </Col>
+                    <Col xs={4}>
+                        {membersView}
                     </Col>
                 </Row>
             </Grid>
