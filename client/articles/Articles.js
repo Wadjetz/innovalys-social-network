@@ -19,11 +19,7 @@ var Articles = React.createClass({
         Reflux.connect(ArticlesStore)
     ],
     render: function() {
-        var articles = this.state.articles.map(function (article, i) {
-            return (
-                <ArticleView article={article} key={i} />
-            );
-        });
+        var articles = this.state.articles.map((article, i) => <ArticleView article={article} key={i} /> );
         return (
             <Grid>
                 <If condition={this.state.loading}>
