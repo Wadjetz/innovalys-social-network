@@ -1,4 +1,4 @@
-var React         = require('react');
+const React         = require('react');
 var Reflux        = require('reflux');
 var Router        = require('react-router');
 var RouteHandler  = Router.RouteHandler;
@@ -7,17 +7,17 @@ var Route         = Router.Route;
 var DefaultRoute  = Router.DefaultRoute;
 var Link          = Router.Link;
 
-var Articles = require('./articles/Articles');
-var SingleArticle = require('./articles/SingleArticle');
-var CreateArticle = require('./articles/CreateArticle');
-var Groups = require('./groups/Groups');
-var SingleGroup = require('./groups/SingleGroup');
-var CreateGroup = require('./groups/CreateGroup');
-var User = require('./user/User');
-var Login = require('./user/Login');
-var Signup = require('./user/Signup');
-var App = require('./App');
-var Forbidden = require('./Forbidden');
+var Articles = require('./articles/Articles.jsx');
+var SingleArticle = require('./articles/SingleArticle.jsx');
+var CreateArticle = require('./articles/CreateArticle.jsx');
+var Groups = require('./groups/Groups.jsx');
+var SingleGroup = require('./groups/SingleGroup.jsx');
+var CreateGroup = require('./groups/CreateGroup.jsx');
+var User = require('./user/User.jsx');
+var Login = require('./user/Login.jsx');
+var Signup = require('./user/Signup.jsx');
+var App = require('./App.jsx');
+var Forbidden = require('./Forbidden.jsx');
 
 var Routes = (
     <Route handler={App} path="/">

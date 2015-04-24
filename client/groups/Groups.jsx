@@ -8,12 +8,12 @@ var Col  = require('react-bootstrap/lib/Col');
 
 var GroupsStore   = require('./GroupsStore');
 var GroupsActions = require('./GroupsActions');
-var GroupView     = require('./GroupView');
+var GroupView     = require('./GroupView.jsx');
 
 var Loader = require('halogen').GridLoader;
-var If     = require('../If');
+var If     = require('../If.jsx');
 
-var Chat = require('../chat/Chat');
+var Chat = require('../chat/Chat.jsx');
 
 var Groups = React.createClass({
     mixins: [

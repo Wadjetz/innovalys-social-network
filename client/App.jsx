@@ -17,7 +17,7 @@ var AppStore = require('./AppStore');
 var UsersActions = require('./user/UsersActions');
 var UsersStore = require('./user/UsersStore');
 
-var If = require('./If');
+var If = require('./If.jsx');
 
 var App = React.createClass({
     mixins: [

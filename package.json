@@ -5,8 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "build": "browserify --extension=.jsx -t [ reactify --es6 --target es5 --extension=.jsx ] client/main.js -o public/main.js",
-    "watch": "watchify --extension=.jsx -t [ reactify --es6 --target es5 --extension=.jsx ] client/main.js -o public/main.js"
+    "js-build": "browserify client/main.js -t babelify --outfile public/main.js",
+    "js-watch": "watchify client/main.js -t babelify --outfile public/main.js",
+    "watch": "npm run js-watch",
+    "build": "npm run js-build" 
   },
   "repository": {
     "type": "git",
@@ -41,9 +43,9 @@
     "validator": "^3.37.0"
   },
   "devDependencies": {
+    "babelify": "^6.0.2",
     "browserify": "9.0.8",
     "mocha": "2.2.4",
-    "reactify": "1.1.0",
     "should": "5.2.0",
     "watchify": "3.1.0"
   }

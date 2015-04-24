@@ -2,7 +2,7 @@ var React = require('react/addons');
 var Reflux = require('reflux');
 var moment = require('moment');
 var utils = require('../../commun/utils');
-var If = require('../If');
+var If = require('../If.jsx');
 
 var UsersActions = require('./UsersActions');
 var UsersStore = require('./UsersStore');

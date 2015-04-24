@@ -3,16 +3,16 @@ var Reflux = require('reflux');
 
 var ArticlesStore   = require('./ArticlesStore');
 var ArticlesActions = require('./ArticlesActions');
-var ArticleView     = require('./ArticleView');
+var ArticleView     = require('./ArticleView.jsx');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
 
 var Loader = require('halogen').GridLoader;
-var If     = require('../If');
+var If     = require('../If.jsx');
 
-var Chat = require('../chat/Chat');
+var Chat = require('../chat/Chat.jsx');
 
 var Articles = React.createClass({
     mixins: [

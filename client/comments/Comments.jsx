@@ -3,14 +3,14 @@ var Reflux = require('reflux');
 
 var CommentsStore   = require('./CommentsStore');
 var CommentsActions = require('./CommentsActions');
-var CommentView     = require('./CommentView');
+var CommentView     = require('./CommentView.jsx');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
 
 var Loader = require('halogen').GridLoader;
-var If     = require('../If');
+var If     = require('../If.jsx');
 
 var Comments = React.createClass({
     mixins: [
