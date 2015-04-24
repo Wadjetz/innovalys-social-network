@@ -1,30 +1,25 @@
-/*** @jsx React.DOM */
 var React  = require('react');
 var Reflux = require('reflux');
+
+var ArticlesStore   = require('./ArticlesStore');
+var ArticlesActions = require('./ArticlesActions');
+var ArticleView     = require('./ArticleView');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
 
-var GroupsStore   = require('./GroupsStore');
-var GroupsActions = require('./GroupsActions');
-var GroupView     = require('./GroupView.jsx');
-
 var Loader = require('halogen').GridLoader;
-var If     = require('../If.jsx');
+var If     = require('../If');
 
-var Chat = require('../chat/Chat.jsx');
+var Chat = require('../chat/Chat');
 
-var Groups = React.createClass({
+var Articles = React.createClass({
     mixins: [
-        Reflux.connect(GroupsStore)
+        Reflux.connect(ArticlesStore)
     ],
     render: function() {
-        var groups = this.state.groups.map(function (group, i) {
-            return (
-                <GroupView group={group} key={i} />
-            );
-        });
+        var articles = this.state.articles.map((article, i) => <ArticleView article={article} key={i} /> );
         return (
             <Grid>
                 <If condition={this.state.loading}>
@@ -36,7 +31,7 @@ var Groups = React.createClass({
                 </If>
                 <Row>
                     <Col xs={8}>
-                        {groups}
+                        {articles}
                     </Col>
                     <Col xs={4}>
                         <Chat />
@@ -46,8 +41,8 @@ var Groups = React.createClass({
         );
     },
     componentWillMount: function() {
-        GroupsActions.loadGroups();
+        ArticlesActions.loadArticles();
     }
 });
 
-module.exports = Groups;
+module.exports = Articles;

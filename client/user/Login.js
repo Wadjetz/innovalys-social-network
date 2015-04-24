@@ -14,7 +14,7 @@ var Input  = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 var Alert  = require('react-bootstrap/lib/Alert');
 
-var If = require('../If.jsx');
+var If = require('../If');
 
 var Login = React.createClass({
     mixins: [

@@ -8,10 +8,10 @@ var Link = Router.Link;
 
 var GroupsStore   = require('./GroupsStore');
 var GroupsActions = require('./GroupsActions');
-var GroupView     = require('./GroupView.jsx');
+var GroupView     = require('./GroupView');
 
 var Loader = require('halogen').GridLoader;
-var If     = require('../If.jsx');
+var If     = require('../If');
 
 var Label = require('react-bootstrap/lib/Label');
 var Button = require('react-bootstrap/lib/Button');

@@ -9,7 +9,7 @@ var Col  = require('react-bootstrap/lib/Col');
 var Input = require('react-bootstrap/lib/Input');
 var Button = require('react-bootstrap/lib/Button');
 
-var MessageSender = require('./MessageSender.jsx');
+var MessageSender = require('./MessageSender');
 
 var style = {
     height: '200px',

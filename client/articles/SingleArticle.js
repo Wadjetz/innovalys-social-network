@@ -2,18 +2,18 @@ var React  = require('react');
 var Reflux = require('reflux');
 
 var ArticlesActions = require('./ArticlesActions');
-var ArticleView     = require('./ArticleView.jsx');
+var ArticleView     = require('./ArticleView');
 var ArticlesStore   = require('./ArticlesStore');
 
-var Comments      = require('../comments/Comments.jsx');
-var CreateComment = require('../comments/CreateComment.jsx');
+var Comments      = require('../comments/Comments');
+var CreateComment = require('../comments/CreateComment');
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
 
 var Loader = require('halogen').RingLoader;
-var If     = require('../If.jsx');
+var If     = require('../If');
 
 var SingleArticle = React.createClass({
     mixins: [

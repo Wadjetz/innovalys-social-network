@@ -9,9 +9,9 @@ var Row  = require('react-bootstrap/lib/Row');
 var Col  = require('react-bootstrap/lib/Col');
 
 var Loader = require('halogen').RingLoader;
-var If     = require('../If.jsx');
+var If     = require('../If');
 
-var GroupView = require('./GroupView.jsx');
+var GroupView = require('./GroupView');
 
 var SingleGroup = React.createClass({
     mixins: [
