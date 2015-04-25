@@ -1,72 +1,106 @@
-var Reflux = require('reflux');
-var UsersActions = require('./UsersActions');
-var UsersApi = require('./UsersApi');
-var moment = require('moment');
-var utils = require('../../commun/utils');
+const assign         = require('lodash/object/assign');
+const moment         = require('moment');
+const utils          = require('../../commun/utils');
+const AppDispatcher  = require('../app/AppDispatcher');
+const Store          = require('../flux/Store');
+const UsersActions   = require('./UsersActions');
+const UsersApi       = require('./UsersApi');
+const UsersConstants = require('./UsersConstants');
 
-var UsersStore = Reflux.createStore({
-    data: {
-        me: {
-            first_name: "User",
-            role: "user",
-            arrival_date: moment(),
-            birthday_date: moment(),
-            description: "",
+var _data = {
+     roles: [],
+     me: {
+        first_name: "User",
+        role: "user",
+        arrival_date: moment(),
+        birthday_date: moment(),
+        description: "",
+        email: "",
+        function: "",
+        last_connection: moment(),
+        status_connection: "",
+        status_profile: ""
+    },
+    connected: false,
+    loginError: "",
+    signupResult: {
+        access: {
             email: "",
-            function: "",
-            last_connection: moment(),
-            status_connection: "",
-            status_profile: ""
-        },
-        roles: [],
+            password: ""
+        }
     },
-    init: function () {
-        //console.log("UsersStore", "init");
-        this.listenTo(UsersActions.createUser, this.onCreateUser);
-        this.listenTo(UsersActions.login, this.onLogin);
-        this.listenTo(UsersActions.loadMe, this.onLoadMe);
-        this.listenTo(UsersActions.loadRoles, this.onLoadRoles);
+    signupError: ""
+};
+
+const UsersStore = assign(Store, {
+    getMe: function () {
+        return _data.me;
     },
-    getInitialState: function () {
-        return this.data;
+    getRoles: function () {
+        return _data.roles;
     },
-    onCreateUser: function (user) {
-        UsersApi.create(user, (err, result) => {
-            console.debug("UsersStore", "onCreateUser", "err", err, "result", result, "user", user);
-            if (err) {
-                UsersActions.createUser.failed(err.response.body); 
-            } else {
-                UsersActions.createUser.completed({
-                    error: true,
-                    access: {
-                        email: result.access.email,
-                        password: result.access.password
+    isConnected: function () {
+        return _data.connected;
+    },
+    getLoginError: function () {
+        return _data.loginError;
+    },
+    getSignupResult: function () {
+        return _data.signupResult;
+    },
+    getSignupError: function () {
+        return _data.signupError;
+    },
+    dispatcherIndex: AppDispatcher.register((payload) => {
+        let action = payload.action;
+        switch(action.actionType) {
+            
+            case UsersConstants.CREATE_USER:
+                _data.signupError = "";
+                _data.signupResult= {access: { email: "",password: ""}}
+                UsersApi.create(action.newUser, (err, createdUser) => {
+                    console.debug("UsersStore.CREATE_USER", "action", action, "err", err, "createdUser", createdUser);
+                    if (err) {
+                        _data.signupError = err.response.body;
+                    } else {
+                        _data.signupResult = createdUser;
                     }
+                    UsersStore.emitChange();
                 });
-            }
-        });
-    },
-    onLogin: function (user) {
-        UsersApi.login(user, (result) => {
-            console.debug("UsersStore", "onLogin", "result", result, "user", user);
-            UsersActions.loadMe();
-            this.trigger(result);
-        });
-    },
-    onLoadMe: function () {
-        UsersApi.me((err, me) => {
-            //console.log("UsersStore.onLoadMe", "err", err, "me", me);
-            this.data.me = me;
-            this.trigger(this.data);
-        });
-    },
-    onLoadRoles: function () {
-        UsersApi.roles((err, roles) => {
-            //console.log("UsersStore.onLoadRoles", "err", err, "me", me);
-            this.data.roles = roles;
-            this.trigger(this.data);
-        });
-    }
+                break;
+
+            case UsersConstants.LOGIN:
+                _data.connected = false;
+                _data.loginError = "";
+                UsersApi.login(action.login, (err, result) => {
+                    console.debug("UsersStore.LOGIN", "action", action, "err", err, "result", result);
+                    if (err) {
+                        _data.loginError = err.response.body;
+                    } else {
+                        _data.connected = true;
+                    }
+                    UsersStore.emitChange();
+                });
+                break;
+
+            case UsersConstants.LOAD_ME:
+                UsersApi.me((err, me) => {
+                    console.debug("UsersStore.LOAD_ME", "action", action, "err", err, "me", me);
+                    _data.me = me;
+                    UsersStore.emitChange();
+                });
+                break;
+
+            case UsersConstants.LOAD_ROLES:
+                UsersApi.roles((err, roles) => {
+                    console.debug("UsersStore.LOAD_ROLES", "action", action, "err", err, "roles", roles);
+                    _data.roles = roles;
+                    UsersStore.emitChange();
+                });
+                break;
+        }
+        return true;
+    })
 });
 
 module.exports = UsersStore;

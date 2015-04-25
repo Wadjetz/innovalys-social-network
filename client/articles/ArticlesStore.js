@@ -1,41 +1,74 @@
-var Reflux = require('reflux');
-var ArticlesActions = require('./ArticlesActions');
-var ArticlesApi = require('./ArticlesApi');
-var utils = require('../utils');
+const assign            = require('lodash/object/assign');
+const AppDispatcher     = require('../app/AppDispatcher');
+const ArticlesConstants = require('./ArticlesConstants');
+const ArticlesApi       = require('./ArticlesApi');
+const ArticlesActions   = require('./ArticlesActions');
+const Store             = require('../flux/Store');
 
-var ArticlesStore = Reflux.createStore({
-    data: {
-        articles: [],
-        singleArticle: null,
-        loading: true
+var _data = {
+    articles: [],
+    singleArticle: {},
+    loading: 0,
+    createdArticle: {},
+    createArticleError: {}
+};
+
+const ArticlesStore = assign(Store, {
+    getArticles: function () {
+        return _data.articles;
     },
-    init: function () {
-        this.listenTo(ArticlesActions.loadSingleArticle, this.onLoadSingleArticle);
-        this.listenTo(ArticlesActions.loadArticles, this.onLoadArticles);
-        this.listenTo(ArticlesActions.createArticle, this.onCreateArticle);
+    getSingleArticle: function () {
+        return _data.singleArticle;
     },
-    getInitialState: function () {
-        return this.data;
+    getLoading: function () {
+        return _data.loading;
     },
-    onLoadSingleArticle: function (slug) {
-        ArticlesApi.get(slug, function (err, article) {
-            this.data.singleArticle = article;
-            this.data.loading = false;
-            this.trigger(this.data);
-        }.bind(this));
+    getCreatedArticle: function () {
+        return _data.createdArticle;
     },
-    onLoadArticles: function () {
-        ArticlesApi.getAll(function (err, articles) {
-            this.data.articles = articles;
-            this.data.loading = false;
-            this.trigger(this.data);
-        }.bind(this));
+    getCreateArticleError: function () {
+        return _data.createArticleError;
     },
-    onCreateArticle: function (article) {
-        ArticlesApi.create(article, function (err, result) {
-            ArticlesActions.createArticle.completed(err, result);
-        });
-    }
+    dispatcherIndex: AppDispatcher.register((payload) => {
+        let action = payload.action;
+        switch(action.actionType) {
+            case ArticlesConstants.LOAD_ARTICLES:
+                ArticlesApi.findAll((err, articles) => {
+                    console.log("ArticlesStore.dispatcherIndex.LOAD_ARTICLES articles=", articles);
+                    _data.articles = articles;
+                    ArticlesStore.emitChange();
+                });
+                break;
+            case ArticlesConstants.LOAD_SINGLE_ARTICLE:
+                ArticlesApi.get(action.slug, (err, singleArticle) => {
+                    //console.log("ArticlesStore.dispatcherIndex.LOAD_ARTICLES action", action, "singleArticle", singleArticle);
+                    _data.singleArticle = singleArticle;
+                    ArticlesStore.emitChange();
+                });
+                break;
+            case ArticlesConstants.CREATE_ARTICLE:
+                ArticlesApi.create(action.newArticle, (err, createdArticle) => {
+                    console.log("ArticlesStore.dispatcherIndex.CREATE_ARTICLE action", action, "createdArticle", createdArticle);
+                    if (err) {
+                        ArticlesActions.createArticleFailed(err);
+                    } else {
+                        ArticlesActions.createArticleSuccessful(createdArticle);
+                    }
+                });
+                break;
+            case ArticlesConstants.CREATE_ARTICLE_SUCCESSFUL:
+                console.log("ArticlesStore.dispatcherIndex.CREATE_ARTICLE_SUCCESSFUL action", action);
+                _data.createdArticle = {createdArticle: action.createdArticle};
+                ArticlesStore.emitChange();
+                break;
+            case ArticlesConstants.CREATE_ARTICLE_FAILED:
+                console.log("ArticlesStore.dispatcherIndex.CREATE_ARTICLE_FAILED action", action);
+                _data.createArticleError = action.error
+                ArticlesStore.emitChange();
+                break;
+        }
+        return true;
+    })
 });
 
 module.exports = ArticlesStore;

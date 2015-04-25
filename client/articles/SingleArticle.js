@@ -1,62 +1,66 @@
-var React  = require('react');
-var Reflux = require('reflux');
+const React           = require('react');
+const isEmpty         = require('lodash/lang/isempty');
+const ArticlesActions = require('./ArticlesActions');
+const ArticleView     = require('./ArticleView');
+const ArticlesStore   = require('./ArticlesStore');
+const Comments        = require('../comments/Comments');
+const CreateComment   = require('../comments/CreateComment');
+const Grid            = require('react-bootstrap/lib/Grid');
+const Row             = require('react-bootstrap/lib/Row');
+const Col             = require('react-bootstrap/lib/Col');
+const If              = require('../utils/If');
 
-var ArticlesActions = require('./ArticlesActions');
-var ArticleView     = require('./ArticleView');
-var ArticlesStore   = require('./ArticlesStore');
+function getSingleArticle () {
+    return {
+        singleArticle: ArticlesStore.getSingleArticle(),
+        loading: ArticlesStore.getLoading()
+    };
+}
 
-var Comments      = require('../comments/Comments');
-var CreateComment = require('../comments/CreateComment');
-
-var Grid = require('react-bootstrap/lib/Grid');
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
-
-var Loader = require('halogen').RingLoader;
-var If     = require('../If');
-
-var SingleArticle = React.createClass({
-    mixins: [
-        Reflux.connect(ArticlesStore)
-    ],
+const SingleArticle = React.createClass({
     contextTypes: {
         router: React.PropTypes.func
     },
     render: function() {
+        let singleArticle = this.state.singleArticle;
+        let loading = this.state.loading;
+        console.log("SingleArticle.render", this.state);
         return (
             <Grid>
-                <If condition={this.state.loading}>
-                    <Row>
-                        <Col xs={2} mdOffset={5}>
-                            <Loader color="#26A65B" size="150px" margin="4px"/>
-                        </Col>
-                    </Row>
-                </If>
                 <Row>
                     <Col xs={12}>
-                        <If condition={this.state.singleArticle !== null}>
-                            <ArticleView article={this.state.singleArticle} />
+                        <If condition={!isEmpty(singleArticle)}>
+                            <ArticleView article={singleArticle} />
                         </If>
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12}>
-                        <If condition={this.state.singleArticle !== null}>
-                            <Comments article={this.state.singleArticle} />
+                        <If condition={!isEmpty(singleArticle)}>
+                            <Comments article={singleArticle} />
                         </If>
                     </Col>
                     <Col xs={12}>
-                        <If condition={this.state.singleArticle !== null}>
-                            <CreateComment article={this.state.singleArticle} />
+                        <If condition={!isEmpty(singleArticle)}>
+                            <CreateComment article={singleArticle} />
                         </If>
                     </Col>
                 </Row>
-
             </Grid>
         );
     },
-    componentWillMount: function() {
+    getInitialState: function () {
+        return getSingleArticle();
+    },
+    onChange: function (articles) {
+        this.setState(getSingleArticle());
+    },
+    componentDidMount: function () {
         ArticlesActions.loadSingleArticle(this.context.router.getCurrentParams().slug);
+        ArticlesStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        ArticlesStore.removeChangeListener(this.onChange);
     }
 });
 

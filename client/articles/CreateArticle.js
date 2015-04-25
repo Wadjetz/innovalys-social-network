@@ -1,40 +1,49 @@
-var React  = require('react/addons');
-var Reflux = require('reflux');
+const React           = require('react/addons');
+const isEmpty         = require('lodash/lang/isempty');
+const markdown        = require("markdown").markdown;
+const moment          = require('moment');
+const utils           = require('../../commun/utils');
+const ArticlesActions = require('./ArticlesActions');
+const ArticlesStore   = require('./ArticlesStore')
+const Grid            = require('react-bootstrap/lib/Grid');
+const Row             = require('react-bootstrap/lib/Row');
+const Col             = require('react-bootstrap/lib/Col');
+const Input           = require('react-bootstrap/lib/Input');
+const Button          = require('react-bootstrap/lib/Button');
+const Alert           = require('react-bootstrap/lib/Alert');
+const If              = require('../utils/If');
 
-var markdown = require("markdown").markdown;
-var moment = require('moment');
-var utils  = require('../../commun/utils');
+function getCreatedArticle() {
+    return {
+        title: "",
+        body: "",
+        publish: moment().format(utils.mysqlDateFormat),
+        createArticleError: ArticlesStore.getCreateArticleError(),
+        createdArticle: ArticlesStore.getCreatedArticle()
+    }
+}
 
-var ArticlesActions = require('./ArticlesActions');
-var UsersActions = require('../user/UsersActions');
-
-var Grid   = require('react-bootstrap/lib/Grid');
-var Row    = require('react-bootstrap/lib/Row');
-var Col    = require('react-bootstrap/lib/Col');
-var Input  = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Alert  = require('react-bootstrap/lib/Alert');
-var If     = require('../If');
-
-var CreateArticle = React.createClass({
+const CreateArticle = React.createClass({
     mixins: [
-        React.addons.LinkedStateMixin,
-        Reflux.listenTo(ArticlesActions.createArticle.completed, 'onCreateArticleCompleted')
+        React.addons.LinkedStateMixin
     ],
     render: function() {
+        console.log("CreateArticle.render", this.state);
+        let createdArticle = this.state.createdArticle;
+        let createArticleError = this.state.createArticleError;
         return (
             <Grid fluid>
                 <Row>
                     <Col xs={12} sm={6}>
                         <h1>Create new Article</h1>
-                        <If condition={this.state.error !== ""}>
+                        <If condition={!isEmpty(createArticleError)}>
                             <Alert bsStyle='danger'>
-                                {this.state.error}
+                                {createArticleError}
                             </Alert>
                         </If>
-                        <If condition={this.state.success !== ""}>
+                        <If condition={!isEmpty(createdArticle)}>
                             <Alert bsStyle='success'>
-                                {this.state.success}
+                                Success
                             </Alert>
                         </If>
                         <Input
@@ -70,7 +79,7 @@ var CreateArticle = React.createClass({
     },
     submit: function () {
         // TODO validate data
-        var newArticle = {
+        let newArticle = {
             title: this.state.title,
             body: this.state.body,
             publish: this.state.publish
@@ -78,31 +87,17 @@ var CreateArticle = React.createClass({
         console.log("CreateArticle", "submit", newArticle);
         ArticlesActions.createArticle(newArticle);
     },
-    onCreateArticleCompleted: function (err, result) {
-        console.log("onCreateArticleCompleted", err, result);
-        if (err) {
-            this.setState({
-                error: "Error to create article",
-                success: ""
-            })
-        } else {
-            this.setState({
-                error: "",
-                success: "Article Created successful"
-            })
-        }
-    },
-    componentWillMount: function () {
-        UsersActions.loadMe();
-    },
     getInitialState: function() {
-        return {
-            title: "",
-            body: "",
-            publish: moment().format(utils.mysqlDateFormat),
-            error: "",
-            success: ""
-        };
+        return getCreatedArticle();
+    },
+    onChange: function (articles) {
+        this.setState(getCreatedArticle());
+    },
+    componentDidMount: function () {
+        ArticlesStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        ArticlesStore.removeChangeListener(this.onChange);
     }
 });
 

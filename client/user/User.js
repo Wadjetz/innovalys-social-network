@@ -1,37 +1,49 @@
-var React = require('react/addons');
-var Reflux = require('reflux');
-var moment = require('moment');
-var utils = require('../../commun/utils');
-var If = require('../If');
+const React        = require('react/addons');
+const Grid         = require('react-bootstrap/lib/Grid');
+const Row          = require('react-bootstrap/lib/Row');
+const Col          = require('react-bootstrap/lib/Col');
+const Input        = require('react-bootstrap/lib/Input');
+const Button       = require('react-bootstrap/lib/Button');
+const Alert        = require('react-bootstrap/lib/Alert');
+const moment       = require('moment');
+const utils        = require('../../commun/utils');
+const If           = require('../utils/If');
+const UsersActions = require('./UsersActions');
+const UsersStore   = require('./UsersStore');
 
-var UsersActions = require('./UsersActions');
-var UsersStore = require('./UsersStore');
+function getMe() {
+    return {
+        me: UsersStore.getMe()
+    }
+}
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Alert = require('react-bootstrap/lib/Alert');
-
-
-var User = React.createClass({
-    mixins: [
-        Reflux.connect(UsersStore) 
-    ],
+const User = React.createClass({
     render: function() {
         console.debug("User.render", this.state);
+        let me = this.state.me;
         return (
             <Grid>
                 <Row>
                     <Col xs={12}>
-                        <h1>{this.state.me.first_name} {this.state.me.last_name}</h1>
-                        <h2>{this.state.me.email}</h2>
-                        <p>{this.state.me.description}</p>
+                        <h1>{me.first_name} {me.last_name}</h1>
+                        <h2>{me.email}</h2>
+                        <p>{me.description}</p>
                     </Col>                        
                 </Row>
             </Grid>
         );
+    },
+    getInitialState: function () {
+        return getMe();
+    },
+    onChange: function () {
+        this.setState(getMe());
+    },
+    componentDidMount: function () {
+        UsersStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        UsersStore.removeChangeListener(this.onChange);
     }
 });
 

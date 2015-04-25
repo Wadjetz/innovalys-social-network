@@ -1,42 +1,43 @@
-var React  = require('react');
-var Reflux = require('reflux');
+const React           = require('react');
+const Grid            = require('react-bootstrap/lib/Grid');
+const Row             = require('react-bootstrap/lib/Row');
+const Col             = require('react-bootstrap/lib/Col');
+const If              = require('../utils/If');
+const CommentsStore   = require('./CommentsStore');
+const CommentsActions = require('./CommentsActions');
+const CommentView     = require('./CommentView');
 
-var CommentsStore   = require('./CommentsStore');
-var CommentsActions = require('./CommentsActions');
-var CommentView     = require('./CommentView');
+function getComments() {
+    return {
+        comments: CommentsStore.getComments()
+    };
+}
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
-
-var Loader = require('halogen').GridLoader;
-var If     = require('../If');
-
-var Comments = React.createClass({
-    mixins: [
-        Reflux.connect(CommentsStore)
-    ],
+const Comments = React.createClass({
     render: function() {
-        var comments = this.state.comments.map(function (comment, i) {
-            return (
-                <CommentView comment={comment} key={i} />
-            );
-        });
+        let comments = this.state.comments.map(comment => <CommentView comment={comment} key={comment.id} />);
         return (
             <Row>
                 <Col xs={12}>
                     <h3>Comments</h3>
-                    <If condition={this.state.loading}>
-                        <Loader color="#26A65B" size="16px" margin="4px"/>
-                    </If>
                     {comments}
                 </Col>
             </Row>
         );
     },
-    componentWillMount: function() {
-        CommentsActions.loadComments(this.props.article.id);
+    getInitialState: function () {
+        return getComments();
     },
+    onChange: function (articles) {
+        this.setState(getComments());
+    },
+    componentWillMount: function () {
+        CommentsActions.loadComments(this.props.article.id)
+        CommentsStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        CommentsStore.removeChangeListener(this.onChange);
+    }
 });
 
 module.exports = Comments;

@@ -1,40 +1,47 @@
 /*** @jsx React.DOM */
-var React  = require('react/addons');
-var Reflux = require('reflux');
+const React    = require('react/addons');
+const markdown = require("markdown").markdown;
+const moment   = require('moment');
+const isEmpty  = require('lodash/lang/isempty');
+const assign   = require('lodash/object/assign');
+const utils    = require('../../commun/utils');
 
-var markdown = require("markdown").markdown;
-var moment = require('moment');
-var utils  = require('../../commun/utils');
+const GroupsActions = require('./GroupsActions');
+const GroupsStore   = require('./GroupsStore');
 
-var GroupsActions = require('./GroupsActions');
+const Grid   = require('react-bootstrap/lib/Grid');
+const Row    = require('react-bootstrap/lib/Row');
+const Col    = require('react-bootstrap/lib/Col');
+const Input  = require('react-bootstrap/lib/Input');
+const Button = require('react-bootstrap/lib/Button');
+const Alert  = require('react-bootstrap/lib/Alert');
+const If     = require('../utils/If');
 
-var Grid   = require('react-bootstrap/lib/Grid');
-var Row    = require('react-bootstrap/lib/Row');
-var Col    = require('react-bootstrap/lib/Col');
-var Input  = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Alert  = require('react-bootstrap/lib/Alert');
-var If     = require('../If');
+function getCreatedGroup() {
+    return {
+        createdGroup: GroupsStore.getCreatedGroup(),
+        createGroupError: GroupsStore.getCreateGroupError()
+    }
+}
 
-var CreateGroup = React.createClass({
-    mixins: [
-        React.addons.LinkedStateMixin,
-        Reflux.listenTo(GroupsActions.createGroup.completed, 'onCreateGroupCompleted')
-    ],
+const CreateGroup = React.createClass({
+    mixins: [ React.addons.LinkedStateMixin ],
     render: function() {
+        let createdGroup = this.state.createdGroup;
+        let createGroupError = this.state.createGroupError;
         return (
             <Grid>
                 <Row>
                     <Col xs={12} sm={12}>
                         <h1>Create new Group</h1>
-                        <If condition={this.state.error !== ""}>
+                        <If condition={!isEmpty(createGroupError)}>
                             <Alert bsStyle='danger'>
-                                {this.state.error}
+                                {createGroupError}
                             </Alert>
                         </If>
-                        <If condition={this.state.success !== ""}>
+                        <If condition={!isEmpty(createdGroup)}>
                             <Alert bsStyle='success'>
-                                {this.state.success}
+                                {createdGroup}
                             </Alert>
                         </If>
                         <Input
@@ -66,27 +73,20 @@ var CreateGroup = React.createClass({
         console.log("CreateGroup", "submit", newGroup);
         GroupsActions.createGroup(newGroup);
     },
-    onCreateGroupCompleted: function (err, result) {
-        console.log("onCreateGroupCompleted", err, result);
-        if (err) {
-            this.setState({
-                error: "Error to create article",
-                success: ""
-            })
-        } else {
-            this.setState({
-                error: "",
-                success: "Article Created successful"
-            })
-        }
-    },
     getInitialState: function() {
-        return {
+        return assign({
             name: "",
             description: "",
-            error: "",
-            success: ""
-        };
+        }, getCreatedGroup());
+    },
+    onChange: function (articles) {
+        this.setState(getCreatedGroup());
+    },
+    componentDidMount: function () {
+        GroupsStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        GroupsStore.removeChangeListener(this.onChange);
     }
 });
 

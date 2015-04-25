@@ -1,12 +1,12 @@
-var React = require('react');
-var Router = require('react-router');
-var moment = require('moment');
-var markdown = require("markdown").markdown;
-var Link = Router.Link;
+const React    = require('react');
+const Router   = require('react-router');
+const moment   = require('moment');
+const markdown = require("markdown").markdown;
+const Link     = Router.Link;
 
-var ArticleView = React.createClass({
+const ArticleView = React.createClass({
     render: function() {
-        var article = this.props.article;
+        let article = this.props.article;
         return (
             <div className="thumbnail">
                 <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>
