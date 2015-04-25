@@ -24,7 +24,7 @@ function getMe() {
 const App = React.createClass({
     mixins: [ Router.Navigation ],
     render: function() {
-        console.debug("App.render", this.state);
+        //console.debug("App.render", this.state);
         let me = this.state.me;
         return (
             <div>

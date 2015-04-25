@@ -18,8 +18,8 @@ function getArticles () {
 
 const Articles = React.createClass({
     render: function() {
-        console.debug("Articles.render", this.state, ArticlesStore.getArticles());
-        let articles = this.state.articles.map((article, i) => (<ArticleView article={article} key={i} />) );
+        //console.debug("Articles.render", this.state, ArticlesStore.getArticles());
+        let articles = this.state.articles.map((article, i) => (<ArticleView article={article} key={article.id} />) );
         return (
             <Grid>
                 <If condition={this.state.loading}>

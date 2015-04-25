@@ -3,6 +3,7 @@ const AppDispatcher     = require('../app/AppDispatcher');
 
 const CommentsActions = {
     loadComments: function (slug) {
+        console.debug("CommentsActions.loadComments slug", slug);
         AppDispatcher.handleViewAction({
             actionType: CommentsConstants.LOAD_COMMENTS,
             slug: slug

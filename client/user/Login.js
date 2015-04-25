@@ -20,7 +20,7 @@ const Login = React.createClass({
     render: function() {
         let validator = validate(this.state, userValidator.loginConstraints);
         let loginError = this.state.loginError;
-        console.debug("Login.render", this.state);
+        //console.debug("Login.render", this.state);
         return (
             <Grid>
                 <Row>

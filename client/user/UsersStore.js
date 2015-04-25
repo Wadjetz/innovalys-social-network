@@ -59,7 +59,7 @@ const UsersStore = assign(Store, {
                 _data.signupError = "";
                 _data.signupResult= {access: { email: "",password: ""}}
                 UsersApi.create(action.newUser, (err, createdUser) => {
-                    console.debug("UsersStore.CREATE_USER", "action", action, "err", err, "createdUser", createdUser);
+                    //console.debug("UsersStore.CREATE_USER", "action", action, "err", err, "createdUser", createdUser);
                     if (err) {
                         _data.signupError = err.response.body;
                     } else {
@@ -73,7 +73,7 @@ const UsersStore = assign(Store, {
                 _data.connected = false;
                 _data.loginError = "";
                 UsersApi.login(action.login, (err, result) => {
-                    console.debug("UsersStore.LOGIN", "action", action, "err", err, "result", result);
+                    //console.debug("UsersStore.LOGIN", "action", action, "err", err, "result", result);
                     if (err) {
                         _data.loginError = err.response.body;
                     } else {
@@ -85,7 +85,7 @@ const UsersStore = assign(Store, {
 
             case UsersConstants.LOAD_ME:
                 UsersApi.me((err, me) => {
-                    console.debug("UsersStore.LOAD_ME", "action", action, "err", err, "me", me);
+                    //console.debug("UsersStore.LOAD_ME", "action", action, "err", err, "me", me);
                     _data.me = me;
                     UsersStore.emitChange();
                 });
@@ -93,7 +93,7 @@ const UsersStore = assign(Store, {
 
             case UsersConstants.LOAD_ROLES:
                 UsersApi.roles((err, roles) => {
-                    console.debug("UsersStore.LOAD_ROLES", "action", action, "err", err, "roles", roles);
+                    //console.debug("UsersStore.LOAD_ROLES", "action", action, "err", err, "roles", roles);
                     _data.roles = roles;
                     UsersStore.emitChange();
                 });

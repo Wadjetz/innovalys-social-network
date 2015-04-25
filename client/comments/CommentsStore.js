@@ -20,6 +20,7 @@ const CommentsStore = assign(Store, {
         let action = payload.action;
         switch(action.actionType) {
             case CommentsConstants.LOAD_COMMENTS:
+                _data.comments = [];
                 CommentsApi.getAllByNewsId(action.slug, (err, comments) => {
                     console.log("CommentsStore.dispatcherIndex.LOAD_COMMENTS", action, "comments", comments);
                     _data.comments = comments;
