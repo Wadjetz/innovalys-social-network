@@ -6,7 +6,6 @@ const markdown      = require("markdown").markdown;
 const Link          = Router.Link;
 const GroupsStore   = require('./GroupsStore');
 const GroupsActions = require('./GroupsActions');
-const GroupView     = require('./GroupView');
 const If            = require('../utils/If');
 const Label         = require('react-bootstrap/lib/Label');
 const Button        = require('react-bootstrap/lib/Button');
