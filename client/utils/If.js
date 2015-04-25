@@ -1,6 +1,6 @@
-var React = require('react');
+const React = require('react');
 
-var If = React.createClass({
+const If = React.createClass({
     render: function() {
         if (this.props.condition) {
             return this.props.children;

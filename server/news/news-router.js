@@ -1,8 +1,10 @@
 var router = require("express").Router();
 var newsModel = require('./news-model');
 var moment = require('moment');
+var async = require('async');
 var utils = require('../../commun/utils');
 var UserModel = require('../user/user-model');
+var CommentsModel = require('../comments/comments-model');
 
 var auth = require('../config/auth');
 
@@ -73,11 +75,28 @@ router.get('/', auth.withUser, function (req, res) {
 
 router.get('/:slug', auth.withUser, function (req, res) {
     var slug = req.params.slug;
-    newsModel.findOneBySlug(slug, function (err, news) {
-        if (err) res.sendStatus(500).json(err); // TODO remove private information
-        else if (news === undefined || news === null) ;
-        else if (news.length > 0) res.json(news[0]);
-        else res.sendStatus(405);
+    async.waterfall([
+        function (callback) {
+            newsModel.findOneBySlug(slug, function (err, news) {
+                callback(err, news);
+            });
+        },
+        function (news, callback) {
+            CommentsModel.findAllByNewsId(news.id, 0, function (err, comments) {
+                callback(err, {
+                    news: news,
+                    comments: comments
+                });
+            });
+        }
+    ], function (err, result) {
+        if (err) res.sendStatus(500).json(err);
+        else if (result) {
+            var article = result.news;
+            article.comments = result.comments;
+            res.json(article);
+        }
+        else res.sendStatus(404);
     });
 });
 

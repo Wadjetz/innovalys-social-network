@@ -1,4 +1,4 @@
-var AppActions = require('./AppActions');
+const AppActions = require('../app/AppActions');
 
 module.exports.handleErrors = function (err, res, callback) {
 	if (err) {

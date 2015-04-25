@@ -1,25 +1,25 @@
 const React         = require('react');
-var Reflux        = require('reflux');
-var Router        = require('react-router');
-var RouteHandler  = Router.RouteHandler;
-var Route         = Router.Route;
-// var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute  = Router.DefaultRoute;
-var Link          = Router.Link;
+const Router        = require('react-router');
+const RouteHandler  = Router.RouteHandler;
+const Route         = Router.Route;
+const DefaultRoute  = Router.DefaultRoute;
+const Link          = Router.Link;
+const Articles      = require('./articles/Articles');
+const SingleArticle = require('./articles/SingleArticle');
+const CreateArticle = require('./articles/CreateArticle');
+const Groups        = require('./groups/Groups');
+const SingleGroup   = require('./groups/SingleGroup');
+const CreateGroup   = require('./groups/CreateGroup');
+const User          = require('./user/User');
+const Login         = require('./user/Login');
+const Signup        = require('./user/Signup');
+const App           = require('./app/App');
+const Forbidden     = require('./app/Forbidden');
+const ChatStore     = require('./chat/ChatStore');
 
-var Articles = require('./articles/Articles');
-var SingleArticle = require('./articles/SingleArticle');
-var CreateArticle = require('./articles/CreateArticle');
-var Groups = require('./groups/Groups');
-var SingleGroup = require('./groups/SingleGroup');
-var CreateGroup = require('./groups/CreateGroup');
-var User = require('./user/User');
-var Login = require('./user/Login');
-var Signup = require('./user/Signup');
-var App = require('./App');
-var Forbidden = require('./Forbidden');
+ChatStore.connect();
 
-var Routes = (
+const Routes = (
     <Route handler={App} path="/">
         <Route name="articles" handler={Articles} path="/articles" />
         <Route name="createArticle" handler={CreateArticle} path="/create/article" />

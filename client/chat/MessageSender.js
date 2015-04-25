@@ -1,18 +1,13 @@
-var React  = require('react/addons');
-var Reflux = require('reflux');
+const React       = require('react/addons');
+const ChatActions = require('./ChatActions');
+const ChatStore   = require('./ChatStore');
+const Row         = require('react-bootstrap/lib/Row');
+const Col         = require('react-bootstrap/lib/Col');
+const Input       = require('react-bootstrap/lib/Input');
+const Button      = require('react-bootstrap/lib/Button');
 
-var ChatActions = require('./ChatActions');
-var ChatStore   = require('./ChatStore');
-
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-
-var Chat = React.createClass({
-    mixins: [
-        React.addons.LinkedStateMixin
-    ],
+const Chat = React.createClass({
+    mixins: [ React.addons.LinkedStateMixin ],
     render: function () {
         return (
             <div className="input-group">

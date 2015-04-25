@@ -1,6 +1,6 @@
-var request = require('superagent');
-var baseUrl = require('../conf').baseUrl;
-var utils = require('../utils');
+const request = require('superagent');
+const baseUrl = require('../conf').baseUrl;
+const utils   = require('../utils/utils');
 
 module.exports.getAll = function (callback) {
     request.get(baseUrl + '/users').end(function (err, res) {
@@ -25,7 +25,7 @@ module.exports.create = function (user, callback) {
 module.exports.login = function (user, callback) {
     request.post(baseUrl + '/users/login').send(user).end(function (err, res) {
         //console.log("UserApi", "login", "res", res, "err", err, "user", user);
-        callback(res.body);
+        callback(err, res.body);
     });
 };
 

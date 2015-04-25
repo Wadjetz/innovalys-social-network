@@ -1,15 +1,14 @@
-var React = require('react');
-var Router = require('react-router');
-var markdown = require("markdown").markdown;
-var Link = Router.Link;
-var moment = require('moment');
+const React         = require('react');
+const Router        = require('react-router');
+const markdown      = require("markdown").markdown;
+const Link          = Router.Link;
+const moment        = require('moment');
+const ListGroup     = require('react-bootstrap/lib/ListGroup');
+const ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 
-var ListGroup = require('react-bootstrap/lib/ListGroup');
-var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
-
-var CommentView = React.createClass({
+const CommentView = React.createClass({
     render: function() {
-        var comment = this.props.comment;
+        let comment = this.props.comment;
         return (
             <ListGroup>
                 <ListGroupItem header={comment.email}>

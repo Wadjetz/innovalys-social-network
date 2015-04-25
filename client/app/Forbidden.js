@@ -1,6 +1,6 @@
-var React = require('react');
+const React = require('react');
 
-var Forbidden = React.createClass({
+const Forbidden = React.createClass({
     render: function() {
             return (
                 <div>

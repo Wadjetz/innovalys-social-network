@@ -1,6 +1,6 @@
-var request = require('superagent');
-var baseUrl = require('../conf').baseUrl;
-var utils = require('../utils');
+const request = require('superagent');
+const baseUrl = require('../conf').baseUrl;
+const utils = require('../utils/utils');
 
 module.exports.getAllMessages = function (page, callback) {
     request.get(baseUrl + '/chat/global/history')

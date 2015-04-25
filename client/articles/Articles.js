@@ -1,25 +1,25 @@
-var React  = require('react');
-var Reflux = require('reflux');
+const React           = require('react');
+const Grid            = require('react-bootstrap/lib/Grid');
+const Row             = require('react-bootstrap/lib/Row');
+const Col             = require('react-bootstrap/lib/Col');
+const Loader          = require('halogen').GridLoader;
+const ArticlesStore   = require('./ArticlesStore');
+const ArticlesActions = require('./ArticlesActions');
+const ArticleView     = require('./ArticleView');
+const Events          = require('../flux/Events');
+const If              = require('../utils/If');
+const Chat            = require('../chat/Chat');
 
-var ArticlesStore   = require('./ArticlesStore');
-var ArticlesActions = require('./ArticlesActions');
-var ArticleView     = require('./ArticleView');
+function getArticles () {
+    return {
+        articles: ArticlesStore.getArticles()
+    };
+}
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
-
-var Loader = require('halogen').GridLoader;
-var If     = require('../If');
-
-var Chat = require('../chat/Chat');
-
-var Articles = React.createClass({
-    mixins: [
-        Reflux.connect(ArticlesStore)
-    ],
+const Articles = React.createClass({
     render: function() {
-        var articles = this.state.articles.map((article, i) => <ArticleView article={article} key={i} /> );
+        //console.debug("Articles.render", this.state, ArticlesStore.getArticles());
+        let articles = this.state.articles.map((article, i) => (<ArticleView article={article} key={article.id} />) );
         return (
             <Grid>
                 <If condition={this.state.loading}>
@@ -40,8 +40,18 @@ var Articles = React.createClass({
             </Grid>
         );
     },
-    componentWillMount: function() {
+    getInitialState: function () {
+        return getArticles();
+    },
+    onChange: function () {
+        this.setState(getArticles());
+    },
+    componentDidMount: function () {
         ArticlesActions.loadArticles();
+        ArticlesStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        ArticlesStore.removeChangeListener(this.onChange);
     }
 });
 

@@ -1,39 +1,25 @@
 /*** @jsx React.DOM */
-var React  = require('react');
-var Reflux = require('reflux');
+const React         = require('react');
+const Grid          = require('react-bootstrap/lib/Grid');
+const Row           = require('react-bootstrap/lib/Row');
+const Col           = require('react-bootstrap/lib/Col');
+const GroupsStore   = require('./GroupsStore');
+const GroupsActions = require('./GroupsActions');
+const GroupView     = require('./GroupView');
+const If            = require('../utils/If');
+const Chat          = require('../chat/Chat');
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
+function getGroups () {
+    return {
+        groups: GroupsStore.getGroups()
+    };
+}
 
-var GroupsStore   = require('./GroupsStore');
-var GroupsActions = require('./GroupsActions');
-var GroupView     = require('./GroupView');
-
-var Loader = require('halogen').GridLoader;
-var If     = require('../If');
-
-var Chat = require('../chat/Chat');
-
-var Groups = React.createClass({
-    mixins: [
-        Reflux.connect(GroupsStore)
-    ],
+const Groups = React.createClass({
     render: function() {
-        var groups = this.state.groups.map(function (group, i) {
-            return (
-                <GroupView group={group} key={i} />
-            );
-        });
+        let groups = this.state.groups.map((group, i) => (<GroupView group={group} key={i} />));
         return (
             <Grid>
-                <If condition={this.state.loading}>
-                    <Row>
-                        <Col xs={2} mdOffset={5}>
-                            <Loader color="#26A65B" size="16px" margin="4px"/>
-                        </Col>
-                    </Row>
-                </If>
                 <Row>
                     <Col xs={8}>
                         {groups}
@@ -45,8 +31,18 @@ var Groups = React.createClass({
             </Grid>
         );
     },
-    componentWillMount: function() {
+    getInitialState: function () {
         GroupsActions.loadGroups();
+        return getGroups();
+    },
+    onChange: function () {
+        this.setState(getGroups());
+    },
+    componentDidMount: function () {
+        GroupsStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        GroupsStore.removeChangeListener(this.onChange);
     }
 });
 

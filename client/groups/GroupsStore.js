@@ -1,68 +1,72 @@
-var Reflux = require('reflux');
-var GroupsActions = require('./GroupsActions');
-var GroupsApi = require('./GroupsApi');
-var utils = require('../utils');
-var moment = require('moment');
+const assign          = require('lodash/object/assign');
+const AppDispatcher   = require('../app/AppDispatcher');
+const GroupsConstants = require('./GroupsConstants');
+const GroupsActions   = require('./GroupsActions');
+const GroupsApi       = require('./GroupsApi');
+const Store           = require('../flux/Store');
 
-var GroupsStore = Reflux.createStore({
-    data: {
-        groups: [],
-        singleGroup: {
-            group: {
-                id: 0,
-                slug: "",
-                name: "",
-                access: "",
-                status: "",
-                type: "",
-                created: moment(),
-                updated: moment(),
-                description: "",
-                users_id: 0,
-                groupUsers: [],
-            },
-            members: [] 
-        },
-        loading: true
+var _data = {
+    groups: [],
+    singleGroup: {
+        group: {},
+        members: []
     },
-    init: function () {
-        this.listenTo(GroupsActions.loadSingleGroup, this.onLoadSingleGroup);
-        this.listenTo(GroupsActions.loadGroups, this.onLoadGroups);
-        this.listenTo(GroupsActions.createGroup, this.onCreateGroup);
-        this.listenTo(GroupsActions.joinGroup, this.onJoinGroup);
+    createdGroup: {},
+    createGroupError: {}
+};
+
+const GroupsStore = assign(Store, {
+    getGroups: function () {
+        return _data.groups;
     },
-    getInitialState: function () {
-        return this.data;
+    getSingleGroup: function () {
+        return _data.singleGroup;
     },
-    onLoadSingleGroup: function (slug) {
-        GroupsApi.get(slug, function (err, group) {
-            this.data.singleGroup = group;
-            this.data.loading = false;
-            this.trigger(this.data);
-        }.bind(this));
+    getCreatedGroup: function () {
+        return _data.createdGroup;
     },
-    onLoadGroups: function () {
-        GroupsApi.getAll(function (err, groups) {
-            this.data.groups = groups;
-            this.data.loading = false;
-            this.trigger(this.data);
-        }.bind(this));
+    getCreateGroupError: function () {
+        return _data.createGroupError;
     },
-    onCreateGroup: function (group) {
-        GroupsApi.create(group, function (err, result) {
-            GroupsActions.createGroup.completed(err, result);
-        });
-    },
-    onJoinGroup: function (group) {
-        GroupsApi.join(group, function (err, result) {
-            console.debug("GroupsStore.onJoinGroup", "err", err, "result", result);
-            if (err) {
-                GroupsActions.joinGroup.failed(err);
-            } else {
-                GroupsActions.joinGroup.completed(result);
-            }
-        });
-    }
+    dispatcherIndex: AppDispatcher.register((payload) => {
+        let action = payload.action;
+        switch(action.actionType) {
+            case GroupsConstants.LOAD_GROUPS:
+                GroupsApi.getAll((err, groups) => {
+                    console.debug("GroupsStore.dispatcherIndex.LOAD_GROUPS", "action", action, "groups", groups);
+                    // TODO handle errors
+                    _data.groups = groups;
+                    GroupsStore.emitChange();
+                });
+                break;
+            case GroupsConstants.LOAD_SINGLE_GROUP:
+                GroupsApi.get(action.slug, (err, singleGroup) => {
+                    console.debug("GroupsStore.dispatcherIndex.LOAD_SINGLE_GROUP", "action", action, "singleGroup", singleGroup);
+                    // TODO handle errors
+                    _data.singleGroup = singleGroup;
+                    GroupsStore.emitChange();
+                });
+                break;
+            case GroupsConstants.CREATE_GROUP:
+                GroupsApi.create(action.newGroup, (err, result) => {
+                    console.debug("GroupsStore.dispatcherIndex.CREATE_GROUP", "action", action, "result", result, "err", err);
+                    if (err) {
+                        _data.createGroupError = err;
+                    } else {
+                        _data.createdGroup = result;
+                    }
+                    GroupsStore.emitChange();
+                });
+                break;
+            case GroupsConstants.JOIN_GROUP:
+                GroupsApi.join(action.group, (err, result) => {
+                    console.debug("GroupsStore.dispatcherIndex.CREATE_GROUP", "action", action, "result", result);
+                    GroupsStore.emitChange();
+                });
+                break;
+        }
+        return true;
+    })
 });
 
 module.exports = GroupsStore;

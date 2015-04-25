@@ -1,29 +1,19 @@
 /*** @jsx React.DOM */
-var React = require('react');
-var Router = require('react-router');
-var Reflux = require('reflux');
-var moment = require('moment');
-var markdown = require("markdown").markdown;
-var Link = Router.Link;
+const React         = require('react');
+const Router        = require('react-router');
+const moment        = require('moment');
+const markdown      = require("markdown").markdown;
+const Link          = Router.Link;
+const GroupsStore   = require('./GroupsStore');
+const GroupsActions = require('./GroupsActions');
+const If            = require('../utils/If');
+const Label         = require('react-bootstrap/lib/Label');
+const Button        = require('react-bootstrap/lib/Button');
 
-var GroupsStore   = require('./GroupsStore');
-var GroupsActions = require('./GroupsActions');
-var GroupView     = require('./GroupView');
-
-var Loader = require('halogen').GridLoader;
-var If     = require('../If');
-
-var Label = require('react-bootstrap/lib/Label');
-var Button = require('react-bootstrap/lib/Button');
-
-var GroupView = React.createClass({
-    mixins: [
-        Reflux.listenTo(GroupsActions.joinGroup.completed, 'onJoinGroupCompleted'),
-        Reflux.listenTo(GroupsActions.joinGroup.failed, 'onJoinGroupFailed')
-    ],
+const GroupView = React.createClass({
     render: function() {
-        var group = this.props.group;
-        console.log("GroupView", "render", group);
+        let group = this.props.group;
+        //console.debug("GroupView", "render", group);
         return (
             <div className="thumbnail">
                 <h2><Link to="singleGroup" params={{slug: group.slug}}>{group.name}</Link></h2>
@@ -36,12 +26,6 @@ var GroupView = React.createClass({
     join: function () {
         console.debug("GroupView.join", "group", this.props.group);
         GroupsActions.joinGroup(this.props.group);
-    },
-    onJoinGroupCompleted: function (result) {
-        console.debug("GroupView.onJoinGroupCompleted", "result", result);
-    },
-    onJoinGroupFailed: function (error) {
-        console.debug("GroupView.onJoinGroupFailed", "error", error);
     }
 });
 

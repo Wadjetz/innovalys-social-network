@@ -1,41 +1,42 @@
-var Reflux = require('reflux');
+const assign            = require('lodash/object/assign');
+const AppDispatcher     = require('../app/AppDispatcher');
+const CommentsConstants = require('./CommentsConstants');
+const CommentsApi       = require('./CommentsApi');
+const Store             = require('../flux/Store');
 
-var CommentsActions = require('./CommentsActions');
-var CommentsApi     = require('./CommentsApi');
+var _data = {
+    comments: []
+}
 
-var CommentsStore = Reflux.createStore({
-    data: {
-        comments: [],
-        loading: true
-    },
-    getInitialState: function () {
-        return this.data;
-    },
-    init: function () {
-        this.listenTo(CommentsActions.loadComments, this.onLoadComments);
-        this.listenTo(CommentsActions.createComment, this.onCreateComment);
-    },
-    onLoadComments: function (news_id) {
-        CommentsApi.getAllByNewsId(news_id, function (err, comments) {
-            console.log("CommentsStore.onLoadComments.getAllByNewsId", "news_id", news_id, "comments", comments, "err", err);
-            //CommentsActions.loadComments.completed(comments);
-            this.data.comments = comments;
-            this.data.loading = false;
-            this.trigger(this.data);
-        }.bind(this));
-    },
-    onCreateComment: function (comment) {
-        CommentsApi.create(comment, function (err, result) {
-            console.log("CommentsStore", "onCreateComment", "create", "comment", comment, "result", result, "err", err);
-            if (result) {
-                this.data.comments.push(result);
-                this.trigger(this.data);
-            }
-        }.bind(this));
-    },
-    onRemoveComment: function (comment) {
+function addComment(comment) {
+    _data.comments.push(comment);
+}
 
-    }
+const CommentsStore = assign(Store, {
+    getComments: function () {
+        return _data.comments;
+    },
+    dispatcherIndex: AppDispatcher.register((payload) => {
+        let action = payload.action;
+        switch(action.actionType) {
+            case CommentsConstants.LOAD_COMMENTS:
+                _data.comments = [];
+                CommentsApi.getAllByNewsId(action.slug, (err, comments) => {
+                    console.log("CommentsStore.dispatcherIndex.LOAD_COMMENTS", action, "comments", comments);
+                    _data.comments = comments;
+                    CommentsStore.emitChange();
+                });
+                break;
+            case CommentsConstants.CREATE_COMMENT:
+                CommentsApi.create(action.newComment, (err, createdComment) => {
+                    console.log("CommentsStore.dispatcherIndex.CREATE_COMMENT", action, "createdComment", createdComment);
+                    addComment(createdComment);
+                    CommentsStore.emitChange();
+                });
+                break;
+        }
+        return true;
+    })
 });
 
 module.exports = CommentsStore;
