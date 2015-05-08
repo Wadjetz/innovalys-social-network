@@ -14,10 +14,20 @@ if (Notification.permission !== "granted")
 //notification article
 new CronJob('0 0 13 * * *',
     function(){
-        var requet = "";
-        new Notification('Nouveaux article', {
-            body: "<?> articles � �t� mis en ligne!"
+        var requet = "SELECT COUNT(*) FROM news WHERE DATE(publish) = NOW()";
+        var nbArticle = 0;
+        db.query(requet, null, function(error, results, fields){
+           if(error)console.error(error);
+            if(results.length>0){
+                var row = results[0];
+                nbArticle = row["COUNT(*)"];
+            }
         });
+        if(nbArticle>0) {
+            new Notification('Nouveaux article', {
+                body: nbArticle+" articles à été mis en ligne!"
+            });
+        }
     },
     null,
     true,
@@ -40,8 +50,8 @@ new CronJob('* * * * * *',
 //notification groupe
 new CronJob('0 0 * * * *',
     function(){
-      new Notification('Groupe <?> mise � jour', {
-            body: "Le groupe <?> a �t� mis � jours"
+      new Notification('Groupe <?> mise a jour', {
+            body: "Le groupe <?> a été mis a jours"
         });
     },
     null,
