@@ -128,6 +128,7 @@ var Signup = React.createClass({
             function: this.state.function,
             description: this.state.description,
             arrival_date: this.state.arrival_date,
+            role: this.state.role
         };
         //console.log("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
@@ -163,7 +164,7 @@ var Signup = React.createClass({
     },
     componentWillUnmount: function() {
         this.unCreateUser();
-    },
+    }
 });
 
 module.exports = Signup;

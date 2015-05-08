@@ -6,7 +6,6 @@ var Route         = Router.Route;
 // var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute  = Router.DefaultRoute;
 var Link          = Router.Link;
-
 var Articles = require('./articles/Articles');
 var SingleArticle = require('./articles/SingleArticle');
 var CreateArticle = require('./articles/CreateArticle');
@@ -20,6 +19,7 @@ var App = require('./App');
 var Forbidden = require('./Forbidden');
 
 var Routes = (
+
     <Route handler={App} path="/">
         <Route name="articles" handler={Articles} path="/articles" />
         <Route name="createArticle" handler={CreateArticle} path="/create/article" />
@@ -36,5 +36,6 @@ var Routes = (
 );
 
 Router.run(Routes, (Handler) => {
+
     React.render(<Handler/>, document.getElementById('wrap'));
 });

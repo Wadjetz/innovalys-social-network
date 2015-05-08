@@ -2,8 +2,9 @@ var mysql      = require('mysql');
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    database : 'innovalys',
-    password : ''
+    database : 'innavalys',
+    password : 'esgi',
+    port : '3306'
 });
 
 module.exports = connection;

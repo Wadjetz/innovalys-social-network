@@ -6,6 +6,8 @@ var userValidator = require('../../commun/user-validator');
 
 var UsersActions = require('./UsersActions');
 var UsersStore   = require('./UsersStore');
+var notifier = require('../notification/notification');
+
 
 var Grid   = require('react-bootstrap/lib/Grid');
 var Row    = require('react-bootstrap/lib/Row');
@@ -24,6 +26,7 @@ var Login = React.createClass({
     ],
     render: function() {
         var validator = validate(this.state, userValidator.loginConstraints);
+
         return (
             <Grid>
                 <Row>
@@ -62,8 +65,9 @@ var Login = React.createClass({
         // TODO validate data
         var user = {
             email: this.state.email,
-            password: this.state.password,
+            password: this.state.password
         };
+
         //console.log("Login.submit", "user", user);
         var validator = validate(user, userValidator.loginConstraints);
         if (validator) {
@@ -74,6 +78,8 @@ var Login = React.createClass({
     },
     getInitialState: function() {
         // TODO remove mock
+
+
         return {
             email: "egor2@neon.fr",
             password: "uYK4UQZ_",
@@ -96,7 +102,7 @@ var Login = React.createClass({
     },
     componentWillUnmount: function() {
         this.unLogin();
-    },
+    }
 });
 
 module.exports = Login;
