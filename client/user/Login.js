@@ -6,7 +6,7 @@ var userValidator = require('../../commun/user-validator');
 
 var UsersActions = require('./UsersActions');
 var UsersStore   = require('./UsersStore');
-var notifier = require('../notification/notification');
+var notifier = require('.././notification');
 
 
 var Grid   = require('react-bootstrap/lib/Grid');
