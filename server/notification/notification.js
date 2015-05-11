@@ -36,16 +36,22 @@ new CronJob('0 0 13 * * *',
 
 
 //notification message
-new CronJob('* * * * * *',
-    function(){
-        new Notification('Nouveau message', {
-           body: "Vous avez un nouveau message de <?>"
-        });
-    },
-    null,
-    true,
-    'Europe/Paris'
-);
+module.exports.notificationMessage = function notificationMessage(id_user) {
+    var requet = "SELECT * FROM users WHERE users_id=?";
+    var data = [id_user];
+    db.query(requet, data, function(error, results, fields){
+        if(error)console.log(error);
+        if(results.length>0){
+            var row = results[0];
+            var prenom = row["first_name"];
+            var nom = row["last_name"];
+            new Notification('Nouveau message', {
+                body: "Vous avez un nouveau message de "+prenom+" "+nom
+            });
+        }
+    });
+
+}
 
 //notification groupe
 new CronJob('0 0 * * * *',
