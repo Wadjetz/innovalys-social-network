@@ -37,7 +37,7 @@ new CronJob('0 0 13 * * *',
 
 //notification message
 module.exports.notificationMessage = function notificationMessage(id_user) {
-    var requet = "SELECT first_name, last_name FROM users WHERE users_id=?";
+    var requet = "SELECT first_name, last_name FROM users WHERE id=?";
     var data = [id_user];
     db.query(requet, data, function(error, results, fields){
         if(error)console.error(error);
@@ -51,7 +51,7 @@ module.exports.notificationMessage = function notificationMessage(id_user) {
         }
     });
 
-}
+};
 
 //notification groups
 new CronJob('0 0 * * * *',
@@ -62,14 +62,14 @@ new CronJob('0 0 * * * *',
             if(error)console.error(error);
             if(results.length>0){
                 results.forEach(function(result){
-                    var requetGroups = "SELECT nom FROM groups WHERE id_groups=? AND DATE(updated) = NOW()";
+                    var requetGroups = "SELECT name FROM groups WHERE id=? AND DATE(updated) = NOW()";
                     var dataGroups = [result["groups_id"]];
                     db.query(requetGroups, dataGroups, function(error, resultsGroups, fields){
                         if(error)console.error(error);
                         if(resultsGroups.length>0){
                             var row = resultsGroups[0];
-                            new Notification('Group '+row["nom"]+' mis a jour', {
-                                body: "Le group "+row["nom"]+" a \351t\351 mis a jour"
+                            new Notification('Group '+row["name"]+' mis a jour', {
+                                body: "Le group "+row["name"]+" a \351t\351 mis a jour"
                             });
                         }
                     });
@@ -82,3 +82,18 @@ new CronJob('0 0 * * * *',
     true,
     'Europe/Paris'
 );
+
+//notification groups invitation
+module.exports.groupInvitation = function(id_group){
+    var requet = "SELECT name FROM groups WHERE id=?";
+    var data = [id_group];
+    db.query(requet, data, function(error, results, fields){
+        if(error)console.error(error);
+        if(results.length>0){
+            var row = results[0];
+            new Notification('Invitation à un groupe', {
+                body: "Vous avez été invité au sein du groupe "+row["name"]
+            });
+        }
+    });
+};
