@@ -11,7 +11,7 @@ var db = requires("../config/database");
 if (Notification.permission !== "granted")
     Notification.requestPermission();
 
-//notification article
+//notification news
 new CronJob('0 0 13 * * *',
     function(){
         var requet = "SELECT COUNT(*) FROM news WHERE DATE(publish) = NOW()";
@@ -37,10 +37,10 @@ new CronJob('0 0 13 * * *',
 
 //notification message
 module.exports.notificationMessage = function notificationMessage(id_user) {
-    var requet = "SELECT * FROM users WHERE users_id=?";
+    var requet = "SELECT first_name, last_name FROM users WHERE users_id=?";
     var data = [id_user];
     db.query(requet, data, function(error, results, fields){
-        if(error)console.log(error);
+        if(error)console.error(error);
         if(results.length>0){
             var row = results[0];
             var prenom = row["first_name"];
@@ -53,12 +53,30 @@ module.exports.notificationMessage = function notificationMessage(id_user) {
 
 }
 
-//notification groupe
+//notification groups
 new CronJob('0 0 * * * *',
     function(){
-      new Notification('Groupe <?> mise a jour', {
-            body: "Le groupe <?> a été mis a jours"
+        var requet = "SELECT groups_id FROM members WHERE user_id = ?";
+        var data = [0];
+        db.query(requet, data, function(error, results, fields){
+            if(error)console.error(error);
+            if(results.length>0){
+                results.forEach(function(result){
+                    var requetGroups = "SELECT nom FROM groups WHERE id_groups=? AND DATE(updated) = NOW()";
+                    var dataGroups = [result["groups_id"]];
+                    db.query(requetGroups, dataGroups, function(error, resultsGroups, fields){
+                        if(error)console.error(error);
+                        if(resultsGroups.length>0){
+                            var row = resultsGroups[0];
+                            new Notification('Group '+row["nom"]+' mis a jour', {
+                                body: "Le group "+row["nom"]+" a \351t\351 mis a jour"
+                            });
+                        }
+                    });
+                });
+            }
         });
+
     },
     null,
     true,
