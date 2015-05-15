@@ -1,5 +1,0 @@
-
-module.exports = {
-    LOAD_COMMENTS: 'LOAD_COMMENTS',
-    CREATE_COMMENT: 'CREATE_COMMENT',
-};

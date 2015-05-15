@@ -9,17 +9,30 @@ var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 
 validate.moment = moment;
-
-router.get('/', auth.withUser, function (req, res) {
+/**
+GET /groups
+Get groups
+*/
+var getGroupsRoute = function (req, res) {
     var user = req.$user;
     var page = req.query.page || 0;
     GroupsModel.findAll(page, function (err, groups) {
         console.log("groups", groups);
         res.json(groups);
     });
-});
+}
+router.get('/', auth.withUser, getGroupsRoute);
 
-router.get('/:slug', auth.withUser, function (req, res) {
+var findMyGroups = function (req, res) {
+    var user = req.$user;
+    GroupsModel.findMyGroups(user, function (err, groups) {
+        res.json(groups);
+    });
+}
+
+router.get('/my-groups', auth.withUser, findMyGroups);
+
+router.get('/by-slug/:slug', auth.withUser, function (req, res) {
     var user = req.$user;
     var slug = req.params.slug;
     async.waterfall([
@@ -98,7 +111,11 @@ router.post('/members/join/:slug', auth.withUser, function (req, res) {
         function (callback) {
             GroupsModel.findOneBySlug(slug, function (err, group) {
                 console.log("findOneBySlug", "slug="+slug, "err", err, "group", group);
-                callback(err, group);
+                if (group) {
+                    callback(err, group);
+                } else {
+                    callback({error: "Group not found"});
+                }
             });
         },
         function (group, callback) {

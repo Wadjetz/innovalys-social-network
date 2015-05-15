@@ -1,58 +1,53 @@
-const React           = require('react');
-const Grid            = require('react-bootstrap/lib/Grid');
-const Row             = require('react-bootstrap/lib/Row');
-const Col             = require('react-bootstrap/lib/Col');
-const Loader          = require('halogen').GridLoader;
-const ArticlesStore   = require('./ArticlesStore');
-const ArticlesActions = require('./ArticlesActions');
-const ArticleView     = require('./ArticleView');
-const Events          = require('../flux/Events');
-const If              = require('../utils/If');
-const Chat            = require('../chat/Chat');
+import React from 'react'
+import moment from 'moment'
+import markdown from 'markdown'
+import Router, { Link, Navigation } from 'react-router'
+import Bootstrap, { Grid, Row, Col } from 'react-bootstrap'
+import ArticlesService from './ArticlesService'
+import Chat from '../chat/Chat'
 
-function getArticles () {
+export default React.createClass({
+  mixins: [Navigation],
+  render: function () {
+    let articles = this.state.articles;
+    return (
+      <Grid>
+        <Row>
+          <Col xs={8}>
+            {articles.map((article, i) => {
+              return (
+                <div className="thumbnail" key={article.id}>
+                  <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>
+                  <span className="label label-default">Publish : {moment(article.publish).fromNow()}</span>
+                  <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(article.body) }}></div>
+                </div>
+              );
+            })}
+          </Col>
+          <Col xs={4}>
+              <Chat />
+          </Col>
+        </Row>
+      </Grid>
+    );
+  },
+
+  getInitialState: function () {
     return {
-        articles: ArticlesStore.getArticles()
-    };
-}
-
-const Articles = React.createClass({
-    render: function() {
-        //console.debug("Articles.render", this.state, ArticlesStore.getArticles());
-        let articles = this.state.articles.map((article, i) => (<ArticleView article={article} key={article.id} />) );
-        return (
-            <Grid>
-                <If condition={this.state.loading}>
-                    <Row>
-                        <Col xs={2} mdOffset={5}>
-                            <Loader color="#26A65B" size="16px" margin="4px"/>
-                        </Col>
-                    </Row>
-                </If>
-                <Row>
-                    <Col xs={8}>
-                        {articles}
-                    </Col>
-                    <Col xs={4}>
-                        <Chat />
-                    </Col>
-                </Row>
-            </Grid>
-        );
-    },
-    getInitialState: function () {
-        return getArticles();
-    },
-    onChange: function () {
-        this.setState(getArticles());
-    },
-    componentDidMount: function () {
-        ArticlesActions.loadArticles();
-        ArticlesStore.addChangeListener(this.onChange);
-    },
-    componentWillUnmount: function () {
-        ArticlesStore.removeChangeListener(this.onChange);
+      articles: []
     }
+  },
+
+  componentDidMount: function () {
+    ArticlesService.findAll().then(articles => {
+      this.setState({
+        articles: articles
+      });
+    }, err => {
+      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
+  }
+
 });
 
-module.exports = Articles;
