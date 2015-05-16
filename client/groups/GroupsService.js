@@ -99,5 +99,14 @@ export default {
       }
       request.send(formData);
     });
+  },
+
+  getFiles: function (slug) {
+    return Qajax({
+      url: BASE_URL + "/groups/files/" + slug,
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
   }
 };

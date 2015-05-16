@@ -1,5 +1,6 @@
 import React from 'react/addons'
 import moment from 'moment'
+import _ from 'lodash'
 import Dropzone from 'react-dropzone'
 import Router, { Link, Navigation } from 'react-router'
 import Bootstrap, {
@@ -55,7 +56,10 @@ export default React.createClass({
                 </Dropzone>
                 {this.state.files.map(file => {
                   return (
-                    <div>{file}</div>
+                    <div key={file.name + file.id}>
+                      <h2>{file.name}</h2>
+                      <p>{file.size} Ko</p>
+                    </div>
                   );
                 })}
               </TabPane>
@@ -137,12 +141,24 @@ export default React.createClass({
     }, err => {
       console.error(err);
     });
+
+    GroupsService.getFiles(slug).then(files => {
+      this.setState({
+        files: files
+      });
+    }, err => {
+      console.error(err);
+    });
   },
 
   onDrop: function (files) {
     if (files.length > 0) {
       let slug = this.context.router.getCurrentParams().slug;
       GroupsService.uploadFile(slug, files).then(res => {
+        this.state.files.push(res[0])
+        this.setState({
+          files: this.state.files
+        });
         console.log(res);
       }, err => {
         console.error(err);

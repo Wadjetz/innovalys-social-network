@@ -8,6 +8,7 @@ var GroupsModel  = require('./groups-model');
 var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 var MessagesModel = require('./messages-model');
+var GroupsFilesModel = require('./groups-files-model');
 
 validate.moment = moment;
 /**
@@ -267,15 +268,36 @@ var uploadFile = function (req, res) {
     var slug = req.params.slug;
     var file = req.files.file;
     if (file) {
-        console.log("file", file);
-        var groupFile = {
-            originalname: file.originalname,
-            mimetype: file.mimetype,
-            path: file.path,
-            extension: file.extension,
-            size: file.size
-        }
-        res.json(groupFile);
+        async.waterfall([
+            function (callback) {
+                GroupsModel.findOneBySlug(slug, function (err, group) {
+                    callback(err, group);
+                });
+            },
+            function (group, callback) {
+                var groupFile = {
+                    name: file.originalname,
+                    mimetype: file.mimetype,
+                    extension: file.extension,
+                    size: file.size,
+                    path: file.path,
+                    groups_id: group.id,
+                    users_id: user.id
+                };
+                GroupsFilesModel.create(groupFile, function (createErr, createRes) {
+                    callback(createErr, createRes);
+                });
+            }
+        ], function (err, result) {
+            console.log("waterfall.res", err, result);
+            if (err) {
+                res.status(400).json({
+                    error: err
+                });
+            } else {
+                res.json(result);
+            }
+        });
     } else {
         res.status(400).json({
             error: "file required"
@@ -284,5 +306,24 @@ var uploadFile = function (req, res) {
 };
 
 router.post('/upload/:slug', auth.withUser, uploadFile);
+
+/**
+Find all files group by slug
+*/
+var findAllByGroupSlug = function (req, res) {
+    var user = req.$user;
+    var slug = req.params.slug;
+    GroupsFilesModel.findAllByGroupSlug(slug, function (error, result) {
+        if (error) {
+            res.status(400).json({
+                error: error
+            })
+        } else {
+            res.json(result);
+        }
+    });
+};
+router.get('/files/:slug', auth.withUser, findAllByGroupSlug);
+
 
 module.exports = router;
