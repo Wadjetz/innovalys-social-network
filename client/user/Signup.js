@@ -1,34 +1,46 @@
-var React = require('react/addons');
-var Reflux = require('reflux');
-var moment = require('moment');
-var utils = require('../../commun/utils');
-var If = require('../If');
+const React        = require('react/addons');
+const moment       = require('moment');
+const isEmpty      = require('lodash/lang/isempty');
+const utils        = require('../../commun/utils');
+const If           = require('../utils/If');
+const UsersActions = require('./UsersActions');
+const UsersStore   = require('./UsersStore');
+const Grid         = require('react-bootstrap/lib/Grid');
+const Row          = require('react-bootstrap/lib/Row');
+const Col          = require('react-bootstrap/lib/Col');
+const Input        = require('react-bootstrap/lib/Input');
+const Button       = require('react-bootstrap/lib/Button');
+const Alert        = require('react-bootstrap/lib/Alert');
 
-var UsersActions = require('./UsersActions');
-var UsersStore = require('./UsersStore');
+function getData() {
+    return {
+        roles: UsersStore.getRoles(),
+        signupResult: UsersStore.getSignupResult(),
+        signupError: UsersStore.getSignupError()
+    };
+}
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Alert = require('react-bootstrap/lib/Alert');
-
-var Signup = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        React.addons.LinkedStateMixin
-    ],
+const Signup = React.createClass({
+    mixins: [ React.addons.LinkedStateMixin ],
     render: function() {
         // TODO add validators
+        console.debug("Signup.render", this.state);
+        let rolesView = this.state.roles.map((role, i) => (<option value={role} key={i}>{role}</option>));
+        let signupResult = this.state.signupResult;
+        let signupError  = this.state.signupError;
         return (
             <Grid>
                 <Row>
                     <Col xs={12}>
                         <h1>Create new user</h1>
-                        <If condition={this.state.result.error}>
+                        <If condition={!isEmpty(signupError)}>
                             <Alert bsStyle='danger'>
-                                {this.state.result.message}
+                                {signupError}
+                            </Alert>
+                        </If>
+                        <If condition={signupResult.access.email !== ""}>
+                            <Alert bsStyle='success'>
+                                {signupResult.access.email} : {signupResult.access.password}
                             </Alert>
                         </If>
                         <Row>
@@ -89,13 +101,9 @@ var Signup = React.createClass({
                                 />
                             </Col>
                         </Row>
-                        <Input
-                            type='text'
-                            placeholder='Role'
-                            label='Role'
-                            ref='role'
-                            valueLink={this.linkState('role')}
-                        />
+                        <Input type='select' label='Select' placeholder='select' ref='role' valueLink={this.linkState('role')}>
+                            {rolesView}
+                        </Input>
                         <Input
                             type='text'
                             placeholder='Adress'
@@ -103,7 +111,6 @@ var Signup = React.createClass({
                             ref='adress'
                             valueLink={this.linkState('adress')}
                         />
-
                         <Input
                             type='textarea'
                             placeholder='Description'
@@ -117,9 +124,26 @@ var Signup = React.createClass({
             </Grid>
         );
     },
+    getInitialState: function() {
+        // TODO remove data mock
+        return {
+            email: (Math.random() * 1000) + "@domain.com",
+            first_name: "First Name",
+            last_name: "Last Name",
+            birthday_date: moment().format(utils.mysqlDateFormat),
+            adress: "rue bidon",
+            role: "user",
+            function: "peon",
+            description: "descr",
+            arrival_date: moment().format(utils.mysqlDateFormat),
+            roles: getData().roles,
+            signupResult: getData().signupResult,
+            signupError: getData().signupError
+        };
+    },
     submit: function () {
         // TODO validate data
-        var newUser = {
+        let newUser = {
             email: this.state.email,
             birthday_date: this.state.birthday_date,
             first_name: this.state.first_name,
@@ -130,40 +154,20 @@ var Signup = React.createClass({
             arrival_date: this.state.arrival_date,
             role: this.state.role
         };
-        //console.log("Sigup", "submit", newUser);
+        console.info("Sigup", "submit", newUser);
         UsersActions.createUser(newUser);
     },
-    getInitialState: function() {
-        return {
-            email: "",
-            first_name: "",
-            last_name: "",
-            birthday_date: moment().format(utils.mysqlDateFormat),
-            adress: "",
-            role: "",
-            function: "",
-            description: "",
-            arrival_date: moment().format(utils.mysqlDateFormat),
-            result: {
-                error: false,
-                message: ""
-            }
-        };
+    onChange: function () {
+        this.setState(getData());
     },
-    onCreateUser: function (result) {
-        //console.log("Signup", "onCreateUser", "result=", result);
-        this.setState({
-            result: {
-                error: result.error,
-                message: "Errors"
-            }
-        });
+
+    componentDidMount: function () {
+        UsersActions.loadMe();
+        UsersActions.loadRoles()
+        UsersStore.addChangeListener(this.onChange);
     },
-    componentDidMount: function() {
-        this.unCreateUser = UsersStore.listen(this.onCreateUser);
-    },
-    componentWillUnmount: function() {
-        this.unCreateUser();
+    componentWillUnmount: function () {
+        UsersStore.removeChangeListener(this.onChange);
     }
 });
 

@@ -1,44 +1,40 @@
-var React  = require('react/addons');
-var Reflux = require('reflux');
-var Router = require('react-router');
-var validate = require("validate.js");
-var userValidator = require('../../commun/user-validator');
+const React         = require('react/addons');
+const Router        = require('react-router');
+const Grid          = require('react-bootstrap/lib/Grid');
+const Row           = require('react-bootstrap/lib/Row');
+const Col           = require('react-bootstrap/lib/Col');
+const Input         = require('react-bootstrap/lib/Input');
+const Button        = require('react-bootstrap/lib/Button');
+const Alert         = require('react-bootstrap/lib/Alert');
+const validate      = require("validate.js");
+const userValidator = require('../../commun/user-validator');
+const UsersActions  = require('./UsersActions');
+const UsersStore    = require('./UsersStore');
+const If            = require('../utils/If');
 
-var UsersActions = require('./UsersActions');
-var UsersStore   = require('./UsersStore');
 //var notifier = require('../../server/notification/notification');
 
-
-var Grid   = require('react-bootstrap/lib/Grid');
-var Row    = require('react-bootstrap/lib/Row');
-var Col    = require('react-bootstrap/lib/Col');
-var Input  = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var Alert  = require('react-bootstrap/lib/Alert');
-
-var If = require('../If');
-
-var Login = React.createClass({
+const Login = React.createClass({
     mixins: [
-        Reflux.ListenerMixin,
         React.addons.LinkedStateMixin,
         Router.Navigation
     ],
     render: function() {
-        var validator = validate(this.state, userValidator.loginConstraints);
-
+        let validator = validate(this.state, userValidator.loginConstraints);
+        let loginError = this.state.loginError;
+        //console.debug("Login.render", this.state);
         return (
             <Grid>
                 <Row>
                     <Col xs={12} md={6} mdOffset={3}>
                         <h1>Login</h1>
-                        <If condition={this.state.error !== ""}>
+                        <If condition={loginError !== ""}>
                             <Alert bsStyle='danger'>
-                                {this.state.error}
+                                {loginError}
                             </Alert>
                         </If>
                         <Input
-                            type='text'
+                            type='email'
                             placeholder='Email'
                             label='Email'
                             ref='email'
@@ -58,18 +54,15 @@ var Login = React.createClass({
             </Grid>
         );
     },
-    validateEmailState: function () {
-
-    },
     submit: function () {
         // TODO validate data
-        var user = {
+        let user = {
             email: this.state.email,
             password: this.state.password
         };
 
         //console.log("Login.submit", "user", user);
-        var validator = validate(user, userValidator.loginConstraints);
+        let validator = validate(user, userValidator.loginConstraints);
         if (validator) {
             console.log(validator);
         } else {
@@ -83,25 +76,26 @@ var Login = React.createClass({
         return {
             email: "egor2@neon.fr",
             password: "uYK4UQZ_",
-            error: "",
+            loginError: UsersStore.getLoginError(),
             validator: validate(this, userValidator.loginConstraints)
         };
     },
-    onLogin: function (result) {
-        //console.log("Login.onLogin", result);
-        if (result.error) {
-            this.setState({
-                error: result.error
-            });
-        } else {
+    onChange: function () {
+        if(UsersStore.isConnected()) {
+            UsersActions.loadMe();
             this.context.router.transitionTo('articles');
         }
+        else {
+            this.setState({
+                loginError: UsersStore.getLoginError(),
+            });
+        }
     },
-    componentDidMount: function() {
-        this.unLogin = UsersStore.listen(this.onLogin);
+    componentDidMount: function () {
+        UsersStore.addChangeListener(this.onChange);
     },
-    componentWillUnmount: function() {
-        this.unLogin();
+    componentWillUnmount: function () {
+        UsersStore.removeChangeListener(this.onChange);
     }
 });
 

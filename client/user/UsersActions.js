@@ -1,17 +1,34 @@
-var Reflux = require('reflux');
+const AppDispatcher  = require('../app/AppDispatcher');
+const UsersConstants = require('./UsersConstants');
 
-var UsersActions = Reflux.createActions({
-    "loadUsers": {},
-    "createUser": {},
-    "login": {
-        children: [
-            "completed",
-            "failed"
-        ]
+const UsersActions = {
+    loadUsers: function () {
+        AppDispatcher.handleViewAction({
+            actionType: UsersConstants.LOAD_USERS
+        });
     },
-    "loadMe": {},
-    "updateUser": {},
-    "deleteUser": {}
-});
+    loadMe: function () {
+        AppDispatcher.handleViewAction({
+            actionType: UsersConstants.LOAD_ME
+        });
+    },
+    loadRoles: function () {
+        AppDispatcher.handleViewAction({
+            actionType: UsersConstants.LOAD_ROLES
+        });
+    },
+    createUser: function (newUser) {
+        AppDispatcher.handleViewAction({
+            actionType: UsersConstants.CREATE_USER,
+            newUser: newUser
+        });
+    },
+    login: function (login) {
+        AppDispatcher.handleViewAction({
+            actionType: UsersConstants.LOGIN,
+            login: login
+        });
+    },
+};
 
 module.exports = UsersActions;

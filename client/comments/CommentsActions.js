@@ -1,20 +1,20 @@
-var Reflux = require('reflux');
+const CommentsConstants = require('./CommentsConstants');
+const AppDispatcher     = require('../app/AppDispatcher');
 
-var CommentsActions = Reflux.createActions({
-    'loadComments': {
-		children: [
-			"completed",
-			"failed"
-		]
-	},
-    'createComment': {
-        children: [
-            "completed",
-			"failed"
-        ]
+const CommentsActions = {
+    loadComments: function (slug) {
+        console.debug("CommentsActions.loadComments slug", slug);
+        AppDispatcher.handleViewAction({
+            actionType: CommentsConstants.LOAD_COMMENTS,
+            slug: slug
+        });
     },
-    'updateComment': {},
-    'deleteComment': {}
-});
+    createComment: function (newComment) {
+        AppDispatcher.handleViewAction({
+            actionType: CommentsConstants.CREATE_COMMENT,
+            newComment: newComment
+        });
+    }
+}
 
 module.exports = CommentsActions;

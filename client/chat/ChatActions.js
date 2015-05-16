@@ -1,18 +1,18 @@
-var Reflux = require('reflux');
+const AppDispatcher = require('../app/AppDispatcher');
+const ChatConstants = require('./ChatConstants');
 
-var ChatActions = Reflux.createActions({
-    'loadMessages': {
-		children: [
-			"completed",
-			"failed"
-		]
-	},
-    'sendMessage': {
-        children: [
-            "completed",
-			"failed"
-        ]
+const ChatActions = {
+    loadMessages: function () {
+        AppDispatcher.handleViewAction({
+            actionType: ChatConstants.LOAD_MESSAGES
+        });
+    },
+    sendMessage: function (message) {
+        AppDispatcher.handleViewAction({
+            actionType: ChatConstants.SEND_MESSAGE,
+            message: message
+        });
     }
-});
+};
 
 module.exports = ChatActions;

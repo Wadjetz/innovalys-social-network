@@ -1,24 +1,20 @@
-var React = require('react/addons');
-var Reflux = require('reflux');
+const React           = require('react/addons');
+const Grid            = require('react-bootstrap/lib/Grid');
+const Row             = require('react-bootstrap/lib/Row');
+const Col             = require('react-bootstrap/lib/Col');
+const Input           = require('react-bootstrap/lib/Input');
+const Button          = require('react-bootstrap/lib/Button');
+const moment          = require('moment');
+const utils           = require('../../commun/utils');
+const CommentsActions = require('./CommentsActions');
 
-var moment = require('moment');
-var utils = require('../../commun/utils');
-
-var CommentsActions = require('./CommentsActions');
-
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-
-var CreateComment = React.createClass({
+const CreateComment = React.createClass({
     mixins: [
         React.addons.LinkedStateMixin
     ],
     submit: function () {
         // TODO validate data
-        var newComment = {
+        let newComment = {
             content: this.state.content,
             news_id: this.props.article.id
         };

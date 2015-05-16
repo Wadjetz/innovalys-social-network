@@ -1,5 +1,4 @@
 var React         = require('react');
-var Reflux        = require('reflux');
 var Router        = require('react-router');
 var RouteHandler  = Router.RouteHandler;
 var Route         = Router.Route;
@@ -15,17 +14,18 @@ var CreateGroup = require('./groups/CreateGroup');
 var User = require('./user/User');
 var Login = require('./user/Login');
 var Signup = require('./user/Signup');
-var App = require('./App');
-var Forbidden = require('./Forbidden');
+var App = require('./app/App');
+var Forbidden = require('./app/Forbidden');
+const ChatStore     = require('./chat/ChatStore');
 
 
 if (Notification.permission !== "granted") {
     Notification.requestPermission();
 }
 
+ChatStore.connect();
 
-var Routes = (
-
+const Routes = (
     <Route handler={App} path="/">
         <Route name="articles" handler={Articles} path="/articles" />
         <Route name="createArticle" handler={CreateArticle} path="/create/article" />

@@ -1,9 +1,8 @@
 var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
-
-var utils = require('../../commun/utils');
-
+var async    = require('async');
+var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
 var MembersModel = require('./members-model');
@@ -23,11 +22,31 @@ router.get('/', auth.withUser, function (req, res) {
 router.get('/:slug', auth.withUser, function (req, res) {
     var user = req.$user;
     var slug = req.params.slug;
-    GroupsModel.findOneBySlug(slug, function (err, group) {
+    async.waterfall([
+        function (callback) {
+            GroupsModel.findOneBySlug(slug, function (err, group) {
+                console.log(slug, err, group);
+                callback(err, group);
+            });
+        },
+        function (group, callback) {
+            if (group) {
+                MembersModel.findByStatus(group.id, "pending", function (err, members) {
+                    console.log(err, members);
+                    callback(err, {
+                        group: group,
+                        members: members
+                    });
+                });
+            } else {
+                callback(null, null, null);
+            }
+        }
+    ], function (err, result) {
         if (err) {
-            res.sendStatus(500);
-        } else if (group) {
-            res.json(group);
+            res.sendStatus(500).json(err);
+        } else if (result) {
+            res.json(result);
         } else {
             res.sendStatus(404)
         }
@@ -75,11 +94,30 @@ router.post('/', groupsValidator, auth.withUser, function (req, res) {
 router.post('/members/join/:slug', auth.withUser, function (req, res) {
     var user = req.$user;
     var slug = req.params.slug;
-    GroupsModel.findOneBySlug(slug, function (err, group) {
-        // TODO handel errors
-        MembersModel.create(user.id, group.id, function (createErr, createRes) {
-            res.json(createRes);
-        });
+    async.waterfall([
+        function (callback) {
+            GroupsModel.findOneBySlug(slug, function (err, group) {
+                console.log("findOneBySlug", "slug="+slug, "err", err, "group", group);
+                callback(err, group);
+            });
+        },
+        function (group, callback) {
+            MembersModel.create(user.id, group.id, function (createErr, createRes) {
+                console.log("create", createErr, createRes);
+                callback(createErr, {
+                    group: group,
+                    createRes: createRes
+                });
+            });
+        }
+    ], function (err, result) {
+        if (err) {
+            res.status(400).json(err);
+        } else if (result) {
+            res.json(result);
+        } else {
+            res.status(404);
+        }
     });
 });
 

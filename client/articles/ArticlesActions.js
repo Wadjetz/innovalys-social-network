@@ -1,20 +1,36 @@
-var Reflux = require('reflux');
+const ArticlesConstants = require('./ArticlesConstants');
+const AppDispatcher     = require('../app/AppDispatcher');
 
-var ArticlesActions = Reflux.createActions({
-    'loadArticles': {},
-    'loadSingleArticle': {
-        children: [
-            "completed",
-            "failed"
-        ]
+const ArticlesActions = {
+    loadArticles: function () {
+        AppDispatcher.handleViewAction({
+            actionType: ArticlesConstants.LOAD_ARTICLES
+        });
     },
-    'createArticle': {
-        children: [
-            "completed"
-        ]
+    loadSingleArticle: function (slug) {
+        AppDispatcher.handleViewAction({
+            actionType: ArticlesConstants.LOAD_SINGLE_ARTICLE,
+            slug: slug
+        });
     },
-    'updateArticle': {},
-    'deleteArticle': {}
-});
+    createArticle: function (newArticle) {
+        AppDispatcher.handleViewAction({
+            actionType: ArticlesConstants.CREATE_ARTICLE,
+            newArticle: newArticle
+        });
+    },
+    createArticleSuccessful: function (createdArticle) {
+        AppDispatcher.handleViewAction({
+            actionType: ArticlesConstants.CREATE_ARTICLE_SUCCESSFUL,
+            createdArticle: createdArticle
+        });
+    },
+    createArticleFailed: function (error) {
+        AppDispatcher.handleViewAction({
+            actionType: ArticlesConstants.CREATE_ARTICLE_FAILED,
+            error: error
+        });
+    }
+};
 
 module.exports = ArticlesActions;

@@ -1,48 +1,55 @@
 /*** @jsx React.DOM */
-var React = require('react');
-var Reflux = require('reflux');
-var GroupsStore = require('./GroupsStore');
-var GroupsActions = require('./GroupsActions');
+const React         = require('react');
+const isEmpty       = require('lodash/lang/isempty');
+const GroupsStore   = require('./GroupsStore');
+const GroupsActions = require('./GroupsActions');
+const Grid          = require('react-bootstrap/lib/Grid');
+const Row           = require('react-bootstrap/lib/Row');
+const Col           = require('react-bootstrap/lib/Col');
+const If            = require('../utils/If');
+const GroupView     = require('./GroupView');
 
-var Grid = require('react-bootstrap/lib/Grid');
-var Row  = require('react-bootstrap/lib/Row');
-var Col  = require('react-bootstrap/lib/Col');
+function getSingleGroup() {
+    return {
+        singleGroup: GroupsStore.getSingleGroup()
+    }
+}
 
-var Loader = require('halogen').RingLoader;
-var If     = require('../If');
-
-var GroupView = require('./GroupView');
-
-var SingleGroup = React.createClass({
-    mixins: [
-        Reflux.connect(GroupsStore)
-    ],
+const SingleGroup = React.createClass({
     contextTypes: {
         router: React.PropTypes.func
     },
     render: function() {
-        console.log("SingleGroup.render", this.state.singleGroup);
+        console.debug("SingleGroup.render", this.state);
+        let group = this.state.singleGroup.group;
+        let membersView = this.state.singleGroup.members.map((memeber, i) => (<div key={i}>{memeber.first_name}</div>));
         return (
             <Grid>
-                <If condition={this.state.loading}>
-                    <Row>
-                        <Col xs={2} mdOffset={5}>
-                            <Loader color="#26A65B" size="150px" margin="4px"/>
-                        </Col>
-                    </Row>
-                </If>
                 <Row>
-                    <Col xs={12}>
-                        <If condition={this.state.singleGroup !== null}>
-                            <GroupView group={this.state.singleGroup} />
+                    <Col xs={8}>
+                        <If condition={!isEmpty(group)}>
+                            <GroupView group={group} />
                         </If>
+                    </Col>
+                    <Col xs={4}>
+                        {membersView}
                     </Col>
                 </Row>
             </Grid>
         );
     },
-    componentWillMount: function () {
+    getInitialState: function () {
+        return getSingleGroup();
+    },
+    onChange: function (articles) {
+        this.setState(getSingleGroup());
+    },
+    componentDidMount: function () {
         GroupsActions.loadSingleGroup(this.context.router.getCurrentParams().slug);
+        GroupsStore.addChangeListener(this.onChange);
+    },
+    componentWillUnmount: function () {
+        GroupsStore.removeChangeListener(this.onChange);
     }
 });
 
