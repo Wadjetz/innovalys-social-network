@@ -50,14 +50,14 @@ export default React.createClass({
                 <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
               </TabPane>
               <TabPane eventKey={2} tab='Files'>
-                <h1>Files</h1>
                 <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >
                   <div>Try dropping some files here, or click to select files to upload.</div>
                 </Dropzone>
+                <h1>Files</h1>
                 {this.state.files.map(file => {
                   return (
-                    <div key={file.name + file.id}>
-                      <h2>{file.name}</h2>
+                    <div className="thumbnail" key={file.name + file.id}>
+                      <h4>{file.name}</h4>
                       <p>{file.size} Ko</p>
                     </div>
                   );
@@ -180,5 +180,6 @@ export default React.createClass({
 let dropzoneStyle = {
   width: '100%',
   height: 50,
-  borderStyle: "dashed"
+  borderStyle: "dashed",
+  marginTop: '10px'
 }
