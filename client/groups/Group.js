@@ -26,6 +26,23 @@ export default React.createClass({
         <Row>
           <Col xs={8}>
             <h1>Messages</h1>
+            {this.state.messages.map(message => {
+              return (
+                <div className="thumbnail">
+                  <h2>by {message.first_name} {message.last_name}</h2>
+                  <p>{message.content}</p>
+                </div>
+              );
+            })}
+            <h4>Create new message</h4>
+              <Input
+                  type='textarea'
+                  placeholder='Content'
+                  label='Content'
+                  ref='content'
+                  valueLink={this.linkState('newMessage')}
+              />
+            <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
           </Col>
           <Col xs={4}>
             <h1>{this.state.group.name}</h1>
@@ -39,6 +56,25 @@ export default React.createClass({
         </Row>
       </Grid>
     );
+  },
+
+  createMessage: function () {
+    let slug = this.context.router.getCurrentParams().slug;
+    console.log("createMessage", this.state.newMessage);
+    if (this.state.newMessage !== "") {
+      GroupsService.createMessageGroup(slug, this.state.newMessage).then(result => {
+        console.log(result);
+        this.state.messages.push(result);
+        this.setState({
+          messages: this.state.messages,
+          newMessage: ""
+        })
+      }, err => {
+        console.error(err);
+      });
+    } else {
+      console.error("createMessage error");
+    }
   },
 
   getInitialState: function () {
@@ -55,7 +91,9 @@ export default React.createClass({
         type: "",
         users_id: "",
       },
-      members: []
+      members: [],
+      messages: [],
+      newMessage: ""
     }
   },
 
@@ -71,6 +109,14 @@ export default React.createClass({
     }, err => {
       console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
+
+    GroupsService.getMessagesGroups(slug).then(messages => {
+      this.setState({
+        messages: messages
+      });
+    }, err => {
+      console.error(err);
     });
   },
 

@@ -48,5 +48,26 @@ export default {
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
+  },
+
+  getMessagesGroups: function (slug) {
+    return Qajax({
+      url: BASE_URL + "/groups/messages/" + slug,
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+  },
+
+  createMessageGroup: function (slug, message) {
+    return Qajax({
+      url: BASE_URL + "/groups/messages/" + slug,
+      method: 'POST',
+      data: {
+        content: message
+      }
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
   }
 };
