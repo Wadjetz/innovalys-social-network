@@ -10,6 +10,9 @@ function isAuth(email, callback) {
     }
 }
 
+/**
+Auth
+*/
 module.exports.auth = function (req, res, next) {
     isAuth(req.session.email, function (isAuth) {
         if(isAuth) {

@@ -14,9 +14,9 @@ var _data = {
 
 const ChatStore = assign(Store, {
     connect: function () {
-        console.info("ChatStore.connect.global_chat");
+        //console.info("ChatStore.connect.global_chat");
         socket.on('global_chat', (msg) => {
-            console.debug("global_chat", "msg", msg, "this.data.messages", _data.messages);
+            //console.debug("global_chat", "msg", msg, "this.data.messages", _data.messages);
             _data.messages.push(msg);
             ChatStore.emitChange();
         });
@@ -30,14 +30,14 @@ const ChatStore = assign(Store, {
             case ChatConstants.LOAD_MESSAGES:
                 ChatApi.getAllMessages(0, function (error, history) {
                     _data.messages = uniq(_data.messages.concat(history), 'id');
-                    console.debug("ChatStore.LOAD_MESSAGES", "action", action, "error", error, "history", history, "_data.messages", _data.messages);
+                    //console.debug("ChatStore.LOAD_MESSAGES", "action", action, "error", error, "history", history, "_data.messages", _data.messages);
                     ChatStore.emitChange();
                 });
                 break;
 
             case ChatConstants.SEND_MESSAGE:
                 socket.emit('global_chat', action.message);
-                console.debug("ChatStore.SEND_MESSAGE", "action", action);
+                //console.debug("ChatStore.SEND_MESSAGE", "action", action);
                 break;
         }
         return true;
