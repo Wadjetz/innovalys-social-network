@@ -1,23 +1,19 @@
-var React         = require('react');
-var Router        = require('react-router');
-var RouteHandler  = Router.RouteHandler;
-var Route         = Router.Route;
-// var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute  = Router.DefaultRoute;
-var Link          = Router.Link;
-var Articles = require('./articles/Articles');
-var SingleArticle = require('./articles/SingleArticle');
-var CreateArticle = require('./articles/CreateArticle');
-var Groups = require('./groups/Groups');
-var SingleGroup = require('./groups/SingleGroup');
-var CreateGroup = require('./groups/CreateGroup');
-var User = require('./user/User');
-var Login = require('./user/Login');
-var Signup = require('./user/Signup');
-var App = require('./app/App');
-var Forbidden = require('./app/Forbidden');
-const ChatStore     = require('./chat/ChatStore');
+import React from 'react'
+import Router, { RouteHandler, Route, DefaultRoute, Link } from 'react-router'
 
+import Articles from './articles/Articles'
+import Article from './articles/Article'
+import CreateArticle from './articles/CreateArticle'
+
+import Groups from './groups/Groups'
+import Group from './groups/Group'
+
+const User          = require('./user/User');
+const Login         = require('./user/Login');
+const Signup        = require('./user/Signup');
+const App           = require('./app/App');
+const Forbidden     = require('./app/Forbidden');
+const ChatStore     = require('./chat/ChatStore');
 
 if (Notification.permission !== "granted") {
     Notification.requestPermission();
@@ -28,11 +24,10 @@ ChatStore.connect();
 const Routes = (
     <Route handler={App} path="/">
         <Route name="articles" handler={Articles} path="/articles" />
+        <Route name="singleArticle" handler={Article} path="/articles/:slug" />
         <Route name="createArticle" handler={CreateArticle} path="/create/article" />
-        <Route name="singleArticle" handler={SingleArticle} path="/articles/:slug" />
         <Route name="groups" handler={Groups} path="/groups" />
-        <Route name="singleGroup" handler={SingleGroup} path="/groups/:slug" />
-        <Route name="createGroup" handler={CreateGroup} path="create/group" />
+        <Route name="singleGroup" handler={Group} path="/groups/:slug" />
         <Route name="user" handler={User} path="/user" />
         <Route name="signup" handler={Signup} path="/signup" />
         <Route name="login" handler={Login} path="/login" />

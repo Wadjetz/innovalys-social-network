@@ -1,12 +1,23 @@
 var db = require('../config/database');
 
+module.exports.exist = function (news_id, callback) {
+    var sql = "SELECT COUNT(*) FROM news WHERE news.id = ?";
+    var data = [news_id];
+};
+
 module.exports.findOneById = function (id, callback) {
     var sql = "SELECT * FROM news WHERE news.id = ?";
     var data = [id];
     db.query(sql, data, function (error, results, fields) {
         //console.log("news model findOneBySlug", "error", error, "results", results);
-        if (error) console.error(error);
-        callback(error, results, fields);
+        if (error) {
+            console.error(error);
+            callback(error, results, fields);
+        } else if (results.length > 0) {
+            callback(error, results[0], fields);
+        } else {
+            callback(error, null, fields);
+        }
     });
 };
 

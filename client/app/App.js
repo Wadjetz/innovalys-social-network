@@ -33,11 +33,6 @@ const App = React.createClass({
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
                             <li><Link to="groups">Groups</Link></li>
-                            <If condition={me.role === "admin" || me.role === "chef"}>
-                                <DropdownButton eventKey={3} title='Chef de groupe' navItem={true}>
-                                    <li><Link to="createGroup">Create Group</Link></li>
-                                </DropdownButton>
-                            </If>
                             <If condition={me.role === "admin" || me.role === "rh"}>
                                 <DropdownButton eventKey={4} title='RH' navItem={true}>
                                     <li><Link to="createArticle">Create Article</Link></li>
