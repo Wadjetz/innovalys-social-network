@@ -18,6 +18,12 @@ var Signup = require('./user/Signup');
 var App = require('./App');
 var Forbidden = require('./Forbidden');
 
+
+if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
+
 var Routes = (
 
     <Route handler={App} path="/">

@@ -2,17 +2,15 @@
  * Created by Damien on 24/04/2015.
  */
 
-var CronJob = require('cron').CronJob;
-var db = requires("../config/database");
-var io = require('socket.io').listen(8888);
 
-if (Notification.permission !== "granted")
-    Notification.requestPermission();
+var db = require("../config/database");
+var io = require('socket.io');
+
 
 /**
  * notification news
  */
-function newNotification(){
+module.exports.newNotification = function(){
     var requet = "SELECT COUNT(*) FROM news WHERE DATE(publish) = NOW()";
     var nbArticle = 0;
     db.query(requet, null, function(error, results, fields){
@@ -28,13 +26,6 @@ function newNotification(){
         });
     }
 }
-new CronJob('0 0 13 * * *',
-    newNotification(),
-    null,
-    true,
-    'Europe/Paris'
-);
-
 
 /**
  * notification message
@@ -68,8 +59,8 @@ module.exports.groupUpdate = function(id_group) {
     db.query(requet, data, function (error, results, fields) {
         if (error)console.error(error);
         if (results.length > 0) {
-            var clients = io.socket.clients();
-
+            //var clients = io.socket.clients();
+            console.log();
         }
     });
 
@@ -79,6 +70,7 @@ module.exports.groupUpdate = function(id_group) {
  * notification groups invitation
  * @param {int} id_group - the id of the group where the user is invited
  */
+
 module.exports.groupInvitation = function(id_group){
     var requet = "SELECT name FROM groups WHERE id=?";
     var data = [id_group];
