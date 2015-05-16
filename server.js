@@ -1,6 +1,7 @@
 #!/bin/env node
 // Modules
 var express = require('express');
+var multer  = require('multer');
 var app  = express();
 var port = process.env.NODEJS_PORT || 8888;
 var ip   = process.env.NODEJS_IP || "127.0.0.1";
@@ -8,6 +9,13 @@ var ip   = process.env.NODEJS_IP || "127.0.0.1";
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var chat = require('./server/chat/chat');
+
+app.use(multer({
+  dest: './uploads/',
+  rename: function (fieldname, filename) {
+    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
+  }
+}));
 
 require('./server/config/config')(app, express);
 
@@ -18,6 +26,7 @@ require('./server/config/routes')(app, express);
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/public/index.html");
 });
+
 
 chat(io);
 

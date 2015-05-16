@@ -1,5 +1,6 @@
 import React from 'react/addons'
 import moment from 'moment'
+import Dropzone from 'react-dropzone'
 import Router, { Link, Navigation } from 'react-router'
 import Bootstrap, {
   Grid,
@@ -7,6 +8,8 @@ import Bootstrap, {
   Col,
   ListGroup,
   ListGroupItem,
+  TabbedArea,
+  TabPane,
   Button,
   Input,
   Label
@@ -25,24 +28,38 @@ export default React.createClass({
       <Grid>
         <Row>
           <Col xs={8}>
-            <h1>Messages</h1>
-            {this.state.messages.map(message => {
-              return (
-                <div className="thumbnail">
-                  <h2>by {message.first_name} {message.last_name}</h2>
-                  <p>{message.content}</p>
-                </div>
-              );
-            })}
-            <h4>Create new message</h4>
-              <Input
-                  type='textarea'
-                  placeholder='Content'
-                  label='Content'
-                  ref='content'
-                  valueLink={this.linkState('newMessage')}
-              />
-            <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+            <TabbedArea defaultActiveKey={1}>
+              <TabPane eventKey={1} tab='Messages'>
+                {this.state.messages.map(message => {
+                  return (
+                    <div key={message.id} className="thumbnail">
+                      <h2>by {message.first_name} {message.last_name}</h2>
+                      <p>{message.content}</p>
+                    </div>
+                  );
+                })}
+                <h4>Create new message</h4>
+                  <Input
+                      type='textarea'
+                      placeholder='Content'
+                      label='Content'
+                      ref='content'
+                      valueLink={this.linkState('newMessage')}
+                  />
+                <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+              </TabPane>
+              <TabPane eventKey={2} tab='Files'>
+                <h1>Files</h1>
+                <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >
+                  <div>Try dropping some files here, or click to select files to upload.</div>
+                </Dropzone>
+                {this.state.files.map(file => {
+                  return (
+                    <div>{file}</div>
+                  );
+                })}
+              </TabPane>
+            </TabbedArea>
           </Col>
           <Col xs={4}>
             <h1>{this.state.group.name}</h1>
@@ -93,7 +110,9 @@ export default React.createClass({
       },
       members: [],
       messages: [],
-      newMessage: ""
+      newMessage: "",
+      files: [],
+      file: null
     }
   },
 
@@ -120,8 +139,30 @@ export default React.createClass({
     });
   },
 
+  onDrop: function (files) {
+    if (files.length > 0) {
+      let slug = this.context.router.getCurrentParams().slug;
+      GroupsService.uploadFile(slug, files).then(res => {
+        console.log(res);
+      }, err => {
+        console.error(err);
+      });
+    }
+    console.log('Received files: ', files);
+  },
+
+  selectFile: function (e) {
+    console.log(e);
+  },
+
   join: function () {
     console.log("join");
   }
 
 });
+
+let dropzoneStyle = {
+  width: '100%',
+  height: 50,
+  borderStyle: "dashed"
+}

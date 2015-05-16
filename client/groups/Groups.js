@@ -39,12 +39,14 @@ export default React.createClass({
                 })}
               </TabPane>
               <TabPane eventKey={3} tab='Create Group'>
-                  <If condition={true}>
+                  <If condition={this.state.createGroupError}>
                       <Alert bsStyle='danger'>
+                        Error
                       </Alert>
                   </If>
-                  <If condition={true}>
+                  <If condition={this.state.createGroupSuccess}>
                       <Alert bsStyle='success'>
+                        Success
                       </Alert>
                   </If>
                   <Input
@@ -54,6 +56,20 @@ export default React.createClass({
                       ref='name'
                       valueLink={this.linkState('name')}
                   />
+                  <Input type='select' label='Accesses' placeholder='Accesses' valueLink={this.linkState('access')}>
+                    {this.state.accesses.map((access, i) => {
+                      return (
+                        <option value={access} key={access + i}>{access}</option>
+                      );
+                    })}
+                  </Input>
+                  <Input type='select' label='Types' placeholder='types' valueLink={this.linkState('type')}>
+                    {this.state.types.map((type, i) => {
+                      return (
+                        <option value={type} key={type + i}>{type}</option>
+                      );
+                    })}
+                  </Input>
                   <Input
                       type='textarea'
                       rows={4}
@@ -76,7 +92,15 @@ export default React.createClass({
   getInitialState: function () {
     return {
       groups: [],
-      myGroups: []
+      myGroups: [],
+      description: "",
+      name: "",
+      accesses: [],
+      access: "private",
+      types: [],
+      type: "project",
+      createGroupError: false,
+      createGroupSuccess: false
     };
   },
 
@@ -93,6 +117,16 @@ export default React.createClass({
     GroupsService.getMyGroups().then(groups => {
       this.setState({
         myGroups: groups
+      });
+    }, err => {
+      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
+
+    GroupsService.getGroupsTypes().then(types => {
+      this.setState({
+        accesses: types.accesses,
+        types: types.types
       })
     }, err => {
       console.error(err);
@@ -101,7 +135,38 @@ export default React.createClass({
   },
 
   createGroup: function () {
-    console.log("createGroup");
+    // TODO validate data
+    var newGroup = {
+      name: this.state.name,
+      description: this.state.description,
+      access: this.state.access,
+      type: this.state.type
+    };
+
+    GroupsService.create(newGroup).then(result => {
+      this.state.groups.push(result);
+      this.setState({
+        createGroupSuccess: true,
+        createGroupError: false,
+        groups: this.state.groups,
+        name: "",
+        description: ""
+      });
+
+      window.setTimeout(() => {
+        this.setState({
+          createGroupSuccess: false,
+          createGroupError: false,
+        });
+      }, 5000);
+    }, err => {
+      console.error(err);
+      this.setState({
+        createGroupSuccess: false,
+        createGroupError: true
+      });
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
   }
 
 });

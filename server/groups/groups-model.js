@@ -4,10 +4,30 @@ var db = require('../config/database');
 /**
 Cherhces le groupe par son id
 */
-module.exports.findOneById = function (id, callback) {
-    // TODO
-    callback(null);
+var findOneById = function (id, callback) {
+    var sql = "SELECT * FROM groups WHERE groups.id = ? ;";
+    var data = [id];
+    db.query(sql, data, function (error, results, fields) {
+        callback(error, results, fields);
+    });
 };
+module.exports.findOneById;
+
+module.exports.groupsStatus = {
+    open: 'open',
+    close: 'close'
+};
+
+module.exports.groupsAccess = {
+    private: 'private',
+    public: 'public'
+}
+
+module.exports.groupsTypes = {
+    project: 'project',
+    discussion: 'discussion',
+    other: 'other'
+}
 
 module.exports.findOneBySlug = function (slug, callback) {
     var sql = "SELECT * FROM groups WHERE groups.slug = ? ;";
@@ -62,11 +82,12 @@ module.exports.create = function (group, callback) {
     var data = [group];
     db.query(sql, data, function (error, results, fields) {
         //console.log("create", "error = ", error, "results = ", results);
-        if (error && results && results.affectedRows === 1) {
-            callback(error, results.insertId, fields);
+        if (error) {
+            callback(error, results, fields);
         } else {
-            console.error(error);
-            callback(error, null, fields);
+            findOneById(results.insertId, function (error, results, fields) {
+                callback(error, results, fields);
+            });
         }
     });
 };

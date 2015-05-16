@@ -101,7 +101,25 @@ router.post('/', groupsValidator, auth.withUser, function (req, res) {
     group.users_id = user.id;
     GroupsModel.create(group, function (err, result) {
         console.log("err", err, "result", result);
-        res.json(result);
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                res.status(400).json({
+                    error: "Already exist"
+                });
+            } else {
+                res.status(500).json({
+                    error: err
+                });
+            }
+        } else {
+            if (result.length > 0) {
+                res.json(result[0]);
+            } else {
+                res.status(500).json({
+                    error: err
+                });
+            }
+        }
     });
 });
 
@@ -217,5 +235,54 @@ var getMessagesGroups = function (req, res) {
 };
 
 router.get('/messages/:slug', auth.withUser, getMessagesGroups);
+
+var getGroupsTypes = function (req, res) {
+    var status = GroupsModel.groupsStatus;
+    var access = GroupsModel.groupsAccess;
+    var types = GroupsModel.groupsTypes;
+    res.json({
+        status: [
+            status.open,
+            status.close
+        ],
+        accesses: [
+            access.public,
+            access.private
+        ],
+        types: [
+            types.project,
+            types.discussion,
+            types.other
+        ]
+    });
+}
+
+router.get('/types', auth.withUser, getGroupsTypes);
+
+/**
+Upload files for groups
+*/
+var uploadFile = function (req, res) {
+    var user = req.$user;
+    var slug = req.params.slug;
+    var file = req.files.file;
+    if (file) {
+        console.log("file", file);
+        var groupFile = {
+            originalname: file.originalname,
+            mimetype: file.mimetype,
+            path: file.path,
+            extension: file.extension,
+            size: file.size
+        }
+        res.json(groupFile);
+    } else {
+        res.status(400).json({
+            error: "file required"
+        });
+    }
+};
+
+router.post('/upload/:slug', auth.withUser, uploadFile);
 
 module.exports = router;
