@@ -18,12 +18,13 @@ import Bootstrap, {
 
 import GroupsService from './GroupsService'
 import Chat from '../chat/Chat'
+import MessageGroup from './MessageGroup'
+import FileGroup from './FileGroup'
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-    console.log("Group.render", this.state);
     let membersView = this.state.members.map((memeber, i) => (<div key={i}>{memeber.first_name}</div>));
     return (
       <Grid>
@@ -32,12 +33,7 @@ export default React.createClass({
             <TabbedArea defaultActiveKey={1}>
               <TabPane eventKey={1} tab='Messages'>
                 {this.state.messages.map(message => {
-                  return (
-                    <div key={message.id} className="thumbnail">
-                      <h2>by {message.first_name} {message.last_name}</h2>
-                      <p>{message.content}</p>
-                    </div>
-                  );
+                  return <MessageGroup message={message} key={message.id} />;
                 })}
                 <h4>Create new message</h4>
                   <Input
@@ -56,10 +52,7 @@ export default React.createClass({
                 <h1>Files</h1>
                 {this.state.files.map(file => {
                   return (
-                    <div className="thumbnail" key={file.name + file.id}>
-                      <h4>{file.name}</h4>
-                      <p>{file.size} Ko</p>
-                    </div>
+                    <FileGroup key={file.name + file.id} file={file} />
                   );
                 })}
               </TabPane>
@@ -81,10 +74,8 @@ export default React.createClass({
 
   createMessage: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    console.log("createMessage", this.state.newMessage);
     if (this.state.newMessage !== "") {
       GroupsService.createMessageGroup(slug, this.state.newMessage).then(result => {
-        console.log(result);
         this.state.messages.push(result);
         this.setState({
           messages: this.state.messages,
@@ -127,7 +118,6 @@ export default React.createClass({
   componentDidMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
     GroupsService.get(slug).then(group => {
-      console.log(group);
       this.setState(group);
     }, err => {
       console.error(err);

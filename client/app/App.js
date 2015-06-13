@@ -1,19 +1,19 @@
-const React          = require('react');
-const Router         = require('react-router');
-const Link           = Router.Link;
-const RouteHandler   = Router.RouteHandler;
-const Navbar         = require('react-bootstrap/lib/Navbar');
-const Nav            = require('react-bootstrap/lib/Nav');
-const DropdownButton = require('react-bootstrap/lib/DropdownButton');
-const CollapsableNav = require('react-bootstrap/lib/CollapsableNav');
-const NavItem        = require('react-bootstrap/lib/NavItem');
-const MenuItem       = require('react-bootstrap/lib/MenuItem');
-const AppActions     = require('./AppActions');
-const AppStore       = require('./AppStore');
-const UsersActions   = require('../user/UsersActions');
-const UsersStore     = require('../user/UsersStore');
-const Events         = require('../flux/Events');
-const If             = require('../utils/If');
+import React from 'react'
+import Router, { Link, RouteHandler } from 'react-router'
+import Bootstrap, {
+    Navbar,
+    Nav,
+    DropdownButton,
+    CollapsableNav,
+    NavItem,
+    MenuItem
+} from 'react-bootstrap'
+import AppActions from './AppActions'
+import AppStore from './AppStore'
+import UsersActions from '../user/UsersActions'
+import UsersStore from '../user/UsersStore'
+import Events from '../flux/Events'
+import If from '../utils/If'
 
 function getMe() {
     return {
@@ -24,12 +24,11 @@ function getMe() {
 const App = React.createClass({
     mixins: [ Router.Navigation ],
     render: function() {
-        //console.debug("App.render", this.state);
         let me = this.state.me;
         return (
             <div>
                 <Navbar brand='Innovalys' toggleNavKey={0} fluid>
-                    <CollapsableNav eventKey={0}> {/* This is the eventKey referenced */}
+                    <CollapsableNav eventKey={1}>
                         <Nav navbar>
                             <li><Link to="articles">Articles</Link></li>
                             <li><Link to="groups">Groups</Link></li>
