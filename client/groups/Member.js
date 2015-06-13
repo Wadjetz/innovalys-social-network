@@ -4,7 +4,8 @@ import moment from 'moment'
 
 export default React.createClass({
   render: function () {
-    let file = this.props.file;
+    let memeber = this.props.memeber;
+    console.log(memeber);
     return (
       <div className="media">
         <div className="media-left">
@@ -13,9 +14,9 @@ export default React.createClass({
           </a>
         </div>
         <div className="media-body">
-          <h4>{file.name}</h4>
+          <h4>{memeber.first_name} {memeber.last_name}</h4>
           <p>
-            <Label bsStyle='primary'>by {file.first_name} {file.last_name}</Label> <Label bsStyle='info'>{file.function}</Label> <Label bsStyle='info'>{file.role}</Label> <Label bsStyle='default'>{moment(file.created).fromNow()}</Label>
+            <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
           </p>
         </div>
       </div>

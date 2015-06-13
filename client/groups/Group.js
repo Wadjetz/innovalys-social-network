@@ -20,21 +20,32 @@ import GroupsService from './GroupsService'
 import Chat from '../chat/Chat'
 import MessageGroup from './MessageGroup'
 import FileGroup from './FileGroup'
+import Member from './Member'
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-    let membersView = this.state.members.map((memeber, i) => (<div key={i}>{memeber.first_name}</div>));
+
+    let messagesView = this.state.messages.map(message =>
+      <MessageGroup message={message} key={message.id} />
+    );
+
+    let filesView = this.state.files.map(file =>
+      <FileGroup file={file} key={file.name + file.id}  />
+    );
+
+    let membersView = this.state.members.map(memeber =>
+      <Member memeber={memeber} key={memeber.id} />
+    );
+    
     return (
       <Grid>
         <Row>
           <Col xs={8}>
             <TabbedArea defaultActiveKey={1}>
               <TabPane eventKey={1} tab='Messages'>
-                {this.state.messages.map(message => {
-                  return <MessageGroup message={message} key={message.id} />;
-                })}
+                {messagesView}
                 <h4>Create new message</h4>
                   <Input
                       type='textarea'
@@ -50,11 +61,7 @@ export default React.createClass({
                   <div>Try dropping some files here, or click to select files to upload.</div>
                 </Dropzone>
                 <h1>Files</h1>
-                {this.state.files.map(file => {
-                  return (
-                    <FileGroup key={file.name + file.id} file={file} />
-                  );
-                })}
+                {filesView}
               </TabPane>
             </TabbedArea>
           </Col>
