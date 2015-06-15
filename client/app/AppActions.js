@@ -1,7 +1,7 @@
-const AppConstants  = require('./AppConstants');
-const AppDispatcher = require('./AppDispatcher');
+import AppConstants  from './AppConstants'
+import AppDispatcher from './AppDispatcher'
 
-const AppActions = {
+export default {
     notfound: function () {
         AppDispatcher.handleViewAction({
             actionType: AppConstants.NOT_FOUND
@@ -18,6 +18,3 @@ const AppActions = {
         });
     }
 };
-
-module.exports = AppActions;
-

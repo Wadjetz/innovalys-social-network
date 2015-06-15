@@ -13,25 +13,27 @@ var GroupsFilesModel = require('./groups-files-model');
 validate.moment = moment;
 /**
 GET /groups
-Get groups
+Get all groups
 */
 var getGroupsRoute = function (req, res) {
-    var user = req.$user;
-    var page = req.query.page || 0;
-    GroupsModel.findAll(page, function (err, groups) {
-        console.log("groups", groups);
-        res.json(groups);
-    });
+  var user = req.$user;
+  var page = req.query.page || 0;
+  GroupsModel.findAll(page).then(function (groups) {
+    res.json(groups);
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 router.get('/', auth.withUser, getGroupsRoute);
 
 var findMyGroups = function (req, res) {
     var user = req.$user;
-    GroupsModel.findMyGroups(user, function (err, groups) {
-        res.json(groups);
+    GroupsModel.findMyGroups(user).then(function (groups) {
+      res.json(groups);
+    }).fail(function (err) {
+      res.status(400).json(err);
     });
 }
-
 router.get('/my-groups', auth.withUser, findMyGroups);
 
 router.get('/by-slug/:slug', auth.withUser, function (req, res) {
@@ -96,66 +98,53 @@ function groupsValidator(req, res, next) {
 }
 
 router.post('/', groupsValidator, auth.withUser, function (req, res) {
-    var user = req.$user;
-    var group = req._new_group;
-    group.slug = utils.slug(group.name);
-    group.users_id = user.id;
-    GroupsModel.create(group, function (err, result) {
-        console.log("err", err, "result", result);
-        if (err) {
-            if (err.code === 'ER_DUP_ENTRY') {
-                res.status(400).json({
-                    error: "Already exist"
-                });
-            } else {
-                res.status(500).json({
-                    error: err
-                });
-            }
-        } else {
-            if (result.length > 0) {
-                res.json(result[0]);
-            } else {
-                res.status(500).json({
-                    error: err
-                });
-            }
-        }
+  var user = req.$user;
+  var group = req._new_group;
+  group.slug = utils.slug(group.name);
+  group.users_id = user.id;
+  GroupsModel.create(group)
+    .then(function (id) {
+      return GroupsModel.findOneById(id);
+    })
+    .then(function (group) {
+      res.json(group);
+    })
+    .fail(function (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        res.status(400).json({
+            error: "Already exist"
+        });
+      } else {
+        res.status(500).json(err);
+      }
     });
 });
 
 router.post('/members/join/:slug', auth.withUser, function (req, res) {
     var user = req.$user;
     var slug = req.params.slug;
-    async.waterfall([
-        function (callback) {
-            GroupsModel.findOneBySlug(slug, function (err, group) {
-                console.log("findOneBySlug", "slug="+slug, "err", err, "group", group);
-                if (group) {
-                    callback(err, group);
-                } else {
-                    callback({error: "Group not found"});
-                }
-            });
-        },
-        function (group, callback) {
-            MembersModel.create(user.id, group.id, function (createErr, createRes) {
-                console.log("create", createErr, createRes);
-                callback(createErr, {
-                    group: group,
-                    createRes: createRes
-                });
-            });
-        }
-    ], function (err, result) {
-        if (err) {
-            res.status(400).json(err);
-        } else if (result) {
-            res.json(result);
-        } else {
-            res.status(404);
-        }
+    GroupsModel.findOneBySlug(slug).then(function (group) {
+      return MembersModel.create(user.id, group.id);
+    }).then(function (id) {
+      res.json({
+        "message": "ok"
+      });
+    }).fail(function (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        res.status(400).json({
+            error: "Already join"
+        });
+      } else {
+        res.status(500).json(err);
+      }
     });
+});
+
+router.delete('/members/join/:slug', auth.withUser, function (req, res) {
+  var user = req.$user;
+  var slug = req.params.slug;
+
+  res.status(200).json({});
 });
 
 router.get('/members/:slug', auth.withUser, function (req, res) {

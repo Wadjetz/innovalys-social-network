@@ -1,5 +1,5 @@
-const Dispatcher = require('../flux/Dispatcher');
-const assign     = require('lodash/object/assign');
+import Dispatcher from '../flux/Dispatcher'
+import assign     from 'lodash/object/assign'
 
 const AppDispatcher = assign(Dispatcher.prototype, {
     handleViewAction: function (action) {
@@ -10,4 +10,4 @@ const AppDispatcher = assign(Dispatcher.prototype, {
     }
 });
 
-module.exports = AppDispatcher;
+export default AppDispatcher;

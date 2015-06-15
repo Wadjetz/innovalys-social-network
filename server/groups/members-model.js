@@ -1,16 +1,15 @@
 var db = require('../config/database');
+var Q = require('q');
 
 module.exports = {
-    create: function (userId, groupeId, callback) {
+    create: function (userId, groupeId) {
         var members = {
             users_id: userId,
             groups_id: groupeId
         }
         var sql = "INSERT INTO members SET ? ;";
         var data = [members];
-        db.query(sql, data, function (error, results, fields) {
-            callback(error, results, fields);
-        });
+        return db.insert(sql, data);
     },
     findByStatus: function (groupeId, status, callback) {
         var sql  = "SELECT " +
@@ -24,7 +23,7 @@ module.exports = {
                         "users.last_connection, " +
                         "users.arrival_date, " +
                         "members.status AS memeber_status " +
-                    "FROM members " + 
+                    "FROM members " +
                     "JOIN users ON users.id = members.users_id " +
                     "WHERE members.groups_id = ? " +
                     "AND members.status = ? ;";
@@ -42,7 +41,7 @@ module.exports = {
         db.query(sql, data, function (error, results, fields) {
             if (error) {
                 console.error(error);
-                callback(error, null, fields); 
+                callback(error, null, fields);
             } else if (results.length > 0) {
                 callback(error, results[0], fields);
             } else {
@@ -59,7 +58,7 @@ module.exports = {
         db.query(sql, data, function (error, results, fields) {
             if (error) {
                 console.error(error);
-                callback(error, null, fields); 
+                callback(error, null, fields);
             } else if (results.length > 0) {
                 callback(error, results[0], fields);
             } else {
@@ -67,5 +66,19 @@ module.exports = {
             }
         });
     },
-};
 
+    delete: function (user_id, groupe_id, callback) {
+      var sql = "DELETE FROM members WHERE members.user_id = ? AND members.groupe_id = ? ;";
+      var data = [user_id, groupe_id];
+      db.query(sql, data, function (error, results, fields) {
+          if (error) {
+              console.error(error);
+              callback(error, null, fields);
+          } else if (results.length > 0) {
+              callback(error, results[0], fields);
+          } else {
+              callback(error, [], fields);
+          }
+      });
+    }
+};

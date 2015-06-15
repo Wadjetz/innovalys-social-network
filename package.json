@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "js-build": "browserify client/main.js -t babelify --outfile public/main.js",
-    "js-watch": "watchify client/main.js -t babelify --outfile public/main.js",
+    "js-build": "browserify client/main.js -t babelify --outfile server/public/main.js",
+    "js-watch": "watchify client/main.js -t babelify --outfile server/public/main.js",
     "watch": "npm run js-watch",
     "build": "npm run js-build"
   },

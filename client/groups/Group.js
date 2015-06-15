@@ -38,7 +38,7 @@ export default React.createClass({
     let membersView = this.state.members.map(memeber =>
       <Member memeber={memeber} key={memeber.id} />
     );
-    
+
     return (
       <Grid>
         <Row>
@@ -69,7 +69,6 @@ export default React.createClass({
             <h1>{this.state.group.name}</h1>
             <Label bsStyle='default'>{this.state.group.type}</Label>
             <p>{this.state.group.description}</p>
-            <Button onClick={this.join}>Join</Button>
             <Chat />
             <h2>Members</h2>
             {membersView}
@@ -167,10 +166,6 @@ export default React.createClass({
   selectFile: function (e) {
     console.log(e);
   },
-
-  join: function () {
-    console.log("join");
-  }
 
 });
 

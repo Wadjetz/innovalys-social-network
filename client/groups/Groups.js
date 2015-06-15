@@ -1,5 +1,6 @@
 import React from 'react'
 import Router, { Link, Navigation } from 'react-router'
+import _ from 'lodash'
 import Bootstrap, {
   Grid,
   Row,
@@ -23,20 +24,24 @@ export default React.createClass({
   ],
 
   render: function () {
+    let myGroupsView = this.state.myGroups.map(group =>
+      <GroupView key={group.id} group={group} isJoin={false} />
+    );
+
+    let groupsView = this.state.groups.map(group =>
+      <GroupView key={group.id} group={group} isJoin={true} handleJoinGroup={this.handleJoinGroup(group)} />
+    );
+
     return (
       <Grid>
         <Row>
           <Col xs={8}>
             <TabbedArea defaultActiveKey={1}>
               <TabPane eventKey={1} tab='My Groups'>
-                {this.state.myGroups.map(group => {
-                  return ( <GroupView key={group.id} group={group} /> );
-                })}
+                {myGroupsView}
               </TabPane>
               <TabPane eventKey={2} tab='Groups'>
-                {this.state.groups.map(group => {
-                  return ( <GroupView key={group.id} group={group} /> );
-                })}
+                {groupsView}
               </TabPane>
               <TabPane eventKey={3} tab='Create Group'>
                   <If condition={this.state.createGroupError}>
@@ -167,6 +172,21 @@ export default React.createClass({
       });
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
+  },
+
+  handleJoinGroup: function (group) {
+    return function () {
+      GroupsService.join(group).then(res => {
+        console.log(res);
+        let groups = _.filter(this.state.groups, g => g.id != group.id);
+        console.log(groups);
+        this.setState({
+          groups: groups
+        });
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
 });
