@@ -9,7 +9,7 @@ module.exports.findAllByGroupSlug = function (slug, page, callback) {
       sql += "message_groups.content, ";
       sql += "message_groups.created, ";
       sql += "message_groups.updated, ";
-      sql += "users.role, "; 
+      sql += "users.role, ";
       sql += "users.first_name, ";
       sql += "users.last_name, ";
       sql += "users.status_profile, ";
@@ -31,7 +31,7 @@ var findById = function (id, callback) {
       sql += "message_groups.content, ";
       sql += "message_groups.created, ";
       sql += "message_groups.updated, ";
-      sql += "users.role, "; 
+      sql += "users.role, ";
       sql += "users.first_name, ";
       sql += "users.last_name, ";
       sql += "users.status_profile, ";
@@ -64,11 +64,9 @@ module.exports.create = function (message, callback) {
 };
 
 module.exports.update = function (message, callback) {
-  
   callback(null, null);
 };
 
 module.exports.delete = function (message, callback) {
-  // TODO
   callback(null, null);
 };

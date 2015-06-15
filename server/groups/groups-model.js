@@ -53,27 +53,27 @@ module.exports.findMyGroups = function (user) {
 };
 
 module.exports.groupsStatus = {
-    open: 'open',
-    close: 'close'
+  open: 'open',
+  close: 'close'
 };
 
 module.exports.groupsAccess = {
-    private: 'private',
-    public: 'public'
+  private: 'private',
+  public: 'public'
 }
 
 module.exports.groupsTypes = {
-    project: 'project',
-    discussion: 'discussion',
-    other: 'other'
+  project: 'project',
+  discussion: 'discussion',
+  other: 'other'
 }
 
-module.exports.update = function (comment, callback) {
-    // TODO
-    callback(null);
+module.exports.update = function (comment) {
+  // TODO
+  callback(null);
 };
 
-module.exports.delete = function (id, callback) {
-    // TODO
-    callback(null);
+module.exports.delete = function (id) {
+  // TODO
+  callback(null);
 };

@@ -50,4 +50,3 @@ module.exports.findAllByGroupSlug = function (slug, callback) {
     callback(error, results, fields);
   });
 };
-

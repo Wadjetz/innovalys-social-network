@@ -33,32 +33,47 @@ router.delete('/join/:slug', auth.withUser, function (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug)
-		.then(function (group) {
-	    return MembersModel.delete(user.id, group.id);
-	  })
-		.then(function (result) {
-	  	res.json({
-				"deleted": result
-			});
-	  })
-		.fail(function (err) {
-	  	res.status(400).json(err);
-	  });
+    .then(function (group) {
+      return MembersModel.delete(user.id, group.id);
+    })
+    .then(function (result) {
+      res.json({
+        "deleted": result
+      });
+    })
+    .fail(function (err) {
+      res.status(400).json(err);
+    });
 });
 
 router.get('/:slug', auth.withUser, function (req, res) {
-    var user = req.$user;
-    var slug = req.params.slug;
-    GroupsModel.findOneBySlug(slug)
-		.then(function (group) {
-    	return MembersModel.findByStatus(group.id, "pending");
+  var user = req.$user;
+  var slug = req.params.slug;
+  GroupsModel.findOneBySlug(slug)
+    .then(function (group) {
+      return MembersModel.findByStatus(group.id, "accepted");
     })
-		.then(function (members) {
-			res.json(members);
-		})
-		.fail(function (err) {
-			res.status(400).json(err);
-		});
+    .then(function (members) {
+      res.json(members);
+    })
+    .fail(function (err) {
+      res.status(400).json(err);
+    });
+});
+
+router.get('/pending/:slug', auth.withUser, function (req, res) {
+  var user = req.$user;
+  var slug = req.params.slug;
+  GroupsModel.findOneBySlug(slug)
+    .then(function (group) {
+      return MembersModel.findByStatus(group.id, "pending");
+    })
+    .then(function (members) {
+      res.json(members);
+    })
+    .fail(function (err) {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;

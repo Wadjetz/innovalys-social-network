@@ -1,5 +1,4 @@
 var router = require("express").Router();
-//var bcrypt = require('bcrypt');
 var passwordHash = require('password-hash');
 var validate = require("validate.js");
 var generatePassword = require('password-generator');
@@ -48,15 +47,6 @@ router.post('/signup', signupValidator, function (req, res) {
         },
         hash: function (callback) {
             callback(null, passwordHash.generate(newUser.password));
-            /*
-            bcrypt.genSalt(10, function (genSaltErr, salt) {
-                if (genSaltErr) console.error(genSaltErr);
-                bcrypt.hash(newUser.password, salt, function (hashError, hash) {
-                    if (hashError) console.error(hashError);
-                    callback(hashError, hash);
-                });
-            });
-            */
         }
     }, function(asyncErr, asyncRes) {
         //console.log(asyncRes);
@@ -100,27 +90,22 @@ function loginValidator(req, res, next) {
 }
 
 router.post('/login', loginValidator, function(req, res, next) {
-    var user = req._login;
-    var jsonError = { error: "Login ou password invalide" };
-    //console.log("user", user, "email.toLowerCase()", user.email.toLowerCase())
+  var login = req._login;
+  var jsonError = { error: "Login ou password invalide" };
 
-    UserModel.findOneByEmail(user.email.toLowerCase(), function (findError, findUser) {
-        if (findError) console.error(findError);
-        if (findUser) {
-            //bcrypt.compare(user.password, findUser.password, function(compareErr, compareRes) {
-                compareRes = passwordHash.verify(user.password, findUser.password);
-                if (compareRes === true) {
-                    req.session.email = findUser.email;
-                    res.json({
-                        message: "Hello"
-                    });
-                } else {
-                    res.status(400).json(jsonError);
-                }
-            //});
-        } else {
-            res.status(400).json(jsonError);
-        }
+  UserModel.findOneByEmail(login.email.toLowerCase())
+    .then(function (user) {
+      if(passwordHash.verify(login.password, user.password)) {
+        req.session.email = user.email;
+        res.json({
+            message: "Hello"
+        });
+      } else {
+        res.status(400).json(jsonError);
+      }
+    })
+    .fail(function (err) {
+      res.status(400).json(jsonError);
     });
 });
 
@@ -142,22 +127,22 @@ router.get('/status-connection', function (req, res) {
     res.json(result);
 });
 
-router.get('/me', auth.withRole([UserModel.roles.RH]), function (req, res) {
-    var user = req.$user;
-    res.json({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        birthday_date: user.birthday_date, // TODO Calculate age
-        status_profile: user.status_profile,
-        status_connection: user.status_connection,
-        function: user.function,
-        description: user.description,
-        arrival_date: user.arrival_date,
-        last_connection: user.last_connection
-    });
+router.get('/me', auth.withUser, function (req, res) {
+  var user = req.$user;
+  res.json({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    birthday_date: user.birthday_date,
+    status_profile: user.status_profile,
+    status_connection: user.status_connection,
+    function: user.function,
+    description: user.description,
+    arrival_date: user.arrival_date,
+    last_connection: user.last_connection
+  });
 });
 
 module.exports = router;
