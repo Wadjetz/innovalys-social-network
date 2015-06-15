@@ -22,6 +22,16 @@ module.exports.findOneById = function (id) {
 };
 
 /**
+Find groupe by slug
+*/
+module.exports.findOneBySlug = function (slug) {
+  return db.findOne(
+    "SELECT * FROM groups WHERE groups.slug = ? ;",
+    [slug]
+  );
+};
+
+/**
 Find all groups
 */
 module.exports.findAll = function (page) {
@@ -57,12 +67,6 @@ module.exports.groupsTypes = {
     discussion: 'discussion',
     other: 'other'
 }
-
-module.exports.findOneBySlug = function (slug) {
-  var sql = "SELECT * FROM groups WHERE groups.slug = ? ;";
-  var data = [slug];
-  return db.findOne(sql, data);
-};
 
 module.exports.update = function (comment, callback) {
     // TODO

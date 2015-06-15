@@ -120,45 +120,6 @@ router.post('/', groupsValidator, auth.withUser, function (req, res) {
     });
 });
 
-router.post('/members/join/:slug', auth.withUser, function (req, res) {
-    var user = req.$user;
-    var slug = req.params.slug;
-    GroupsModel.findOneBySlug(slug).then(function (group) {
-      return MembersModel.create(user.id, group.id);
-    }).then(function (id) {
-      res.json({
-        "message": "ok"
-      });
-    }).fail(function (err) {
-      if (err.code === 'ER_DUP_ENTRY') {
-        res.status(400).json({
-            error: "Already join"
-        });
-      } else {
-        res.status(500).json(err);
-      }
-    });
-});
-
-router.delete('/members/join/:slug', auth.withUser, function (req, res) {
-  var user = req.$user;
-  var slug = req.params.slug;
-
-  res.status(200).json({});
-});
-
-router.get('/members/:slug', auth.withUser, function (req, res) {
-    var user = req.$user;
-    var slug = req.params.slug;
-    GroupsModel.findOneBySlug(slug, function (err, group) {
-        // TODO handel errors
-        MembersModel.findByStatus(group.id, "pending", function (findErr, findRes) {
-            // TODO handel errors
-            res.json(findRes);
-        });
-    });
-});
-
 /**
 Message group validator
 */
