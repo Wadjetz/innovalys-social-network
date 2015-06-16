@@ -1,8 +1,8 @@
-public/main.js
+/server/uploads/*
+/server/public/main.js
+
 *.bak
 *.swp
-
-uploads/*
 
 ################# Map #################
 *.map

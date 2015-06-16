@@ -60,20 +60,24 @@ module.exports.groupsStatus = {
 module.exports.groupsAccess = {
   private: 'private',
   public: 'public'
-}
+};
 
 module.exports.groupsTypes = {
   project: 'project',
   discussion: 'discussion',
   other: 'other'
-}
+};
 
-module.exports.update = function (comment) {
-  // TODO
-  callback(null);
+module.exports.update = function (group) {
+  return db.update(
+    "UPDATE posts SET ? ;",
+    [group]
+  );
 };
 
 module.exports.delete = function (id) {
-  // TODO
-  callback(null);
+  return db.delete(
+    "DELETE FROM groups WHERE groups.id = ? ;",
+    [id]
+  );
 };

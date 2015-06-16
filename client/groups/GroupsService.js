@@ -23,7 +23,7 @@ export default {
 
   get: function (slug) {
     return Qajax({
-      url: BASE_URL + '/groups/by-slug/' + slug,
+      url: BASE_URL + '/groups/' + slug,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
