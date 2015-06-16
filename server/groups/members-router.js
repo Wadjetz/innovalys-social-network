@@ -9,7 +9,11 @@ var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 var MessagesModel = require('./messages-model');
 
-router.post('/join/:slug', auth.withUser, function (req, res) {
+/**
+POST /groups/members/join/:slug
+Join group
+*/
+function postJoinGroupeAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug).then(function (group) {
@@ -27,9 +31,14 @@ router.post('/join/:slug', auth.withUser, function (req, res) {
       res.status(400).json(err);
     }
   });
-});
+}
+router.post('/join/:slug', auth.withUser, postJoinGroupeAction);
 
-router.delete('/join/:slug', auth.withUser, function (req, res) {
+/**
+DELETE /groups/members/join/:slug
+Delete member from groupe
+*/
+function deleteMembersFromGroupAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug)
@@ -44,9 +53,14 @@ router.delete('/join/:slug', auth.withUser, function (req, res) {
     .fail(function (err) {
       res.status(400).json(err);
     });
-});
+}
+router.delete('/join/:slug', auth.withUser, deleteMembersFromGroupAction);
 
-router.get('/:slug', auth.withUser, function (req, res) {
+/**
+GET /groups/members/:slug
+Get members by groupe slug
+*/
+function getMembersByGroupeSlugAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug)
@@ -59,9 +73,14 @@ router.get('/:slug', auth.withUser, function (req, res) {
     .fail(function (err) {
       res.status(400).json(err);
     });
-});
+}
+router.get('/:slug', auth.withUser, getMembersByGroupeSlugAction);
 
-router.get('/pending/:slug', auth.withUser, function (req, res) {
+/**
+GET /groups/members/pending/:slug
+Get members pending by slug
+*/
+function getMembersPendingBySlugAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug)
@@ -74,6 +93,7 @@ router.get('/pending/:slug', auth.withUser, function (req, res) {
     .fail(function (err) {
       res.status(400).json(err);
     });
-});
+}
+router.get('/pending/:slug', auth.withUser, getMembersPendingBySlugAction);
 
 module.exports = router;

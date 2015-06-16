@@ -21,9 +21,9 @@ export default {
     .then(Qajax.toJSON)
   },
 
-  get: function (slug) {
+  getBySlug: function (slug) {
     return Qajax({
-      url: BASE_URL + '/groups/' + slug,
+      url: BASE_URL + '/groups/by-slug/' + slug,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
@@ -85,7 +85,7 @@ export default {
       var formData = new FormData();
       formData.append("file", file[0]);
       var request = new XMLHttpRequest();
-      request.open("POST", BASE_URL + "/groups/upload/" + slug);
+      request.open("POST", BASE_URL + "/groups/files/" + slug);
       request.onload = function (res) {
         var r = res.srcElement || res.target;
         if (r.status === 200) {

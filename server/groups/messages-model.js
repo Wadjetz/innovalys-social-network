@@ -48,10 +48,20 @@ module.exports.create = function (message) {
   );
 };
 
-module.exports.update = function (message, callback) {
-  callback(null, null);
+/**
+Update a message group
+*/
+module.exports.update = function (message) {
+  // TODO
+  return null
 };
 
-module.exports.delete = function (message, callback) {
-  callback(null, null);
+/**
+Delete a message group by id
+*/
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM message_groups WHERE message_groups.id = ? ",
+    [id]
+  );
 };

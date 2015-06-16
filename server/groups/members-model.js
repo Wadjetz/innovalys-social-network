@@ -1,6 +1,9 @@
 var db = require('../config/database');
 var Q = require('q');
 
+/**
+Create group messages
+*/
 module.exports.create = function (userId, groupeId) {
   var members = {
     users_id: userId,
@@ -11,7 +14,10 @@ module.exports.create = function (userId, groupeId) {
   return db.insert(sql, data);
 };
 
-module.exports.findByStatus = function (groupeId, status, callback) {
+/**
+Find all group messages by group id and status
+*/
+module.exports.findByStatus = function (groupeId, status) {
   var sql = "SELECT " +
                 "users.id, " +
                 "users.role, " +
@@ -31,6 +37,9 @@ module.exports.findByStatus = function (groupeId, status, callback) {
   return db.findAll(sql, data);
 };
 
+/**
+Delete group messages by user id
+*/
 module.exports.delete = function (user_id, groupe_id) {
   return db.delete(
     "DELETE FROM members WHERE members.users_id = ? AND members.groups_id = ? ;",
@@ -38,39 +47,24 @@ module.exports.delete = function (user_id, groupe_id) {
   );
 };
 
-module.exports.findAllByGroupSlug = function (slug, callback) {
+/**
+Find all group messages by group slug
+*/
+module.exports.findAllByGroupSlug = function (slug) {
   var sql  = "SELECT users.*, members.status AS member_status FROM users ";
   sql += "JOIN members ON members.users_id = users.id ";
   sql += "JOIN groups ON groups.users_id = users.id ";
   sql += "WHERE groups.slug = ? ;";
-  var data = [slug];
-  db.query(sql, data, function (error, results, fields) {
-    if (error) {
-      console.error(error);
-      callback(error, null, fields);
-    } else if (results.length > 0) {
-      callback(error, results[0], fields);
-    } else {
-      callback(error, [], fields);
-    }
-  });
-}
+  return db.findAll(sql, [slug]);
+};
 
-
-module.exports.findAllByGroupId = function (groupId, callback) {
+/**
+Find all group messages by group id
+*/
+module.exports.findAllByGroupId = function (groupId) {
   var sql  = "SELECT users.*, members.status AS member_status FROM users ";
   sql += "JOIN members ON members.users_id = users.id ";
   sql += "JOIN groups ON groups.users_id = users.id ";
   sql += "WHERE groups.id = ? ;";
-  var data = [groupId];
-  db.query(sql, data, function (error, results, fields) {
-    if (error) {
-        console.error(error);
-        callback(error, null, fields);
-    } else if (results.length > 0) {
-        callback(error, results[0], fields);
-    } else {
-        callback(error, [], fields);
-    }
-  });
+  return db.findAll(sql, [groupId]);
 };

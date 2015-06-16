@@ -3,7 +3,6 @@ var moment = require('moment');
 var validate = require("validate.js");
 var auth = require('../config/auth');
 var GroupsModel = require('./groups-model');
-var GroupsFilesModel = require('./groups-files-model');
 var MessagesModel = require('./messages-model');
 validate.moment = moment;
 
@@ -84,11 +83,14 @@ DELETE /groups/messages/:id
 Delete a message group
 */
 function deleteMessageGroupAction(req, res) {
+  // TODO not finished
   var user = req.$user;
   var id = req.params.id;
-  MessagesModel.findById(id)
-    .then(function (message) {
-      res.json(message);
+  MessagesModel.delete(id)
+    .then(function (result) {
+      res.json({
+        "deleted": result
+      });
     })
     .fail(function (err) {
       res.status(404).json(err);

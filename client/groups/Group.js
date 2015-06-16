@@ -123,8 +123,10 @@ export default React.createClass({
 
   componentDidMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.get(slug).then(group => {
-      this.setState(group);
+    GroupsService.getBySlug(slug).then(group => {
+      this.setState({
+        group: group
+      });
     }, err => {
       console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
