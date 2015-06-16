@@ -1,79 +1,44 @@
 var db = require('../config/database');
 
-module.exports.exist = function (news_id, callback) {
-    var sql = "SELECT COUNT(*) FROM news WHERE news.id = ?";
-    var data = [news_id];
+/**
+Find one news by id
+*/
+module.exports.findOneById = function (id) {
+  return db.findOne(
+    "SELECT * FROM news WHERE news.id = ?",
+    [id]
+  );
 };
 
-module.exports.findOneById = function (id, callback) {
-    var sql = "SELECT * FROM news WHERE news.id = ?";
-    var data = [id];
-    db.query(sql, data, function (error, results, fields) {
-        //console.log("news model findOneBySlug", "error", error, "results", results);
-        if (error) {
-            console.error(error);
-            callback(error, results, fields);
-        } else if (results.length > 0) {
-            callback(error, results[0], fields);
-        } else {
-            callback(error, null, fields);
-        }
-    });
+/**
+Find one news by slug
+*/
+module.exports.findOneBySlug = function (slug) {
+  return db.findOne(
+    "SELECT * FROM news WHERE news.slug = ?",
+    [slug]
+  );
 };
 
-module.exports.findOneBySlug = function (slug, callback) {
-    var sql = "SELECT * FROM news WHERE news.slug = ?";
-    var data = [slug];
-    db.query(sql, data, function (error, results, fields) {
-        console.log("news model findOneBySlug", "error", error, "results", results);
-        if (error) {
-            console.error(error);
-            callback(error, results, fields);
-        } else if (results.length > 0) {
-            callback(error, results[0], fields);
-        } else {
-            callback(error, null, fields);
-        }
-    });
+/**
+Find all news by page
+*/
+module.exports.findAllNews = function (page) {
+  return db.findAll(
+    "SELECT * FROM news ORDER BY news.created DESC LIMIT 10 OFFSET ? ; ",
+    [page]
+  );
 };
 
-module.exports.findAllNews = function (page, callback) {
-    // TODO offset from request
-    var sql = "SELECT * FROM news ORDER BY news.created DESC LIMIT 10 OFFSET 0 ";
-    var data = [page];
-    db.query(sql, data, function (error, results, fields) {
-        //console.log("news model findAllNews", "error", error, "results", results);
-        if (error) console.error(error);
-        callback(error, results, fields);
-    });
+/**
+Create news
+*/
+module.exports.create = function (news) {
+  return db.insert(
+    "INSERT INTO news SET ? ;",
+    [news]
+  );
 };
 
-module.exports.findAllGroupeNews = function (callback) {
-    // TODO
-    callback(null);
-};
-
-module.exports.create = function (news, callback) {
-    //console.log("news model create", news);
-    var sql = "INSERT INTO news SET ?";
-    var data = [news];
-    db.query(sql, data, function (error, results, fields) {
-        //console.log("news model create", "error", error, "results", results);
-        if (!error && results && results.affectedRows === 1) {
-            callback(error, results.insertId, fields);
-        } else {
-            console.error(error);
-            callback(error, null, fields);
-        }
-    });
-};
-
-module.exports.update = function (comment, callback) {
-    // TODO
-    callback(null);
-};
-
-module.exports.delete = function (id, callback) {
-    // TODO
-    callback(null);
-};
+// TODO update
+// TODO delete
