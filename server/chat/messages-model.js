@@ -1,34 +1,31 @@
 var db = require('../config/database');
 
-module.exports.getAll = function (page, callback) {
-    // TODO This is for test chat
-    var sql = "SELECT * FROM messages ;";
-    var data = [];
-    db.query(sql, data, function (error, results, fields) {
-        //console.log("getGlobalChatMessages", "error = ", error, "results = ", results);
-        callback(error, results, fields);
-    });
+/**
+Find all news by page
+*/
+module.exports.getAll = function (page) {
+  return db.findAll(
+    "SELECT * FROM messages ; ",
+    []
+  );
 };
 
-module.exports.getById = function (id, callback) {
-    var sql = "SELECT * FROM messages WHERE messages.id = ? ;";
-    var data = [id];
-    db.query(sql, data, function (error, results, fields) {
-        // TODO handle errors
-        callback(error, results[0], fields);
-    });
+/**
+Find one message by id
+*/
+module.exports.getById = function (id) {
+  return db.findOne(
+    "SELECT * FROM messages WHERE messages.id = ? ;",
+    [id]
+  );
 };
 
-module.exports.create = function (message, callback) {
-    var sql = "INSERT INTO messages SET ?";
-    var data = [message];
-    db.query(sql, data, function (error, results, fields) {
-        console.log("messages.create", "error = ", error, "results = ", results);
-        if (!error && results && results.affectedRows === 1) {
-            callback(error, results.insertId, fields);
-        } else {
-            console.error(error);
-            callback(error, null, fields);
-        }
-    });
+/**
+Create message
+*/
+module.exports.create = function (message) {
+  return db.insert(
+    "INSERT INTO messages SET ? ; ",
+    [message]
+  );
 };
