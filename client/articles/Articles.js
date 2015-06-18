@@ -5,6 +5,7 @@ import Router, { Link, Navigation } from 'react-router'
 import Bootstrap, { Grid, Row, Col } from 'react-bootstrap'
 import ArticlesService from './ArticlesService'
 import Chat from '../chat/Chat'
+import i18n from '../../commun/local'
 
 export default React.createClass({
   mixins: [Navigation],
@@ -18,7 +19,7 @@ export default React.createClass({
               return (
                 <div className="thumbnail" key={article.id}>
                   <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>
-                  <span className="label label-default">Publish : {moment(article.publish).fromNow()}</span>
+                  <span className="label label-default">{i18n.__n('news.publish')} : {moment(article.publish).fromNow()}</span>
                   <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(article.body) }}></div>
                 </div>
               );
@@ -50,4 +51,3 @@ export default React.createClass({
   }
 
 });
-

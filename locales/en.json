@@ -5,9 +5,30 @@
         "groups": "Groups",
         "rh": "RH",
         "create_news": "Create News",
-        "create_groups": "Create Group"
+        "create_groups": "Create Group",
+        "create_user": "Create User"
     },
     "chat": {
         "chat": "Chat"
-    }
+    },
+    "news": {
+        "publish": "Publish",
+        "create_news": "Create news",
+        "comments": {
+            "create_new_comment": "Create new comment"
+        }
+    },
+    "button": {
+        "save": "Save"
+    },
+    "content": "Content",
+    "title": "Title",
+    "preview": "Preview",
+    "error": "Error",
+    "success": "Success",
+    "send": "Send",
+    "message": "Message",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login"
 }

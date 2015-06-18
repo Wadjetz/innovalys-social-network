@@ -37,18 +37,18 @@ const App = React.createClass({
                             <li><Link to="groups">{i18n.__n('menu.groups')}</Link></li>
                             <If condition={me.role === "admin" || me.role === "rh"}>
                                 <DropdownButton eventKey={4} title='RH' navItem={true}>
-                                    <li><Link to="createArticle">Create Article</Link></li>
-                                    <li><Link to="signup">Create User</Link></li>
+                                    <li><Link to="createArticle">{i18n.__n('menu.create_news')}</Link></li>
+                                    <li><Link to="signup">{i18n.__n('menu.create_user')}</Link></li>
                                 </DropdownButton>
                             </If>
                         </Nav>
                         <Nav navbar right>
                             <li><Link to="user">{me.first_name}</Link></li>
-                            <DropdownButton eventKey={4} title={i18n.getLocale()} navItem={true}>
+                            <DropdownButton eventKey={4} title={i18n.getLocale().toUpperCase()} navItem={true}>
                                 {this.state.locales.map((locale, i) => {
                                   return (
                                     <li key={i}>
-                                        <a onClick={this.changeLocal(locale)}>{locale.toUpperCase()}</a>
+                                        <a href="#" onClick={this.changeLocal(locale)}>{locale.toUpperCase()}</a>
                                     </li>
                                   );
                                 })}
