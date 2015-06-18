@@ -118,7 +118,7 @@ const Signup = React.createClass({
                             ref='description'
                             valueLink={this.linkState('description')}
                         />
-                        <Button bsStyle='success' onClick={this.submit}>Save</Button>
+                        <Button bsStyle='primary' onClick={this.submit}>Save</Button>
                     </Col>
                 </Row>
             </Grid>

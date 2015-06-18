@@ -45,7 +45,7 @@ export default React.createClass({
                   ref='content'
                   valueLink={this.linkState('newComment')}
               />
-              <Button bsStyle='success' onClick={this.createComment}>Save</Button>
+              <Button bsStyle='primary' onClick={this.createComment}>Save</Button>
             </div>
           </Col>
           <Col xs={4}>

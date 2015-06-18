@@ -50,7 +50,7 @@ export default React.createClass({
               label='Publish'
               valueLink={this.linkState('publish')}
             />
-            <Button bsStyle='success' onClick={this.submit}>Save</Button>
+            <Button bsStyle='primary' onClick={this.submit}>Save</Button>
           </Col>
           <Col xs={12} sm={6}>
             <h1>Preview</h1>

@@ -54,7 +54,7 @@ export default React.createClass({
                       ref='content'
                       valueLink={this.linkState('newMessage')}
                   />
-                <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+                <Button bsStyle='primary' onClick={this.createMessage}>Save</Button>
               </TabPane>
               <TabPane eventKey={2} tab='Files'>
                 <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >

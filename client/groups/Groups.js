@@ -82,7 +82,7 @@ export default React.createClass({
                       ref='description'
                       valueLink={this.linkState('description')}
                   />
-                  <Button bsStyle='success' onClick={this.createGroup}>Save</Button>
+                  <Button bsStyle='primary' onClick={this.createGroup}>Save</Button>
               </TabPane>
             </TabbedArea>
           </Col>
