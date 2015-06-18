@@ -1,0 +1,13 @@
+{
+    "brand": "Innovalys",
+    "menu": {
+        "news": "News",
+        "groups": "Groups",
+        "rh": "RH",
+        "create_news": "Create News",
+        "create_groups": "Create Group"
+    },
+    "chat": {
+        "chat": "Chat"
+    }
+}
