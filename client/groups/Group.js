@@ -153,11 +153,11 @@ export default React.createClass({
     if (files.length > 0) {
       let slug = this.context.router.getCurrentParams().slug;
       GroupsService.uploadFile(slug, files).then(res => {
-        this.state.files.push(res[0])
+        this.state.files.push(res)
+        console.log(res);
         this.setState({
           files: this.state.files
         });
-        console.log(res);
       }, err => {
         console.error(err);
       });
