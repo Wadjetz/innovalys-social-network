@@ -30,5 +30,13 @@
     "message": "Message",
     "email": "Email",
     "password": "Password",
-    "login": "Login"
+    "login": "Login",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "birthday_date": "Birthday Date",
+    "function": "Function",
+    "arrival_date": "Arrival Date",
+    "adress": "Adress",
+    "description": "Description",
+    "roles": "Roles"
 }
