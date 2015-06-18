@@ -8,6 +8,7 @@ var ip   = process.env.NODEJS_IP || "127.0.0.1";
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var chat = require('./server/chat/chat');
+var notification = require('./server/notification/notification');
 
 require('./server/config/config')(app, express);
 
@@ -20,6 +21,7 @@ app.get('/', function (req, res) {
 });
 
 chat(io);
+notification(io);
 
 http.listen(port, function(){
   console.log('listening on ' + port);
