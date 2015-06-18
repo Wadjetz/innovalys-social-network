@@ -1,72 +1,72 @@
 var UserModel = require('../user/user-model');
 
 function isAuth(email, callback) {
-    if (email === undefined) {
-        callback(false);
-    } else if (email === "") {
-        callback(false);
-    } else {
-        callback(true);
-    }
+  if (email === undefined) {
+    return false;
+  } else if (email === "") {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 /**
-Auth
+Auth without user
 */
 module.exports.auth = function (req, res, next) {
-    isAuth(req.session.email, function (isAuth) {
-        if(isAuth) {
-            next();
-        } else {
-            res.sendStatus(401);
-        }
-    });
+  if(isAuth(req.session.email)) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
 };
 
+/**
+Auth with user
+*/
 module.exports.withUser = function (req, res, next) {
-    isAuth(req.session.email, function (isAuth) {
-        if(isAuth) {
-            UserModel.findOneByEmail(req.session.email, function (error, user) {
-                if (error) {
-                    res.sendStatus(500);
-                }
-                if (user) {
-                    req.$user = user;
-                    next();
-                }
-            });
-        } else {
-            res.sendStatus(401);
-        }
-    });
+  if (isAuth(req.session.email)) {
+    UserModel.findOneByEmail(req.session.email)
+      .then(function (user) {
+        req.$user = user;
+        next();
+      })
+      .fail(function (err) {
+        res.sendStatus(401);
+      });
+  } else {
+    res.sendStatus(401);
+  }
 };
 
+/**
+Auth with users roles
+*/
 module.exports.withRole = function (roles) {
-    return function authorized(req, res, next) {
-        isAuth(req.session.email, function (isAuth) {
-            if(isAuth) {
-                UserModel.findOneByEmail(req.session.email, function (error, user) {
-                    if (error) {
-                        res.sendStatus(500);
-                    }
-                    if (user) {
-                        var flag = false;
-                        for (var i = roles.length - 1; i >= 0; i--) {
-                            if (roles[i] === user.role) {
-                                flag = true;
-                            }
-                        }
-                        if (flag === true || user.role === UserModel.roles.ADMIN) {
-                            req.$user = user;
-                            next();
-                        } else {
-                            res.sendStatus(403);
-                        }
-                    }
-                });
+  return function authorized(req, res, next) {
+    if (isAuth(req.session.email)) {
+      UserModel.findOneByEmail(req.session.email)
+        .then(function (user) {
+          var flag = roles.reduce(function (acc, i) {
+            console.log(acc, i);
+            if (user.role === i) {
+              return true;
             } else {
-                res.sendStatus(401);
+              return acc;
             }
+          }, false);
+          if (flag === true || user.role === UserModel.roles.ADMIN) {
+            req.$user = user;
+            next();
+          } else {
+            res.sendStatus(403);
+          }
+        })
+        .fail(function (err) {
+          res.sendStatus(500).json(err);
         });
-    };
+    } else {
+      res.sendStatus(401);
+    }
+  };
 };

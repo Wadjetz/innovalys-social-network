@@ -21,7 +21,7 @@ export default {
     .then(Qajax.toJSON)
   },
 
-  get: function (slug) {
+  getBySlug: function (slug) {
     return Qajax({
       url: BASE_URL + '/groups/by-slug/' + slug,
       method: 'GET'
@@ -66,6 +66,45 @@ export default {
       data: {
         content: message
       }
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+  },
+
+  getGroupsTypes: function () {
+    return Qajax({
+      url: BASE_URL + "/groups/types",
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+  },
+
+  uploadFile: function (slug, file) {
+    return new Promise((resolve, reject) => {
+      var formData = new FormData();
+      formData.append("file", file[0]);
+      var request = new XMLHttpRequest();
+      request.open("POST", BASE_URL + "/groups/files/" + slug);
+      request.onload = function (res) {
+        var r = res.srcElement || res.target;
+        if (r.status === 200) {
+          resolve(JSON.parse(r.response));
+        } else {
+          reject(r.response);
+        }
+      }
+      request.onerror = function (err) {
+        reject(err)
+      }
+      request.send(formData);
+    });
+  },
+
+  getFiles: function (slug) {
+    return Qajax({
+      url: BASE_URL + "/groups/files/" + slug,
+      method: 'GET'
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)

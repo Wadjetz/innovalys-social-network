@@ -1,5 +1,7 @@
 import React from 'react/addons'
 import moment from 'moment'
+import _ from 'lodash'
+import Dropzone from 'react-dropzone'
 import Router, { Link, Navigation } from 'react-router'
 import Bootstrap, {
   Grid,
@@ -7,6 +9,8 @@ import Bootstrap, {
   Col,
   ListGroup,
   ListGroupItem,
+  TabbedArea,
+  TabPane,
   Button,
   Input,
   Label
@@ -14,41 +18,57 @@ import Bootstrap, {
 
 import GroupsService from './GroupsService'
 import Chat from '../chat/Chat'
+import MessageGroup from './MessageGroup'
+import FileGroup from './FileGroup'
+import Member from './Member'
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-    console.log("Group.render", this.state);
-    let membersView = this.state.members.map((memeber, i) => (<div key={i}>{memeber.first_name}</div>));
+
+    let messagesView = this.state.messages.map(message =>
+      <MessageGroup message={message} key={message.id} />
+    );
+
+    let filesView = this.state.files.map(file =>
+      <FileGroup file={file} key={file.name + file.id}  />
+    );
+
+    let membersView = this.state.members.map(memeber =>
+      <Member memeber={memeber} key={memeber.id} />
+    );
+
     return (
       <Grid>
         <Row>
           <Col xs={8}>
-            <h1>Messages</h1>
-            {this.state.messages.map(message => {
-              return (
-                <div className="thumbnail">
-                  <h2>by {message.first_name} {message.last_name}</h2>
-                  <p>{message.content}</p>
-                </div>
-              );
-            })}
-            <h4>Create new message</h4>
-              <Input
-                  type='textarea'
-                  placeholder='Content'
-                  label='Content'
-                  ref='content'
-                  valueLink={this.linkState('newMessage')}
-              />
-            <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+            <TabbedArea defaultActiveKey={1}>
+              <TabPane eventKey={1} tab='Messages'>
+                {messagesView}
+                <h4>Create new message</h4>
+                  <Input
+                      type='textarea'
+                      placeholder='Content'
+                      label='Content'
+                      ref='content'
+                      valueLink={this.linkState('newMessage')}
+                  />
+                <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+              </TabPane>
+              <TabPane eventKey={2} tab='Files'>
+                <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >
+                  <div>Try dropping some files here, or click to select files to upload.</div>
+                </Dropzone>
+                <h1>Files</h1>
+                {filesView}
+              </TabPane>
+            </TabbedArea>
           </Col>
           <Col xs={4}>
             <h1>{this.state.group.name}</h1>
             <Label bsStyle='default'>{this.state.group.type}</Label>
             <p>{this.state.group.description}</p>
-            <Button onClick={this.join}>Join</Button>
             <Chat />
             <h2>Members</h2>
             {membersView}
@@ -60,10 +80,8 @@ export default React.createClass({
 
   createMessage: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    console.log("createMessage", this.state.newMessage);
     if (this.state.newMessage !== "") {
       GroupsService.createMessageGroup(slug, this.state.newMessage).then(result => {
-        console.log(result);
         this.state.messages.push(result);
         this.setState({
           messages: this.state.messages,
@@ -93,7 +111,9 @@ export default React.createClass({
       },
       members: [],
       messages: [],
-      newMessage: ""
+      newMessage: "",
+      files: [],
+      file: null
     }
   },
 
@@ -103,9 +123,10 @@ export default React.createClass({
 
   componentDidMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.get(slug).then(group => {
-      console.log(group);
-      this.setState(group);
+    GroupsService.getBySlug(slug).then(group => {
+      this.setState({
+        group: group
+      });
     }, err => {
       console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
@@ -118,10 +139,41 @@ export default React.createClass({
     }, err => {
       console.error(err);
     });
+
+    GroupsService.getFiles(slug).then(files => {
+      this.setState({
+        files: files
+      });
+    }, err => {
+      console.error(err);
+    });
   },
 
-  join: function () {
-    console.log("join");
-  }
+  onDrop: function (files) {
+    if (files.length > 0) {
+      let slug = this.context.router.getCurrentParams().slug;
+      GroupsService.uploadFile(slug, files).then(res => {
+        this.state.files.push(res)
+        console.log(res);
+        this.setState({
+          files: this.state.files
+        });
+      }, err => {
+        console.error(err);
+      });
+    }
+    console.log('Received files: ', files);
+  },
+
+  selectFile: function (e) {
+    console.log(e);
+  },
 
 });
+
+let dropzoneStyle = {
+  width: '100%',
+  height: 50,
+  borderStyle: "dashed",
+  marginTop: '10px'
+}

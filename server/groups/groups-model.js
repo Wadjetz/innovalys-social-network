@@ -1,82 +1,103 @@
 var db = require('../config/database');
-
+var Q = require('q');
 
 /**
-Cherhces le groupe par son id
+Create new group
 */
-module.exports.findOneById = function (id, callback) {
-    // TODO
-    callback(null);
+module.exports.create = function (group) {
+  return db.insert(
+    "INSERT INTO groups SET ?; ",
+    [group]
+  );
 };
 
-module.exports.findOneBySlug = function (slug, callback) {
-    var sql = "SELECT * FROM groups WHERE groups.slug = ? ;";
-    var data = [slug];
-    db.query(sql, data, function (error, results, fields) {
-        if (error || (results.length === 0)) {
-            console.error(error);
-            callback(error, null, fields);
-        } else {
-            callback(error, results[0], fields);
-        }
-    });
+/**
+Find groupe by id
+*/
+module.exports.findOneById = function (id) {
+  return db.findOne(
+    "SELECT * FROM groups WHERE groups.id = ? ;",
+    [id]
+  );
 };
 
-module.exports.findAll = function (page, callback) {
-    // TODO Suport of pagination
-    var sql = "SELECT * FROM groups ORDER BY groups.created DESC LIMIT 10 OFFSET 0 ";
-    var data = [page];
-    db.query(sql, data, function (error, results, fields) {
-        console.log("findAll", "error = ", error, "results = ", results);
-        if (error) console.error(error);
-        callback(error, results, fields);
-    });
+/**
+Find groupe by slug
+*/
+module.exports.findOneBySlug = function (slug) {
+  return db.findOne(
+    "SELECT * FROM groups WHERE groups.slug = ? ;",
+    [slug]
+  );
 };
 
-module.exports.findMyGroups = function (user, callback) {
-    var sql  = "SELECT ";
-        sql += "groups.id, ";
-        sql += "groups.slug, ";
-        sql += "groups.name, ";
-        sql += "groups.description, ";
-        sql += "groups.created, ";
-        sql += "groups.updated, ";
-        sql += "groups.status, ";
-        sql += "groups.access, ";
-        sql += "groups.type, ";
-        sql += "groups.users_id, ";
-        sql += "members.status AS members_status ";
-        sql += "FROM groups ";
-        sql += "JOIN members ON members.groups_id = groups.id "
-        sql += "WHERE members.users_id = ? ;"
-    var data = [user.id];
-    db.query(sql, data, function (error, results, fields) {
-        console.log("findAll", "error = ", error, "results = ", results);
-        if (error) console.error(error);
-        callback(error, results, fields);
-    });
-}   
-
-module.exports.create = function (group, callback) {
-    var sql = "INSERT INTO groups SET ?";
-    var data = [group];
-    db.query(sql, data, function (error, results, fields) {
-        //console.log("create", "error = ", error, "results = ", results);
-        if (error && results && results.affectedRows === 1) {
-            callback(error, results.insertId, fields);
-        } else {
-            console.error(error);
-            callback(error, null, fields);
-        }
-    });
+/**
+Find all groups
+*/
+module.exports.findAll = function (page) {
+  return db.findAll(
+    "SELECT * " +
+    "FROM groups " +
+    "ORDER BY groups.created " +
+    "DESC LIMIT 10 OFFSET ?; ",
+    [page]
+  );
 };
 
-module.exports.update = function (comment, callback) {
-    // TODO
-    callback(null);
+/**
+Find all groups
+*/
+module.exports.findAllNotMyGroups = function (page, user) {
+  return db.findAll(
+    "SELECT groups.*, members.status AS members_status " +
+    "FROM groups " +
+    "JOIN members ON members.groups_id = groups.id " +
+    "WHERE members.users_id != ? " +
+    "ORDER BY groups.created " +
+    "DESC LIMIT 10 OFFSET ?; ",
+    [page]
+  );
 };
 
-module.exports.delete = function (id, callback) {
-    // TODO
-    callback(null);
+/**
+Find all my groups
+*/
+module.exports.findMyGroups = function (user) {
+  return db.findAll(
+    "SELECT groups.*, members.status AS members_status " +
+    "FROM groups " +
+    "JOIN members ON members.groups_id = groups.id " +
+    "WHERE members.users_id = ? ;",
+    [user.id]
+  );
+};
+
+module.exports.groupsStatus = {
+  open: 'open',
+  close: 'close'
+};
+
+module.exports.groupsAccess = {
+  private: 'private',
+  public: 'public'
+};
+
+module.exports.groupsTypes = {
+  project: 'project',
+  discussion: 'discussion',
+  other: 'other'
+};
+
+module.exports.update = function (group) {
+  return db.update(
+    "UPDATE posts SET ? ;",
+    [group]
+  );
+};
+
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM groups WHERE groups.id = ? ;",
+    [id]
+  );
 };

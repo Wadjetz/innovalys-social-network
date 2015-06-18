@@ -1,11 +1,11 @@
-const assign        = require('lodash/object/assign');
-const AppActions    = require('./AppActions');
-const AppConstants  = require('./AppConstants');
-const AppDispatcher = require('./AppDispatcher');
-const Store         = require('../flux/Store');
-const Events        = require('../flux/Events');
+import assign        from 'lodash/object/assign'
+import AppActions    from './AppActions'
+import AppConstants  from './AppConstants'
+import AppDispatcher from './AppDispatcher'
+import Store         from '../flux/Store'
+import Events        from '../flux/Events'
 
-const AppStore = assign(Store, {
+export default assign(Store, {
     dispatcherIndex: AppDispatcher.register((payload) => {
         let action = payload.action;
         switch(action.actionType) {
@@ -16,5 +16,3 @@ const AppStore = assign(Store, {
         return true;
     })
 });
-
-module.exports = AppStore;
