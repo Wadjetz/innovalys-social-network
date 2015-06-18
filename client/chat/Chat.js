@@ -27,7 +27,7 @@ export default React.createClass({
     let messages = this.state.messages.map((message, i) => (<div key={i}>{message.content}</div>));
     return (
       <Row>
-        <h2>{i18n.__n('chat.chat')}</h2>
+        <h2>{i18n.__n('chat')}</h2>
         <div style={style}>
           {messages}
         </div>

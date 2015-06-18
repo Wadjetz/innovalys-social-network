@@ -1,13 +1,9 @@
 {
-    "brand": "Innovalys",
-    "menu": {
-        "news": "Articles",
-        "groups": "Groupes",
-        "rh": "RH",
-        "create_news": "Créer un article",
-        "create_groups": "Créer un group"
-    },
-    "chat": {
-        "chat": "Chat"
-    }
+  "brand": "Innovalys",
+  "chat": "Chat",
+  "news": "Articles",
+  "groups": "Groupes",
+  "rh": "RH",
+  "create_news": "Créer un article",
+  "create_groups": "Créer un group"
 }

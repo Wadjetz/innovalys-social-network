@@ -21,6 +21,7 @@ import Chat from '../chat/Chat'
 import MessageGroup from './MessageGroup'
 import FileGroup from './FileGroup'
 import Member from './Member'
+import i18n from '../../commun/local'
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],

@@ -20,7 +20,7 @@ export default React.createClass({
       <Grid fluid>
         <Row>
           <Col xs={12} sm={6}>
-            <h1>{i18n.__n('news.create_news')}</h1>
+            <h1>{i18n.__n('create_news')}</h1>
             <If condition={this.state.createArticleError}>
               <Alert bsStyle='danger'>
                 {i18n.__n('error')}
@@ -48,10 +48,10 @@ export default React.createClass({
             <Input
               type='date'
               ref='publish'
-              label={i18n.__n('news.publish')}
+              label={i18n.__n('publish')}
               valueLink={this.linkState('publish')}
             />
-            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('button.save')}</Button>
+            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('save')}</Button>
           </Col>
           <Col xs={12} sm={6}>
             <h1>{i18n.__n('preview')}</h1>

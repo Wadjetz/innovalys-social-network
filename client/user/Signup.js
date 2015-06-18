@@ -114,7 +114,7 @@ export default React.createClass({
               ref='description'
               valueLink={this.linkState('description')}
             />
-            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('button.save')}</Button>
+            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('save')}</Button>
           </Col>
         </Row>
       </Grid>

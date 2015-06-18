@@ -27,7 +27,7 @@ export default React.createClass({
           <Col xs={8}>
             <div className="thumbnail" key={this.state.id}>
               <h2><Link to="singleArticle" params={{slug: this.state.slug}}>{this.state.title}</Link></h2>
-              <span className="label label-default">{i18n.__n('news.publish')} : {moment(this.state.publish).fromNow()}</span>
+              <span className="label label-default">{i18n.__n('publish')} : {moment(this.state.publish).fromNow()}</span>
               <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(this.state.body) }}></div>
               {this.state.comments.map(comment => {
                 return (
@@ -38,7 +38,7 @@ export default React.createClass({
                   </ListGroup>
                 );
               })}
-              <h4>{i18n.__n('news.comments.create_new_comment')}</h4>
+              <h4>{i18n.__n('create_new_comment')}</h4>
               <Input
                   type='textarea'
                   placeholder={i18n.__n('content')}
@@ -46,7 +46,7 @@ export default React.createClass({
                   ref='content'
                   valueLink={this.linkState('newComment')}
               />
-              <Button bsStyle='success' onClick={this.createComment}>{i18n.__n('button.save')}</Button>
+              <Button bsStyle='success' onClick={this.createComment}>{i18n.__n('save')}</Button>
             </div>
           </Col>
           <Col xs={4}>

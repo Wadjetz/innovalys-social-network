@@ -1,42 +1,32 @@
 {
-    "brand": "Innovalys",
-    "menu": {
-        "news": "News",
-        "groups": "Groups",
-        "rh": "RH",
-        "create_news": "Create News",
-        "create_groups": "Create Group",
-        "create_user": "Create User"
-    },
-    "chat": {
-        "chat": "Chat"
-    },
-    "news": {
-        "publish": "Publish",
-        "create_news": "Create news",
-        "comments": {
-            "create_new_comment": "Create new comment"
-        }
-    },
-    "button": {
-        "save": "Save"
-    },
-    "content": "Content",
-    "title": "Title",
-    "preview": "Preview",
-    "error": "Error",
-    "success": "Success",
-    "send": "Send",
-    "message": "Message",
-    "email": "Email",
-    "password": "Password",
-    "login": "Login",
-    "first_name": "First Name",
-    "last_name": "Last Name",
-    "birthday_date": "Birthday Date",
-    "function": "Function",
-    "arrival_date": "Arrival Date",
-    "adress": "Adress",
-    "description": "Description",
-    "roles": "Roles"
+  "brand": "Innovalys",
+  "save": "Save",
+  "create_news": "Create news",
+  "create_new_comment": "Create new comment",
+  "publish": "Publish",
+  "chat": "Chat",
+  "rh": "RH",
+  "news": "News",
+  "groups": "Groups",
+  "create_news": "Create News",
+  "create_groups": "Create Group",
+  "create_user": "Create User",
+  "content": "Content",
+  "title": "Title",
+  "preview": "Preview",
+  "error": "Error",
+  "success": "Success",
+  "send": "Send",
+  "message": "Message",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "birthday_date": "Birthday Date",
+  "function": "Function",
+  "arrival_date": "Arrival Date",
+  "adress": "Adress",
+  "description": "Description",
+  "roles": "Roles"
 }
