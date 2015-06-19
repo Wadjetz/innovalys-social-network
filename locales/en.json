@@ -11,6 +11,7 @@
   "create_news": "Create News",
   "create_groups": "Create Group",
   "create_user": "Create User",
+  "create_message": "Create message",
   "content": "Content",
   "title": "Title",
   "preview": "Preview",
@@ -28,5 +29,13 @@
   "arrival_date": "Arrival Date",
   "adress": "Adress",
   "description": "Description",
-  "roles": "Roles"
+  "roles": "Roles",
+  "file": "Files",
+  "members": "Members",
+  "dropzone": "Try dropping some files here, or click to select files to upload.",
+  "my_groups": "My Groups",
+  "name": "Name",
+  "accesses": "Accesses",
+  "types": "Types",
+  "join": "Join"
 }
