@@ -2,32 +2,52 @@ const request = require('superagent');
 const baseUrl = require('../conf').baseUrl;
 const utils   = require('../utils/utils');
 
-module.exports.getAll = function (callback) {
-    request.get(baseUrl + '/users').end(function (err, res) {
-        utils.handleErrors(err, res, callback);
-    });
+import Qajax from 'qajax'
+const BASE_URL = document.location.origin;
+
+module.exports.getAll = function () {
+  return Qajax({
+    url: BASE_URL + '/users',
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
 };
 
-module.exports.me = function (callback) {
-    request.get(baseUrl + '/users/me').end(function (err, res) {
-        utils.handleErrors(err, res, callback);
-    });
+module.exports.me = function () {
+  return Qajax({
+    url: BASE_URL + '/users/me',
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
 };
 
-module.exports.create = function (user, callback) {
-    request.post(baseUrl + '/users/signup').send(user).end(function (err, res) {
-        callback(err, res.body);
-    });
+module.exports.roles = function () {
+  return Qajax({
+    url: BASE_URL + '/users/roles',
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
 };
 
-module.exports.login = function (user, callback) {
-    request.post(baseUrl + '/users/login').send(user).end(function (err, res) {
-        callback(err, res.body);
-    });
+module.exports.create = function (user) {
+  return Qajax({
+    url: BASE_URL + '/users/signup',
+    method: 'POST',
+    data: user
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
 };
 
-module.exports.roles = function (callback) {
-    request.get(baseUrl + '/users/roles').end(function (err, res) {
-        callback(err, res.body);
-    });
+module.exports.login = function (user) {
+  return Qajax({
+    url: BASE_URL + '/users/login',
+    method: 'POST',
+    data: user
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
 };

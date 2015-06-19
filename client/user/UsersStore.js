@@ -57,41 +57,51 @@ const UsersStore = _.assign(Store, {
       case UsersConstants.CREATE_USER:
         _data.signupError = "";
         _data.signupResult= {access: { email: "",password: ""}}
-        UsersApi.create(action.newUser, (err, createdUser) => {
-            if (err) {
-                _data.signupError = err.response.body;
-            } else {
-                _data.signupResult = createdUser;
-            }
+        UsersApi.create(action.newUser)
+          .then(createdUser => {
+            _data.signupResult = createdUser;
             UsersStore.emitChange();
-        });
+          })
+          .fail(err => {
+            _data.signupError = err;
+            UsersStore.emitChange();
+          });
         break;
 
       case UsersConstants.LOGIN:
         _data.connected = false;
         _data.loginError = "";
-        UsersApi.login(action.login, (err, result) => {
-          if (err) {
-              _data.loginError = err.response.body;
-          } else {
-              _data.connected = true;
-          }
-          UsersStore.emitChange();
-        });
+        UsersApi.login(action.login)
+          .then(result => {
+            _data.connected = true;
+            UsersStore.emitChange();
+          })
+          .fail(err => {
+            _data.loginError = err;
+            UsersStore.emitChange();
+          });
         break;
 
       case UsersConstants.LOAD_ME:
-        UsersApi.me((err, me) => {
-          _data.me = me;
-          UsersStore.emitChange();
-        });
+        UsersApi.me()
+          .then(me => {
+            _data.me = me;
+            UsersStore.emitChange();
+          })
+          .fail(err => {
+            console.error(err);
+          })
         break;
 
       case UsersConstants.LOAD_ROLES:
-        UsersApi.roles((err, roles) => {
-          _data.roles = roles;
-          UsersStore.emitChange();
-        });
+        UsersApi.roles()
+          .then(roles => {
+            _data.roles = roles;
+            UsersStore.emitChange();
+          })
+          .fail(err => {
+            console.error(err);
+          });
         break;
     }
     return true;

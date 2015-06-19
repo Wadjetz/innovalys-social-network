@@ -6,6 +6,7 @@ import utils from '../../commun/utils'
 import If from '../utils/If'
 import UsersActions from './UsersActions'
 import UsersStore from './UsersStore'
+import UsersApi from './UsersApi'
 import i18n from '../../commun/local'
 
 function getData() {

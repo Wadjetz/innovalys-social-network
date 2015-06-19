@@ -24,7 +24,6 @@ function signupValidator(req, res, next) {
 
   userValidator.signupValidator(newUser, function(validatorRes) {
     if (validatorRes === undefined) {
-      //console.log("signupValidator", validatorRes, newUser);
       req._new_user = newUser;
       next();
     } else {
@@ -67,7 +66,6 @@ function loginValidator(req, res, next) {
 
   var validatorRes = validate(login, userValidator.loginConstraints);
   if (validatorRes === undefined) {
-    //console.log("loginValidator", validatorRes, "login", login);
     req._login = login;
     next();
   } else {

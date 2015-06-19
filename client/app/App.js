@@ -43,8 +43,12 @@ export default React.createClass({
               </If>
             </Nav>
             <Nav navbar right>
-              <li><Link to="user">{me.first_name}</Link></li>
-              <DropdownButton eventKey={4} title={i18n.getLocale().toUpperCase()} navItem={true}>
+
+              <DropdownButton eventKey={5} title={me.first_name} navItem={true}>
+                <li><Link to="user">{i18n.__n('profile')}</Link></li>
+                <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
+              </DropdownButton>
+              <DropdownButton eventKey={6} title={i18n.getLocale().toUpperCase()} navItem={true}>
                 {locales.map((locale, i) => {
                   return (
                     <li key={i}>

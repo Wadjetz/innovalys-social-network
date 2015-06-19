@@ -5,6 +5,7 @@ import validate from "validate.js"
 import UserValidator from '../../commun/user-validator'
 import UsersActions from './UsersActions'
 import UsersStore from './UsersStore'
+import UsersApi from './UsersApi'
 import If from '../utils/If'
 import i18n from '../../commun/local'
 
