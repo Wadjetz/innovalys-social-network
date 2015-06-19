@@ -51,3 +51,16 @@ module.exports.login = function (user) {
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
 };
+
+module.exports.changePassword = function (currentPassword, newPassword) {
+  return Qajax({
+    url: BASE_URL + '/users/password',
+    method: 'PUT',
+    data: {
+      current_password: currentPassword,
+      new_password: newPassword
+    }
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+}

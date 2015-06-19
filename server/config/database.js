@@ -68,8 +68,10 @@ module.exports.update = function (sql, params) {
   connection.query(sql, params, function (err, res) {
     if (err) {
       deferred.reject(err);
+    } else if (res && res.affectedRows > 0) {
+      deferred.resolve(res.affectedRows);
     } else {
-      deferred.resolve(res);
+      deferred.reject({"error": "Not Updated"});
     }
   });
   return deferred.promise;

@@ -39,5 +39,8 @@
   "types": "Types",
   "join": "Join",
   "profile": "Profile",
-  "logout": "Logout"
+  "logout": "Logout",
+  "change_password": "Change Password",
+  "current_password": "Current Password",
+  "new_password": "New Password"
 }

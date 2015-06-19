@@ -34,3 +34,10 @@ module.exports.create = function (user) {
     [user]
   );
 };
+
+module.exports.changePassword = function (user, newPassword) {
+  return db.update(
+    "UPDATE users SET ? WHERE users.id = ?",
+    [newPassword, user.id]
+  );
+}
