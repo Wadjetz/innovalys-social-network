@@ -14,12 +14,11 @@ import UsersActions from '../user/UsersActions'
 import UsersStore from '../user/UsersStore'
 import Events from '../flux/Events'
 import If from '../utils/If'
-import i18n from '../../commun/local'
+import i18n, { locales, changeLocale } from '../../commun/local'
 
 function getMe() {
   return {
     me: UsersStore.getMe(),
-    locales: i18n.locales,
     locale: "en"
   }
 }
@@ -46,7 +45,7 @@ export default React.createClass({
             <Nav navbar right>
               <li><Link to="user">{me.first_name}</Link></li>
               <DropdownButton eventKey={4} title={i18n.getLocale().toUpperCase()} navItem={true}>
-                {this.state.locales.map((locale, i) => {
+                {locales.map((locale, i) => {
                   return (
                     <li key={i}>
                         <a href="#" onClick={this.changeLocal(locale)}>{locale.toUpperCase()}</a>
@@ -63,7 +62,7 @@ export default React.createClass({
   },
   changeLocal: function (locale) {
     return function () {
-      i18n.setLocale(locale);
+      changeLocale(locale);
       this.setState({
         locale: locale
       });
