@@ -8,6 +8,7 @@ import Bootstrap, {
   NavItem,
   MenuItem
 } from 'react-bootstrap'
+import Chat from '../chat/Chat'
 import AppActions from './AppActions'
 import AppStore from './AppStore'
 import UsersActions from '../user/UsersActions'
@@ -19,6 +20,7 @@ import i18n, { locales, changeLocale } from '../../commun/local'
 function getMe() {
   return {
     me: UsersStore.getMe(),
+    connected: UsersStore.isConnected(),
     locale: "en"
   }
 }
@@ -32,22 +34,25 @@ export default React.createClass({
       <div>
         <Navbar brand={i18n.__n('brand')} toggleNavKey={0} fluid>
           <CollapsableNav eventKey={1}>
-            <Nav navbar>
-              <li><Link to="articles">{i18n.__n('news')}</Link></li>
-              <li><Link to="groups">{i18n.__n('groups')}</Link></li>
-              <If condition={me.role === "admin" || me.role === "rh"}>
-                <DropdownButton eventKey={4} title='RH' navItem={true}>
-                  <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
-                  <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
+            <If condition={this.state.connected}>
+              <Nav navbar>
+                  <li><Link to="articles">{i18n.__n('news')}</Link></li>
+                  <li><Link to="groups">{i18n.__n('groups')}</Link></li>
+                  <If condition={me.role === "admin" || me.role === "rh"}>
+                    <DropdownButton eventKey={4} title='RH' navItem={true}>
+                      <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
+                      <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
+                    </DropdownButton>
+                  </If>
+              </Nav>
+            </If>
+            <Nav navbar right>
+              <If condition={this.state.connected}>
+                <DropdownButton eventKey={5} title={me.first_name} navItem={true}>
+                  <li><Link to="user">{i18n.__n('profile')}</Link></li>
+                  <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
                 </DropdownButton>
               </If>
-            </Nav>
-            <Nav navbar right>
-
-              <DropdownButton eventKey={5} title={me.first_name} navItem={true}>
-                <li><Link to="user">{i18n.__n('profile')}</Link></li>
-                <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
-              </DropdownButton>
               <DropdownButton eventKey={6} title={i18n.getLocale().toUpperCase()} navItem={true}>
                 {locales.map((locale, i) => {
                   return (
@@ -61,6 +66,9 @@ export default React.createClass({
           </CollapsableNav>
         </Navbar>
         <RouteHandler />
+        <If condition={this.state.connected}>
+          <Chat />
+        </If>
       </div>
     );
   },

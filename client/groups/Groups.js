@@ -12,7 +12,6 @@ import Bootstrap, {
   Button
 } from 'react-bootstrap'
 
-import Chat from '../chat/Chat'
 import GroupsService from './GroupsService'
 import GroupView from './GroupView'
 import If from '../utils/If'
@@ -88,7 +87,6 @@ export default React.createClass({
             </TabbedArea>
           </Col>
           <Col xs={4}>
-              <Chat />
           </Col>
         </Row>
       </Grid>

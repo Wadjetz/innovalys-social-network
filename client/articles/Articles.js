@@ -4,7 +4,8 @@ import markdown from 'markdown'
 import Router, { Link, Navigation } from 'react-router'
 import Bootstrap, { Grid, Row, Col } from 'react-bootstrap'
 import ArticlesService from './ArticlesService'
-import Chat from '../chat/Chat'
+import AppActions from '../app/AppActions'
+import UsersActions from '../user/UsersActions'
 import i18n from '../../commun/local'
 
 export default React.createClass({
@@ -26,7 +27,6 @@ export default React.createClass({
             })}
           </Col>
           <Col xs={4}>
-              <Chat />
           </Col>
         </Row>
       </Grid>
@@ -40,13 +40,14 @@ export default React.createClass({
   },
 
   componentDidMount: function () {
+    UsersActions.loadMe();
     ArticlesService.findAll().then(articles => {
       this.setState({
         articles: articles
       });
     }, err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
       console.error(err);
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
   }
 

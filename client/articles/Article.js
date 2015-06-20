@@ -13,7 +13,7 @@ import Bootstrap, {
 } from 'react-bootstrap'
 import ArticlesService from './ArticlesService'
 import CommentsService from './CommentsService'
-import Chat from '../chat/Chat'
+import AppActions from '../app/AppActions'
 import i18n from '../../commun/local'
 
 
@@ -50,7 +50,6 @@ export default React.createClass({
             </div>
           </Col>
           <Col xs={4}>
-            <Chat />
           </Col>
         </Row>
       </Grid>
@@ -93,7 +92,7 @@ export default React.createClass({
           newComment: ""
         });
       }, err => {
-        if (err.status === 401) { this.context.router.transitionTo('login'); }
+        if (err.status === 401) { AppActions.unauthorized(); }
         this.setState({
           newCommentSuccess: false,
           newCommentError: true
@@ -113,7 +112,7 @@ export default React.createClass({
       this.setState(article);
     }, err => {
       console.error(err);
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
+      if (err.status === 401) { AppActions.unauthorized(); }
     });
   }
 
