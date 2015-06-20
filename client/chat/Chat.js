@@ -24,7 +24,7 @@ function getMessages() {
 export default React.createClass({
   displayName: "Chat",
   render: function () {
-    let messages = this.state.messages.map((message, i) => (<div key={i}>{message.content}</div>));
+    let messages = this.state.messages.map((message, i) => (<div key={i}>{message.first_name} {message.last_name} : {message.content}</div>));
     return (
       <Row>
         <h2>{i18n.__n('chat')}</h2>

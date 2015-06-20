@@ -1,4 +1,6 @@
+var log = require('log4js').getLogger();
 var MessagesModel = require('./messages-model');
+var UserModel = require('../user/user-model');
 var config = require('../config/config');
 
 module.exports = function(io, cookieParser, sessionStore) {
@@ -25,28 +27,44 @@ module.exports = function(io, cookieParser, sessionStore) {
   });
 
   io.on('connection', function(socket) {
-    console.log("user connection");
+    log.debug("user connection");
     socket.on('global_chat', function(msg) {
-      console.log("user global_chat", msg, socket.request.session);
-      // TODO get true user
-      var newMessage = {
-        content: msg,
-        users_id: 15
-      };
-      MessagesModel.create(newMessage)
-        .then(function(insertedId) {
-          return MessagesModel.getById(insertedId);
-        })
-        .then(function(createdMessage) {
-          io.emit('global_chat', createdMessage);
-        })
-        .fail(function(err) {
-          console.error("global_chat", err);
-        });
+      log.debug("user global_chat", msg, socket.request.session);
+      if(socket.request.session.email) {
+        UserModel
+          .findOneByEmail(socket.request.session.email)
+          .then(function (user) {
+            var newMessage = {
+              content: msg,
+              users_id: user.id
+            };
+
+            MessagesModel
+              .create(newMessage)
+              .then(function(insertedId) {
+                return MessagesModel.getById(insertedId);
+              })
+              .then(function(createdMessage) {
+                io.emit('global_chat', createdMessage);
+              })
+              .fail(function(err) {
+                log.error("global_chat", err);
+              });
+          })
+          .fail(function (err) {
+            io.emit('auth_errors', err);
+          })
+      }
     });
-    //socket.broadcast.emit('hi');
+
+    socket.on('auth_errors', function (msg) {
+      log.debug("auth_errors", msg);
+    });
+
     socket.on('disconnect', function(arg) {
-      console.log('user disconnected', arg);
+      log.debug('user disconnected', arg);
     });
+
+    //socket.broadcast.emit('hi');
   });
 };

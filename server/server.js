@@ -2,6 +2,7 @@
 // Modules
 var multer  = require('multer');
 var morgan = require('morgan');
+var log = require('log4js').getLogger();
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -16,6 +17,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var cookieParser = expressCookieParser(config.COOKIE_SECRET);
 var sessionStore = new session.MemoryStore();
+
+log.setLevel('TRACE');
 
 app.use(methodOverride());
 app.use(cookieParser);
@@ -55,5 +58,5 @@ app.get('/', function (req, res) {
 chat(io, cookieParser, sessionStore);
 
 http.listen(config.PORT, function(){
-  console.log('listening on ' + config.PORT);
+  log.info('listening on ' + config.PORT);
 });
