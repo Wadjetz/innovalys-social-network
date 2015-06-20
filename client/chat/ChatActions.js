@@ -1,18 +1,16 @@
-const AppDispatcher = require('../app/AppDispatcher');
-const ChatConstants = require('./ChatConstants');
+import AppDispatcher from '../app/AppDispatcher'
+import ChatConstants from './ChatConstants'
 
-const ChatActions = {
-    loadMessages: function () {
-        AppDispatcher.handleViewAction({
-            actionType: ChatConstants.LOAD_MESSAGES
-        });
-    },
-    sendMessage: function (message) {
-        AppDispatcher.handleViewAction({
-            actionType: ChatConstants.SEND_MESSAGE,
-            message: message
-        });
-    }
+export default {
+  loadMessages: function () {
+    AppDispatcher.handleViewAction({
+      actionType: ChatConstants.LOAD_MESSAGES
+    });
+  },
+  sendMessage: function (message) {
+    AppDispatcher.handleViewAction({
+      actionType: ChatConstants.SEND_MESSAGE,
+      message: message
+    });
+  }
 };
-
-module.exports = ChatActions;

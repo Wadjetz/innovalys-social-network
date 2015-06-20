@@ -1,13 +1,12 @@
-const React = require('react');
+import React from 'react'
 
-const Forbidden = React.createClass({
-    render: function() {
-            return (
-                <div>
-                    <h2>Forbidden</h2>
-                </div>
-            );
-        }
+export default React.createClass({
+  displayName: "Forbidden",
+  render: function() {
+    return (
+      <div>
+        <h2>Forbidden</h2>
+      </div>
+    );
+  }
 });
-
-module.exports = Forbidden;

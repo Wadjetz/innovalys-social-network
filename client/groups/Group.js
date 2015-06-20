@@ -21,6 +21,7 @@ import Chat from '../chat/Chat'
 import MessageGroup from './MessageGroup'
 import FileGroup from './FileGroup'
 import Member from './Member'
+import i18n from '../../commun/local'
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
@@ -46,7 +47,7 @@ export default React.createClass({
             <TabbedArea defaultActiveKey={1}>
               <TabPane eventKey={1} tab='Messages'>
                 {messagesView}
-                <h4>Create new message</h4>
+                <h4>{i18n.__n('create_message')}</h4>
                   <Input
                       type='textarea'
                       placeholder='Content'
@@ -54,13 +55,13 @@ export default React.createClass({
                       ref='content'
                       valueLink={this.linkState('newMessage')}
                   />
-                <Button bsStyle='success' onClick={this.createMessage}>Save</Button>
+                <Button bsStyle='success' onClick={this.createMessage}>{i18n.__n('save')}</Button>
               </TabPane>
               <TabPane eventKey={2} tab='Files'>
                 <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >
-                  <div>Try dropping some files here, or click to select files to upload.</div>
+                  <div>{i18n.__n('dropzone')}</div>
                 </Dropzone>
-                <h1>Files</h1>
+                <h1>{i18n.__n('file')}</h1>
                 {filesView}
               </TabPane>
             </TabbedArea>
@@ -70,7 +71,7 @@ export default React.createClass({
             <Label bsStyle='default'>{this.state.group.type}</Label>
             <p>{this.state.group.description}</p>
             <Chat />
-            <h2>Members</h2>
+            <h2>{i18n.__n('members')}</h2>
             {membersView}
           </Col>
         </Row>

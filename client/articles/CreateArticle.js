@@ -6,6 +6,7 @@ import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap
 import ArticlesService from './ArticlesService'
 import utils from'../../commun/utils'
 import If from '../utils/If'
+import i18n from '../../commun/local'
 
 export default React.createClass({
   mixins: [
@@ -19,41 +20,41 @@ export default React.createClass({
       <Grid fluid>
         <Row>
           <Col xs={12} sm={6}>
-            <h1>Create new Article</h1>
+            <h1>{i18n.__n('create_news')}</h1>
             <If condition={this.state.createArticleError}>
               <Alert bsStyle='danger'>
-                Error
+                {i18n.__n('error')}
               </Alert>
             </If>
             <If condition={this.state.createArticleSuccess}>
               <Alert bsStyle='success'>
-                Success
+                {i18n.__n('success')}
               </Alert>
             </If>
             <Input
               type='text'
-              placeholder='Title'
-              label='Title'
+              placeholder={i18n.__n('title')}
+              label={i18n.__n('title')}
               ref='title'
               valueLink={this.linkState('title')}
             />
             <Input
               type='textarea'
               rows={20}
-              label='Body'
+              label={i18n.__n('content')}
               ref='body'
               valueLink={this.linkState('body')}
             />
             <Input
               type='date'
               ref='publish'
-              label='Publish'
+              label={i18n.__n('publish')}
               valueLink={this.linkState('publish')}
             />
-            <Button bsStyle='success' onClick={this.submit}>Save</Button>
+            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('save')}</Button>
           </Col>
           <Col xs={12} sm={6}>
-            <h1>Preview</h1>
+            <h1>{i18n.__n('preview')}</h1>
             <h1>{this.state.title}</h1>
             <p dangerouslySetInnerHTML={{__html: markdown.toHTML(this.state.body) }}></p>
           </Col>

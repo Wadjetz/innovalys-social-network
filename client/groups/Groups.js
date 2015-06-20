@@ -16,6 +16,7 @@ import Chat from '../chat/Chat'
 import GroupsService from './GroupsService'
 import GroupView from './GroupView'
 import If from '../utils/If'
+import i18n from '../../commun/local'
 
 export default React.createClass({
   mixins: [
@@ -37,38 +38,38 @@ export default React.createClass({
         <Row>
           <Col xs={8}>
             <TabbedArea defaultActiveKey={1}>
-              <TabPane eventKey={1} tab='My Groups'>
+              <TabPane eventKey={1} tab={i18n.__n('my_groups')}>
                 {myGroupsView}
               </TabPane>
-              <TabPane eventKey={2} tab='Groups'>
+              <TabPane eventKey={2} tab={i18n.__n('groups')}>
                 {groupsView}
               </TabPane>
-              <TabPane eventKey={3} tab='Create Group'>
+              <TabPane eventKey={3} tab={i18n.__n('create_groups')}>
                   <If condition={this.state.createGroupError}>
                       <Alert bsStyle='danger'>
-                        Error
+                        {i18n.__n('error')}
                       </Alert>
                   </If>
                   <If condition={this.state.createGroupSuccess}>
                       <Alert bsStyle='success'>
-                        Success
+                        {i18n.__n('success')}
                       </Alert>
                   </If>
                   <Input
                       type='text'
-                      placeholder='Name'
-                      label='Name'
+                      placeholder={i18n.__n('name')}
+                      label={i18n.__n('name')}
                       ref='name'
                       valueLink={this.linkState('name')}
                   />
-                  <Input type='select' label='Accesses' placeholder='Accesses' valueLink={this.linkState('access')}>
+                  <Input type='select' label={i18n.__n('accesses')} placeholder={i18n.__n('accesses')} valueLink={this.linkState('access')}>
                     {this.state.accesses.map((access, i) => {
                       return (
                         <option value={access} key={access + i}>{access}</option>
                       );
                     })}
                   </Input>
-                  <Input type='select' label='Types' placeholder='types' valueLink={this.linkState('type')}>
+                  <Input type='select' label={i18n.__n('types')} placeholder={i18n.__n('types')} valueLink={this.linkState('type')}>
                     {this.state.types.map((type, i) => {
                       return (
                         <option value={type} key={type + i}>{type}</option>
@@ -78,11 +79,11 @@ export default React.createClass({
                   <Input
                       type='textarea'
                       rows={4}
-                      label='Description'
+                      label={i18n.__n('description')}
                       ref='description'
                       valueLink={this.linkState('description')}
                   />
-                  <Button bsStyle='success' onClick={this.createGroup}>Save</Button>
+                  <Button bsStyle='success' onClick={this.createGroup}>{i18n.__n('save')}</Button>
               </TabPane>
             </TabbedArea>
           </Col>
@@ -115,7 +116,6 @@ export default React.createClass({
         groups: groups
       });
     }, err => {
-      console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
@@ -124,7 +124,6 @@ export default React.createClass({
         myGroups: groups
       });
     }, err => {
-      console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
@@ -134,7 +133,6 @@ export default React.createClass({
         types: types.types
       })
     }, err => {
-      console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
   },
@@ -165,7 +163,6 @@ export default React.createClass({
         });
       }, 5000);
     }, err => {
-      console.error(err);
       this.setState({
         createGroupSuccess: false,
         createGroupError: true
@@ -177,14 +174,12 @@ export default React.createClass({
   handleJoinGroup: function (group) {
     return function () {
       GroupsService.join(group).then(res => {
-        console.log(res);
         let groups = _.filter(this.state.groups, g => g.id != group.id);
-        console.log(groups);
         this.setState({
           groups: groups
         });
       }, err => {
-        console.log(err);
+        console.error(err);
       });
     }
   }

@@ -24,7 +24,6 @@ function signupValidator(req, res, next) {
 
   userValidator.signupValidator(newUser, function(validatorRes) {
     if (validatorRes === undefined) {
-      //console.log("signupValidator", validatorRes, newUser);
       req._new_user = newUser;
       next();
     } else {
@@ -67,7 +66,6 @@ function loginValidator(req, res, next) {
 
   var validatorRes = validate(login, userValidator.loginConstraints);
   if (validatorRes === undefined) {
-    //console.log("loginValidator", validatorRes, "login", login);
     req._login = login;
     next();
   } else {
@@ -78,16 +76,17 @@ function loginValidator(req, res, next) {
   }
 }
 
+var jsonError = {
+  error: "Login ou password invalide"
+};
+
 router.post('/login', loginValidator, function(req, res, next) {
   var login = req._login;
-  var jsonError = {
-    error: "Login ou password invalide"
-  };
-
   UserModel.findOneByEmail(login.email.toLowerCase())
     .then(function(user) {
       if (passwordHash.verify(login.password, user.password)) {
         req.session.email = user.email;
+        req.session.isLogged = true;
         res.json({
           message: "Hello"
         });
@@ -99,6 +98,50 @@ router.post('/login', loginValidator, function(req, res, next) {
       res.status(400).json(jsonError);
     });
 });
+
+function changePasswordValidator(req, res, next) {
+  var newPassword = {
+    current_password: req.body.current_password,
+    new_password: req.body.new_password
+  }
+
+  var newPasswordConstraints = {
+    current_password: {
+      presence: true
+    },
+    new_password: {
+      presence: true,
+    }
+  };
+
+  var validatorRes = validate(newPassword, newPasswordConstraints);
+  if (validatorRes === undefined) {
+    req._newPassword = newPassword;
+    next();
+  } else {
+    res.status(400).json(validatorRes);
+  }
+}
+
+router.put('/password', changePasswordValidator, auth.withUser, function (req, res) {
+  var user = req.$user;
+  var newPassword = req._newPassword;
+  if (passwordHash.verify(newPassword.current_password, user.password)) {
+    UserModel
+      .changePassword(user, { password: passwordHash.generate(newPassword.new_password) })
+      .then(function (result) {
+        res.json({
+          updated: result
+        });
+      })
+      .fail(function (err) {
+        console.log(err);
+        res.status(400).json(jsonError);
+      });
+  } else {
+    res.status(400).json(jsonError);
+  }
+})
 
 router.get('/roles', function(req, res) {
   var roles = UserModel.roles;
@@ -134,6 +177,13 @@ router.get('/me', auth.withRole([UserModel.ADMIN]), function(req, res) {
     arrival_date: user.arrival_date,
     last_connection: user.last_connection
   });
+});
+
+router.get('/logout', function (req, res) {
+  req.session.destroy(function(err) {
+    console.log(err);
+  })
+  res.redirect('/');
 });
 
 module.exports = router;
