@@ -90,6 +90,7 @@ const UsersStore = _.assign(Store, {
           })
           .fail(err => {
             console.error(err);
+            UsersStore.emitChange();
           })
         break;
 
@@ -101,6 +102,7 @@ const UsersStore = _.assign(Store, {
           })
           .fail(err => {
             console.error(err);
+            UsersStore.emitChange();
           });
         break;
     }

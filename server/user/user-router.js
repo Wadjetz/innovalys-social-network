@@ -86,6 +86,7 @@ router.post('/login', loginValidator, function(req, res, next) {
     .then(function(user) {
       if (passwordHash.verify(login.password, user.password)) {
         req.session.email = user.email;
+        req.session.isLogged = true;
         res.json({
           message: "Hello"
         });
