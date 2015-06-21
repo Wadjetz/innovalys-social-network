@@ -49,7 +49,6 @@ export default React.createClass({
       });
     }, err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.error(err);
     });
   }
 

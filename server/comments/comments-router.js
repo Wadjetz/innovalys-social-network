@@ -1,6 +1,5 @@
 var router        = require("express").Router();
 var moment        = require('moment');
-var async         = require('async');
 var CommentsModel = require('./comments-model');
 var NewsModel     = require('../news/news-model');
 var UserModel     = require('../user/user-model');

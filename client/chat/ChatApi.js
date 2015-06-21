@@ -9,3 +9,13 @@ module.exports.getAllMessages = function (page) {
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
 };
+
+module.exports.createConversation = function (target) {
+  return Qajax({
+    url: BASE_URL + '/chat/conversations',
+    method: 'POST',
+    data: target
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+}

@@ -14,24 +14,40 @@ module.exports.roles = {
   USER: "user"
 };
 
+function makeSqlUserSelect() {
+  return " " +
+    "users.id, " +
+    "users.email, " +
+    "users.role, " +
+    "users.first_name, " +
+    "users.last_name, " +
+    "users.birthday_date, " +
+    "users.status_profile, " +
+    "users.status_connection, " +
+    "users.function, " +
+    "users.description, " +
+    "users.arrival_date, " +
+    "users.last_connection ";
+}
+
 module.exports.findAll = function (user) {
   return db.findAll(
     "SELECT " +
-      "users.id, " +
-      "users.email, " +
-      "users.role, " +
-      "users.first_name, " +
-      "users.last_name, " +
-      "users.birthday_date, " +
-      "users.status_profile, " +
-      "users.status_connection, " +
-      "users.function, " +
-      "users.description, " +
-      "users.arrival_date, " +
-      "users.last_connection " +
+      makeSqlUserSelect() +
     "FROM users " +
     "WHERE users.id != ?",
     [user.id]
+  );
+};
+
+module.exports.findByConversationId = function (conversationsId) {
+  return db.findAll(
+    "SELECT " +
+      makeSqlUserSelect() +
+    "FROM users " +
+      "JOIN conversations_users ON conversations_users.users_id = users.id " +
+    "WHERE conversations_users.conversations_id = ? ; ",
+    [conversationsId]
   );
 };
 

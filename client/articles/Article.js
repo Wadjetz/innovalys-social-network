@@ -114,7 +114,6 @@ export default React.createClass({
         this.setState(article);
       })
       .fail(err => {
-        console.error(err);
         if (err.status === 401) { AppActions.unauthorized(); }
 
       });
@@ -127,7 +126,6 @@ export default React.createClass({
         });
       })
       .fail(err => {
-        console.error(err);
         if (err.status === 401) { AppActions.unauthorized(); }
       });
   }

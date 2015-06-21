@@ -127,7 +127,6 @@ export default React.createClass({
         group: group
       });
     }, err => {
-      console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
@@ -136,7 +135,7 @@ export default React.createClass({
         messages: messages
       });
     }, err => {
-      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
     GroupsService.getFiles(slug).then(files => {
@@ -144,7 +143,7 @@ export default React.createClass({
         files: files
       });
     }, err => {
-      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
   },
 

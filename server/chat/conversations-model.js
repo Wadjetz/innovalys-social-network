@@ -1,13 +1,31 @@
 var db = require('../config/database');
 
-module.exports.findAllByUserId = function (articleId, page, callback) {
-    // TODO
-    callback(null);
+module.exports.findAll = function (page, user) {
+  return db.findAll(
+    "SELECT * FROM conversations",
+    []
+  );
 };
 
-module.exports.addUser = function (articleId, page, callback) {
-    // TODO
-    callback(null);
+module.exports.create = function (conversation) {
+  return db.insert(
+    "INSERT INTO conversations SET ? ;",
+    [conversation]
+  );
+};
+
+module.exports.addUser = function (conversationUser) {
+  return db.insert(
+    "INSERT INTO conversations_users SET ? ;",
+    [conversationUser]
+  );
+};
+
+module.exports.findById = function (id) {
+  return db.findOne(
+    "SELECT * FROM conversations WHERE conversations.id = ? ; ",
+    [id]
+  );
 };
 
 module.exports.delteUser = function (articleId, page, callback) {
@@ -15,10 +33,6 @@ module.exports.delteUser = function (articleId, page, callback) {
     callback(null);
 };
 
-module.exports.create = function (user, callback) {
-    // TODO
-    callback(null);
-};
 
 module.exports.update = function (comment, callback) {
     // TODO

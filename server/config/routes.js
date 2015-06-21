@@ -7,6 +7,7 @@ var GroupsMembersRouter = require('../groups/members-router');
 var GroupsMessagesRouter = require('../groups/messages-router');
 var GroupsFilesRouter = require('../groups/files-router');
 var ChatRouter = require('../chat/chat-router');
+var ConversationsRouter = require('../chat/conversations-router');
 
 module.exports = function (app, express) {
     app.use('/users', UserRouter);
@@ -17,4 +18,5 @@ module.exports = function (app, express) {
     app.use('/groups/messages', GroupsMessagesRouter);
     app.use('/groups/files', GroupsFilesRouter);
     app.use('/chat', ChatRouter);
+    app.use('/chat/conversations', ConversationsRouter)
 };

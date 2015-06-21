@@ -36,7 +36,8 @@ module.exports = function(io, cookieParser, sessionStore) {
           .then(function (user) {
             var newMessage = {
               content: msg,
-              users_id: user.id
+              users_id: user.id,
+              conversations_id: 1
             };
 
             MessagesModel
