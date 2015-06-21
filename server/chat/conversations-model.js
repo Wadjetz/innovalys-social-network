@@ -2,10 +2,19 @@ var db = require('../config/database');
 
 module.exports.findAll = function (page, user) {
   return db.findAll(
-    "SELECT * FROM conversations",
+    "SELECT conversations.* " +
+    "FROM conversations " +
+    "WHERE 0 < ( " +
+      "SELECT count(*) " +
+      "FROM conversations_users " +
+      "WHERE conversations_users.conversations_id = conversations.id " +
+        "AND conversations_users.users_id = 15 " +
+    ") ; ",
     []
   );
 };
+
+
 
 module.exports.create = function (conversation) {
   return db.insert(
