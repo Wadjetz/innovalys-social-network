@@ -35,7 +35,7 @@ export default React.createClass({
   },
 
   onChange: function () {
-    console.log(UsersStore.getData());
+    this.setState(UsersStore.getData());
   },
 
   componentDidMount: function () {

@@ -173,15 +173,23 @@ export default React.createClass({
 
   handleJoinGroup: function (group) {
     return function () {
-      GroupsService.join(group).then(res => {
-        let groups = _.filter(this.state.groups, g => g.id != group.id);
-        this.setState({
-          groups: groups
+      console.log("handleJoinGroup", group);
+      GroupsService
+        .join(group)
+        .then(res => {
+          let groups = _.filter(this.state.groups, function (g) {
+            return g.id !== group.id
+          });
+          this.state.myGroups.push(group);
+          this.setState({
+            groups: groups,
+            myGroups: this.state.myGroups
+          });
+        })
+        .fail(err => {
+          console.error(err);
         });
-      }, err => {
-        console.error(err);
-      });
-    }
+    }.bind(this);
   }
 
 });
