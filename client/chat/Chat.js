@@ -88,6 +88,7 @@ export default React.createClass({
     this.setState(getMessages());
   },
   componentDidMount: function () {
+    ChatStore.connect();
     ChatStore.addChangeListener(this.onChange);
   },
   componentWillUnmount: function () {

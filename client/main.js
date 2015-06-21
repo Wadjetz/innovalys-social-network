@@ -10,9 +10,6 @@ import Login from './user/Login'
 import Signup from './user/Signup'
 import App from './app/App'
 import Forbidden from './app/Forbidden'
-import ChatStore from './chat/ChatStore'
-
-ChatStore.connect();
 
 const Routes = (
   <Route handler={App} path="/">

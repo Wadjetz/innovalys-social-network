@@ -34,6 +34,7 @@ const ChatStore = _.assign(Store, {
         break;
 
       case ChatConstants.SEND_MESSAGE:
+        console.log('SEND_MESSAGE global_chat', action.message);
         socket.emit('global_chat', action.message);
         break;
     }

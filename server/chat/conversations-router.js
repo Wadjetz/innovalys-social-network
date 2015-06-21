@@ -52,6 +52,30 @@ function conversationValidator(req, res, next) {
   }
 }
 
+function getConversationAction(req, res) {
+  var user = req.$user;
+  var conversationsId = req.params.id;
+  ConversationsModel
+    .findById(conversationsId)
+    .then(function (conversation) {
+      UserModel
+        .findByConversationId(conversation.id)
+        .then(function (users) {
+          res.json({
+            conversation: conversation,
+            users: users
+          });
+        })
+        .fail(function (err) {
+          res.status(404).json(err);
+        })
+    })
+    .fail(function (err) {
+      res.status(404).json(err);
+    })
+}
+router.get('/:id', auth.withUser, getConversationAction);
+
 /**
 POST /chat/conversations
 Create new conversation
