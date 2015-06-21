@@ -45,17 +45,21 @@ module.exports.findAll = function (page) {
 };
 
 /**
-Find all groups
+Find all not my groups 
 */
 module.exports.findAllNotMyGroups = function (page, user) {
   return db.findAll(
-    "SELECT groups.*, members.status AS members_status " +
+    "SELECT groups.* " +
     "FROM groups " +
-    "JOIN members ON members.groups_id = groups.id " +
-    "WHERE members.users_id != ? " +
+    "WHERE 0 = ( " +
+      "SELECT count(*) " +
+        "FROM members " +
+        "WHERE members.groups_id = groups.id " +
+          "AND members.users_id = ?" +
+    ") " +
     "ORDER BY groups.created " +
-    "DESC LIMIT 10 OFFSET ?; ",
-    [page]
+    "DESC LIMIT 50 OFFSET ? ; ",
+    [user.id, page]
   );
 };
 

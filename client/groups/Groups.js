@@ -16,6 +16,7 @@ import GroupsService from './GroupsService'
 import GroupView from './GroupView'
 import If from '../utils/If'
 import i18n from '../../commun/local'
+import Users from '../user/Users'
 
 export default React.createClass({
   mixins: [
@@ -87,6 +88,7 @@ export default React.createClass({
             </TabbedArea>
           </Col>
           <Col xs={4}>
+            <Users />
           </Col>
         </Row>
       </Grid>

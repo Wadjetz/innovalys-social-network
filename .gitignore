@@ -1,4 +1,5 @@
-/server/uploads/*
+/uploads/files/*
+/uploads/img-profiles/*
 /server/public/main.js
 
 *.bak

@@ -2,6 +2,7 @@ var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
 var async    = require('async');
+var log      = require('log4js').getLogger();
 var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
@@ -20,6 +21,7 @@ var uploadFile = function (req, res) {
   var slug = req.params.slug;
   var file = req.files.file;
   if (file) {
+    log.debug(req.files);
     GroupsModel.findOneBySlug(slug)
       .then(function (group) {
         var groupFile = {

@@ -21,7 +21,8 @@ const wrapStyle = {
   backgroundColor: "#FFF",
   padding: '3px',
   border: '1px solid #999',
-  borderRadius: '3px'
+  borderRadius: '3px',
+  boxShadow: '0 0 4px 1px #858585'
 };
 
 const buttonStyle = {
@@ -67,7 +68,6 @@ export default React.createClass({
     this.setState({
       isChatVisible: !this.state.isChatVisible
     });
-    console.log(this.state.isChatVisible);
   },
   getInitialState: function () {
     ChatActions.loadMessages();

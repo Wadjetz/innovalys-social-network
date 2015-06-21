@@ -6,6 +6,7 @@ import Bootstrap, { Grid, Row, Col } from 'react-bootstrap'
 import ArticlesService from './ArticlesService'
 import AppActions from '../app/AppActions'
 import UsersActions from '../user/UsersActions'
+import Users from '../user/Users'
 import i18n from '../../commun/local'
 
 export default React.createClass({
@@ -27,6 +28,7 @@ export default React.createClass({
             })}
           </Col>
           <Col xs={4}>
+            <Users />
           </Col>
         </Row>
       </Grid>

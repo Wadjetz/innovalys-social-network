@@ -18,7 +18,7 @@ Get all groups
 function getGroupsAction (req, res) {
   var user = req.$user;
   var page = req.query.page || 0;
-  GroupsModel.findAll(page).then(function (groups) {
+  GroupsModel.findAllNotMyGroups(page, user).then(function (groups) {
     res.json(groups);
   }).fail(function (err) {
     res.status(400).json(err);
@@ -50,7 +50,6 @@ Get all my groups
 function getMyGroupsAction (req, res) {
   var user = req.$user;
   GroupsModel.findMyGroups(user).then(function (groups) {
-    console.log(groups);
     res.json(groups);
   }).fail(function (err) {
     console.log(err);

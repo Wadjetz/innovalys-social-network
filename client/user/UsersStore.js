@@ -22,10 +22,14 @@ var _data = {
     status_profile: ""
   },
   connected: false,
-  loginError: ""
+  loginError: "",
+  users: []
 };
 
 const UsersStore = _.assign(Store, {
+  getData: function () {
+    return _data;
+  },
   getMe: function () {
     return _data.me;
   },
@@ -38,6 +42,18 @@ const UsersStore = _.assign(Store, {
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
+
+      case UsersConstants.LOAD_USERS:
+        UsersApi.getAllUsers()
+          .then(users => {
+            _data.users = users;
+            UsersStore.emitChange();
+          })
+          .fail(err => {
+            console.error(err);
+          })
+        break;
+
       case UsersConstants.LOGIN:
         _data.connected = false;
         _data.loginError = "";

@@ -14,6 +14,27 @@ module.exports.roles = {
   USER: "user"
 };
 
+module.exports.findAll = function (user) {
+  return db.findAll(
+    "SELECT " +
+      "users.id, " +
+      "users.email, " +
+      "users.role, " +
+      "users.first_name, " +
+      "users.last_name, " +
+      "users.birthday_date, " +
+      "users.status_profile, " +
+      "users.status_connection, " +
+      "users.function, " +
+      "users.description, " +
+      "users.arrival_date, " +
+      "users.last_connection " +
+    "FROM users " +
+    "WHERE users.id != ?",
+    [user.id]
+  );
+};
+
 module.exports.findOneById = function (id) {
   return db.findOne(
     "SELECT * FROM users WHERE id = ? ;",
