@@ -12,7 +12,8 @@ module.exports.getAll = function (page) {
       "users.status_profile, " +
       "users.status_connection, " +
       "users.function " +
-    "FROM messages JOIN users ON messages.users_id = users.id ; ",
+    "FROM messages JOIN users ON messages.users_id = users.id " +
+    "ORDER BY messages.created ASC ; ",
     []
   );
 };
@@ -28,7 +29,7 @@ module.exports.getById = function (id) {
       "users.last_name, " +
       "users.status_profile, " +
       "users.status_connection, " +
-      "users.function " + 
+      "users.function " +
     "FROM messages JOIN users ON messages.users_id = users.id WHERE messages.id = ? ;",
     [id]
   );

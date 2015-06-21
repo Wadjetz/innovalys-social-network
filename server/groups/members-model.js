@@ -1,5 +1,4 @@
 var db = require('../config/database');
-var Q = require('q');
 
 /**
 Create group messages
@@ -8,33 +7,35 @@ module.exports.create = function (userId, groupeId) {
   var members = {
     users_id: userId,
     groups_id: groupeId
-  }
-  var sql = "INSERT INTO members SET ? ;";
-  var data = [members];
-  return db.insert(sql, data);
+  };
+  return db.insert(
+    "INSERT INTO members SET ? ;",
+    [members]
+  );
 };
 
 /**
 Find all group messages by group id and status
 */
 module.exports.findByStatus = function (groupeId, status) {
-  var sql = "SELECT " +
-                "users.id, " +
-                "users.role, " +
-                "users.first_name, " +
-                "users.last_name, " +
-                "users.status_profile, " +
-                "users.status_connection, " +
-                "users.function, " +
-                "users.last_connection, " +
-                "users.arrival_date, " +
-                "members.status AS memeber_status " +
-              "FROM members " +
-              "JOIN users ON users.id = members.users_id " +
-              "WHERE members.groups_id = ? " +
-              "AND members.status = ? ;";
-  var data = [groupeId, status];
-  return db.findAll(sql, data);
+  return db.findAll(
+    "SELECT " +
+      "users.id, " +
+      "users.role, " +
+      "users.first_name, " +
+      "users.last_name, " +
+      "users.status_profile, " +
+      "users.status_connection, " +
+      "users.function, " +
+      "users.last_connection, " +
+      "users.arrival_date, " +
+      "members.status AS memeber_status " +
+    "FROM members " +
+    "JOIN users ON users.id = members.users_id " +
+    "WHERE members.groups_id = ? " +
+    "AND members.status = ? ;",
+    [groupeId, status]
+  );
 };
 
 /**

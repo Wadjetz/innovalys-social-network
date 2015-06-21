@@ -187,7 +187,7 @@ router.get('/status-connection', function(req, res) {
   res.json(result);
 });
 
-router.get('/me', auth.withRole([UserModel.ADMIN]), function(req, res) {
+router.get('/me', auth.withUser, function(req, res) {
   var user = req.$user;
   res.json({
     id: user.id,

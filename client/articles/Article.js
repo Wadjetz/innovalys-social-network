@@ -108,12 +108,28 @@ export default React.createClass({
 
   componentDidMount: function () {
     let slug = this.context.router.getCurrentParams().slug
-    ArticlesService.get(slug).then(article => {
-      this.setState(article);
-    }, err => {
-      console.error(err);
-      if (err.status === 401) { AppActions.unauthorized(); }
-    });
+    ArticlesService
+      .get(slug)
+      .then(article => {
+        this.setState(article);
+      })
+      .fail(err => {
+        console.error(err);
+        if (err.status === 401) { AppActions.unauthorized(); }
+
+      });
+
+    CommentsService
+      .getAllBySlug(slug)
+      .then(comments => {
+        this.setState({
+          comments: comments
+        });
+      })
+      .fail(err => {
+        console.error(err);
+        if (err.status === 401) { AppActions.unauthorized(); }
+      });
   }
 
 });

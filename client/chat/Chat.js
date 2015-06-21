@@ -5,6 +5,7 @@ import ChatStore from './ChatStore'
 import MessageSender from './MessageSender'
 import i18n from '../../commun/local'
 import If from '../utils/If'
+const Storage = localStorage;
 
 const messagesStyle = {
   overflowX: 'auto',
@@ -40,19 +41,24 @@ function getMessages() {
   };
 }
 
+if(!Storage.getItem("hideChat")) {
+  Storage.setItem("hideChat", "true");
+}
+
 export default React.createClass({
   displayName: "Chat",
   render: function () {
     let messages = this.state.messages.map((message, i) => {
       return <div key={i}>{message.first_name} {message.last_name} : {message.content}</div>
     });
+    let hideChat = Storage.getItem("hideChat");
     return (
       <div style={wrapStyle}>
         <h4>{i18n.__n('chat')}</h4>
         <button style={buttonStyle} type="button" className="btn btn-default btn-sm" onClick={this.hideChat}>
-          <span className={(this.state.isChatVisible)? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-up"}></span>
+          <span className={(hideChat === "true")? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-up"}></span>
         </button>
-        <If condition={this.state.isChatVisible}>
+        <If condition={hideChat === "true"}>
           <div>
             <div style={messagesStyle}>
               {messages}
@@ -65,9 +71,14 @@ export default React.createClass({
   },
 
   hideChat: function () {
-    this.setState({
-      isChatVisible: !this.state.isChatVisible
-    });
+    let hideChat = Storage.getItem("hideChat");
+    if (hideChat === "true") {
+      Storage.setItem("hideChat", "false");
+    }
+    if (hideChat === "false") {
+      Storage.setItem("hideChat", "true");
+    }
+    this.setState({});
   },
   getInitialState: function () {
     ChatActions.loadMessages();
