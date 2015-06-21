@@ -7,30 +7,55 @@ import Store from '../flux/Store'
 
 const socket = io(document.location.host);
 
-let _data = {
-  messages: []
+var _chatData = {
+  messages: [],
+  conversations: []
 };
 
-const ChatStore = _.assign(Store, {
+var ChatStore = _.assign(Store, {
   connect: function () {
     socket.on('global_chat', (msg) => {
-      _data.messages.push(msg);
+      _chatData.messages.push(msg);
       ChatStore.emitChange();
     });
   },
-  getMessages: function () {
-    return _data.messages;
+
+  getChatData: function () {
+    return _chatData;
   },
+
+  getMessages: function () {
+    return _chatData.messages;
+  },
+
+  getConversations: function () {
+    return _chatData.conversations;
+  },
+
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
+
       case ChatConstants.LOAD_MESSAGES:
-        ChatApi.getAllMessages(0)
+        ChatApi
+          .getAllMessages(0)
           .then(history => {
-            _data.messages = _.uniq(_data.messages.concat(history), 'id');
+            _chatData.messages = _.uniq(_chatData.messages.concat(history), 'id');
             ChatStore.emitChange();
           })
           .fail(err => console.error(err))
+        break;
+
+      case ChatConstants.LOAD_CONVERSATIONS:
+        ChatApi
+          .getConversations()
+          .then(conversations => {
+            _chatData.conversations = conversations;
+            ChatStore.emitChange();
+          })
+          .fail(err => {
+            //console.log(err);
+          });
         break;
 
       case ChatConstants.SEND_MESSAGE:

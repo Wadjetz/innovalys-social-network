@@ -7,6 +7,11 @@ export default {
       actionType: ChatConstants.LOAD_MESSAGES
     });
   },
+  loadConversations: function () {
+    AppDispatcher.handleViewAction({
+      actionType: ChatConstants.LOAD_CONVERSATIONS
+    });
+  },
   sendMessage: function (message) {
     AppDispatcher.handleViewAction({
       actionType: ChatConstants.SEND_MESSAGE,

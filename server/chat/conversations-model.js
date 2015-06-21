@@ -14,8 +14,6 @@ module.exports.findAll = function (page, user) {
   );
 };
 
-
-
 module.exports.create = function (conversation) {
   return db.insert(
     "INSERT INTO conversations SET ? ;",

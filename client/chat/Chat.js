@@ -7,34 +7,10 @@ import i18n from '../../commun/local'
 import If from '../utils/If'
 const Storage = localStorage;
 
-const messagesStyle = {
-  overflowX: 'auto',
-  overflowY: 'auto',
-  height: '200px',
-  width: '340px',
-};
-
-const wrapStyle = {
-  width: '350px',
-  position: 'fixed',
-  right: 20,
-  bottom: 0,
-  backgroundColor: "#FFF",
-  padding: '3px',
-  border: '1px solid #999',
-  borderRadius: '3px',
-  boxShadow: '0 0 4px 1px #858585'
-};
-
-const buttonStyle = {
-  position: 'absolute',
-  right: 3,
-  top: 7,
-};
-
 function getMessages() {
   return {
     messages: ChatStore.getMessages(),
+    conversations: ChatStore.getConversations(),
     isChatVisible: false,
     nbMessages: 0,
     nbUsers: 0
@@ -51,6 +27,11 @@ export default React.createClass({
     let messages = this.state.messages.map((message, i) => {
       return <div key={i}>{message.first_name} {message.last_name} : {message.content}</div>
     });
+
+    let conversationsView = this.state.conversations.map((conversation, i) => {
+      return <div key={conversation.id}>{conversation.id}</div>
+    });
+
     let hideChat = Storage.getItem("hideChat");
     return (
       <div style={wrapStyle}>
@@ -60,6 +41,9 @@ export default React.createClass({
         </button>
         <If condition={hideChat === "true"}>
           <div>
+            <div style={conversationsStyle}>
+              {conversationsView}
+            </div>
             <div style={messagesStyle}>
               {messages}
             </div>
@@ -82,6 +66,7 @@ export default React.createClass({
   },
   getInitialState: function () {
     ChatActions.loadMessages();
+    ChatActions.loadConversations();
     return getMessages();
   },
   onChange: function () {
@@ -95,3 +80,38 @@ export default React.createClass({
     ChatStore.removeChangeListener(this.onChange);
   }
 });
+
+const messagesStyle = {
+  overflowX: 'auto',
+  overflowY: 'auto',
+  height: '200px',
+  width: '300px',
+  verticalAlign: 'top',
+  display: 'inline-block'
+};
+
+const conversationsStyle = {
+  width: '100px',
+  verticalAlign: 'top',
+  display: 'inline-block',
+  overflowX: 'auto',
+  overflowY: 'auto'
+};
+
+const wrapStyle = {
+  width: '500px',
+  position: 'fixed',
+  right: 20,
+  bottom: 0,
+  backgroundColor: "#FFF",
+  padding: '3px',
+  border: '1px solid #999',
+  borderRadius: '3px',
+  boxShadow: '0 0 4px 1px #858585'
+};
+
+const buttonStyle = {
+  position: 'absolute',
+  right: 3,
+  top: 7,
+};

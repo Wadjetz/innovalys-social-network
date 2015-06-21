@@ -8,7 +8,7 @@ import UsersActions from './UsersActions'
 import UsersApi from './UsersApi'
 import UsersConstants from './UsersConstants'
 
-var _data = {
+var _usersData = {
    me: {
     first_name: "User",
     role: "user",
@@ -26,18 +26,18 @@ var _data = {
   users: []
 };
 
-const UsersStore = _.assign(Store, {
+var UsersStore = _.assign(Store, {
   getData: function () {
-    return _data;
+    return _usersData;
   },
   getMe: function () {
-    return _data.me;
+    return _usersData.me;
   },
   isConnected: function () {
-    return _data.connected;
+    return _usersData.connected;
   },
   getLoginError: function () {
-    return _data.loginError;
+    return _usersData.loginError;
   },
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
@@ -46,7 +46,7 @@ const UsersStore = _.assign(Store, {
       case UsersConstants.LOAD_USERS:
         UsersApi.getAllUsers()
           .then(users => {
-            _data.users = users;
+            _usersData.users = users;
             UsersStore.emitChange();
           })
           .fail(err => {
@@ -55,15 +55,15 @@ const UsersStore = _.assign(Store, {
         break;
 
       case UsersConstants.LOGIN:
-        _data.connected = false;
-        _data.loginError = "";
+        _usersData.connected = false;
+        _usersData.loginError = "";
         UsersApi.login(action.login)
           .then(result => {
-            _data.connected = true;
+            _usersData.connected = true;
             UsersStore.emitChange();
           })
           .fail(err => {
-            _data.loginError = err;
+            _usersData.loginError = err;
             if(err.status === 401) {
               _date.connected = false;
             }
@@ -74,8 +74,8 @@ const UsersStore = _.assign(Store, {
       case UsersConstants.LOAD_ME:
         UsersApi.me()
           .then(me => {
-            _data.me = me;
-            _data.connected = true;
+            _usersData.me = me;
+            _usersData.connected = true;
             UsersStore.emitChange();
           })
           .fail(err => {

@@ -18,4 +18,22 @@ module.exports.createConversation = function (target) {
   })
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
-}
+};
+
+module.exports.getConversations = function () {
+  return Qajax({
+    url: BASE_URL + '/chat/conversations',
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+};
+
+module.exports.getConversationById = function (conversationId) {
+  return Qajax({
+    url: BASE_URL + '/chat/conversations/' + conversationId,
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+};
