@@ -45,7 +45,7 @@ module.exports.findAll = function (page) {
 };
 
 /**
-Find all not my groups 
+Find all not my groups
 */
 module.exports.findAllNotMyGroups = function (page, user) {
   return db.findAll(

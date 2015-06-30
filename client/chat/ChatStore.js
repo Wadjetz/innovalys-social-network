@@ -1,11 +1,11 @@
-import _ from 'lodash'
-import AppDispatcher from '../app/AppDispatcher'
-import ChatConstants from './ChatConstants'
-import ChatActions from './ChatActions'
-import ChatApi from './ChatApi'
-import Store from '../flux/Store'
+import _ from 'lodash';
+import AppDispatcher from '../app/AppDispatcher';
+import ChatConstants from './ChatConstants';
+import ChatActions from './ChatActions';
+import ChatApi from './ChatApi';
+import Store from '../flux/Store';
 
-const socket = io(document.location.host);
+const socket = window.io(document.location.host);
 
 var _chatData = {
   messages: [],
@@ -17,6 +17,9 @@ var ChatStore = _.assign(Store, {
     socket.on('global_chat', (msg) => {
       _chatData.messages.push(msg);
       ChatStore.emitChange();
+    });
+    socket.on('auth_errors', msg => {
+      console.log("Chat error = ", msg);
     });
   },
 
@@ -43,7 +46,7 @@ var ChatStore = _.assign(Store, {
             _chatData.messages = _.uniq(_chatData.messages.concat(history), 'id');
             ChatStore.emitChange();
           })
-          .fail(err => console.error(err))
+          .fail(err => console.error(err));
         break;
 
       case ChatConstants.LOAD_CONVERSATIONS:
@@ -54,7 +57,7 @@ var ChatStore = _.assign(Store, {
             ChatStore.emitChange();
           })
           .fail(err => {
-            //console.log(err);
+            console.log(err);
           });
         break;
 

@@ -10,6 +10,8 @@ var expressCookieParser = require('cookie-parser');
 var methodOverride = require("method-override");
 var config = require('./config/config');
 var chat = require('./chat/chat');
+var chatSession = require('./chat/chat-session');
+var chatAuth = require('./chat//chat-auth');
 
 // Config
 var app  = express();
@@ -55,7 +57,9 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
 
-chat(io, cookieParser, sessionStore);
+chatSession(io, cookieParser, sessionStore);
+chatAuth(io);
+chat(io);
 
 http.listen(config.PORT, function(){
   log.info('listening on ' + config.PORT);
