@@ -12,11 +12,11 @@ import Bootstrap, {
   Button
 } from 'react-bootstrap'
 
-import Chat from '../chat/Chat'
 import GroupsService from './GroupsService'
 import GroupView from './GroupView'
 import If from '../utils/If'
 import i18n from '../../commun/local'
+import Users from '../user/Users'
 
 export default React.createClass({
   mixins: [
@@ -88,7 +88,7 @@ export default React.createClass({
             </TabbedArea>
           </Col>
           <Col xs={4}>
-              <Chat />
+            <Users />
           </Col>
         </Row>
       </Grid>
@@ -147,11 +147,11 @@ export default React.createClass({
     };
 
     GroupsService.create(newGroup).then(result => {
-      this.state.groups.push(result);
+      this.state.myGroups.push(result);
       this.setState({
         createGroupSuccess: true,
         createGroupError: false,
-        groups: this.state.groups,
+        myGroups: this.state.myGroups,
         name: "",
         description: ""
       });
@@ -173,15 +173,23 @@ export default React.createClass({
 
   handleJoinGroup: function (group) {
     return function () {
-      GroupsService.join(group).then(res => {
-        let groups = _.filter(this.state.groups, g => g.id != group.id);
-        this.setState({
-          groups: groups
+      console.log("handleJoinGroup", group);
+      GroupsService
+        .join(group)
+        .then(res => {
+          let groups = _.filter(this.state.groups, function (g) {
+            return g.id !== group.id
+          });
+          this.state.myGroups.push(group);
+          this.setState({
+            groups: groups,
+            myGroups: this.state.myGroups
+          });
+        })
+        .fail(err => {
+          console.error(err);
         });
-      }, err => {
-        console.error(err);
-      });
-    }
+    }.bind(this);
   }
 
 });

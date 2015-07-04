@@ -9,14 +9,6 @@ import UsersStore from './UsersStore'
 import UsersApi from './UsersApi'
 import i18n from '../../commun/local'
 
-function getData() {
-  return {
-    roles: UsersStore.getRoles(),
-    signupResult: UsersStore.getSignupResult(),
-    signupError: UsersStore.getSignupError()
-  };
-}
-
 export default React.createClass({
   displayName: "Signup",
   mixins: [ React.addons.LinkedStateMixin ],
@@ -124,7 +116,7 @@ export default React.createClass({
   getInitialState: function() {
     // TODO remove data mock
     return {
-      email: (Math.random() * 1000) + "@domain.com",
+      email: "user-" + (Math.floor(Math.random() * 100000) + 1) + "@domain.com",
       first_name: "First Name",
       last_name: "Last Name",
       birthday_date: moment().format(utils.mysqlDateFormat),
@@ -133,9 +125,14 @@ export default React.createClass({
       function: "peon",
       description: "descr",
       arrival_date: moment().format(utils.mysqlDateFormat),
-      roles: getData().roles,
-      signupResult: getData().signupResult,
-      signupError: getData().signupError
+      roles: [],
+      signupResult: {
+        access: {
+          email: "",
+          password: ""
+        }
+      },
+      signupError: ""
     };
   },
   submit: function () {
@@ -151,17 +148,29 @@ export default React.createClass({
       arrival_date: this.state.arrival_date,
       role: this.state.role
     };
-    UsersActions.createUser(newUser);
-  },
-  onChange: function () {
-    this.setState(getData());
+    UsersApi.create(newUser)
+      .then(createdUser => {
+        this.setState({
+          signupResult: createdUser
+        });
+      })
+      .fail(err => {
+        if (err.status === 401) { AppActions.unauthorized(); }
+        this.setState({
+          signupError: err
+        });
+      });
   },
   componentDidMount: function () {
-    UsersActions.loadMe();
-    UsersActions.loadRoles()
-    UsersStore.addChangeListener(this.onChange);
-  },
-  componentWillUnmount: function () {
-    UsersStore.removeChangeListener(this.onChange);
+    UsersApi.roles()
+      .then(roles => {
+        this.setState({roles});
+      })
+      .fail(err => {
+        if (err.status === 401) { AppActions.unauthorized(); }
+        this.setState({
+          signupError: err
+        });
+      });
   }
 });

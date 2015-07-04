@@ -1,112 +1,25 @@
 import React from 'react/addons'
-import moment from 'moment'
-import _ from 'lodash'
-import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap'
-import utils from '../../commun/utils'
-import If  from '../utils/If'
-import UsersActions from './UsersActions'
-import UsersStore from './UsersStore'
-import UsersApi from './UsersApi'
+import Bootstrap, { Row, Col, Input, Button } from 'react-bootstrap'
 import i18n from '../../commun/local'
-
-function getMe() {
-  return {
-    me: UsersStore.getMe(),
-    currentPassword: "",
-    newPassword: "",
-    changePasswordError: "",
-    changePasswordSuccess: ""
-  }
-}
 
 export default React.createClass({
   displayName: "User",
-  mixins: [ React.addons.LinkedStateMixin ],
-
-  render: function() {
-    let me = this.state.me;
-    let changePasswordError = this.state.changePasswordError;
-    let changePasswordSuccess = this.state.changePasswordSuccess;
-
+  render: function () {
+    let user = this.props.user;
     return (
-      <Grid>
-        <Row>
-          <Col xs={12}>
-            <h1>{me.first_name} {me.last_name}</h1>
-            <h2>{me.email}</h2>
-            <p>{me.description}</p>
-          </Col>
-          <Col xs={12}>
-            <h1>{i18n.__n('change_password')}</h1>
-            <If condition={!_.isEmpty(changePasswordError)}>
-              <Alert bsStyle='danger'>
-                {changePasswordError}
-              </Alert>
-            </If>
-            <If condition={!_.isEmpty(changePasswordSuccess)}>
-              <Alert bsStyle='success'>
-                {changePasswordSuccess}
-              </Alert>
-            </If>
-            <Input
-              type='password'
-              placeholder={i18n.__n('current_password')}
-              label={i18n.__n('current_password')}
-              ref='currentPassword'
-              valueLink={this.linkState('currentPassword')}
-            />
-            <Input
-              type='password'
-              placeholder={i18n.__n('new_password')}
-              label={i18n.__n('new_password')}
-              ref='newPassword'
-              valueLink={this.linkState('newPassword')}
-            />
-            <Button
-              bsStyle='success'
-              disabled={(this.state.currentPassword === "") || (this.state.newPassword === "")}
-              onClick={this.submit}>
-              {i18n.__n('save')}
-            </Button>
-          </Col>
-        </Row>
-      </Grid>
+      <div style={{ marginBottom: 15 }}>
+        <div className="media">
+          <div className="media-left">
+            <a href="#">
+              <img className="media-object img-circle" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PGRlZnMvPjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjEzLjQ2MDkzNzUiIHk9IjMyIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9nPjwvc3ZnPg==" alt="..." />
+            </a>
+          </div>
+          <div className="media-body">
+            <h4>{user.first_name} {user.last_name}</h4>
+          </div>
+        </div>
+      </div>
     );
-  },
-  submit: function () {
-    if (this.state.currentPassword !== "" && this.state.newPassword != "") {
-      console.log(this.state.currentPassword, this.state.newPassword);
-      UsersApi
-        .changePassword(this.state.currentPassword, this.state.newPassword)
-        .then(res => {
-          console.log(res);
-          this.setState({
-            changePasswordError: "",
-            changePasswordSuccess: i18n.__n('success')
-          });
-        })
-        .fail(err => {
-          let jsonError = JSON.parse(err.responseText);
-          console.error(jsonError);
-          this.setState({
-            changePasswordError: jsonError.error,
-            changePasswordSuccess: ""
-          });
-        })
-    } else {
-      console.error("error");
-    }
-  },
-  getInitialState: function () {
-    return getMe();
-  },
-  onChange: function () {
-    this.setState(getMe());
-  },
-  componentDidMount: function () {
-    UsersStore.addChangeListener(this.onChange);
-  },
-  componentWillUnmount: function () {
-    UsersStore.removeChangeListener(this.onChange);
   }
+
 });

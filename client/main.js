@@ -5,14 +5,15 @@ import Article from './articles/Article'
 import CreateArticle from './articles/CreateArticle'
 import Groups from './groups/Groups'
 import Group from './groups/Group'
-import User from './user/User'
+import UserProfile from './user/UserProfile'
 import Login from './user/Login'
 import Signup from './user/Signup'
 import App from './app/App'
 import Forbidden from './app/Forbidden'
-import ChatStore from './chat/ChatStore'
 
-ChatStore.connect();
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
 
 const Routes = (
   <Route handler={App} path="/">
@@ -21,7 +22,7 @@ const Routes = (
     <Route name="createArticle" handler={CreateArticle} path="/create/article" />
     <Route name="groups" handler={Groups} path="/groups" />
     <Route name="singleGroup" handler={Group} path="/groups/:slug" />
-    <Route name="user" handler={User} path="/user" />
+    <Route name="user" handler={UserProfile} path="/user" />
     <Route name="signup" handler={Signup} path="/signup" />
     <Route name="login" handler={Login} path="/login" />
     <Route name="forbidden" handler={Forbidden} path="/forbidden" />

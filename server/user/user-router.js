@@ -4,10 +4,23 @@ var validate = require("validate.js");
 var generatePassword = require('password-generator');
 var moment = require('moment');
 var async = require('async');
+var fs = require('fs');
 var utils = require('../../commun/utils');
 var userValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
 var auth = require('../config/auth');
+
+router.get('/', auth.withUser, function (req, res) {
+  var user = req.$user;
+  UserModel
+    .findAll(user)
+    .then(function (users) {
+      res.json(users);
+    })
+    .fail(function (err) {
+      res.status(500).json(err);
+    });
+});
 
 function signupValidator(req, res, next) {
   var newUser = {
@@ -141,7 +154,20 @@ router.put('/password', changePasswordValidator, auth.withUser, function (req, r
   } else {
     res.status(400).json(jsonError);
   }
-})
+});
+
+router.put('/profile', auth.withUser, function (req, res) {
+  var user = req.$user;
+  var file = req.files.file;
+  fs.rename(__dirname + '/../../' + file.path, './public/img/profiles/', function(err){
+    console.log('done renaming', __dirname);
+    if (err) res.json(err);
+    else res.json({
+      "message": "cool",
+      "pwd": __dirname
+    });
+  });
+});
 
 router.get('/roles', function(req, res) {
   var roles = UserModel.roles;
@@ -161,7 +187,7 @@ router.get('/status-connection', function(req, res) {
   res.json(result);
 });
 
-router.get('/me', auth.withRole([UserModel.ADMIN]), function(req, res) {
+router.get('/me', auth.withUser, function(req, res) {
   var user = req.$user;
   res.json({
     id: user.id,

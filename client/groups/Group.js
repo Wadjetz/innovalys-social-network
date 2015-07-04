@@ -17,7 +17,6 @@ import Bootstrap, {
 } from 'react-bootstrap'
 
 import GroupsService from './GroupsService'
-import Chat from '../chat/Chat'
 import MessageGroup from './MessageGroup'
 import FileGroup from './FileGroup'
 import Member from './Member'
@@ -70,7 +69,6 @@ export default React.createClass({
             <h1>{this.state.group.name}</h1>
             <Label bsStyle='default'>{this.state.group.type}</Label>
             <p>{this.state.group.description}</p>
-            <Chat />
             <h2>{i18n.__n('members')}</h2>
             {membersView}
           </Col>
@@ -129,7 +127,6 @@ export default React.createClass({
         group: group
       });
     }, err => {
-      console.error(err);
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
@@ -138,7 +135,7 @@ export default React.createClass({
         messages: messages
       });
     }, err => {
-      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
 
     GroupsService.getFiles(slug).then(files => {
@@ -146,7 +143,7 @@ export default React.createClass({
         files: files
       });
     }, err => {
-      console.error(err);
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
   },
 

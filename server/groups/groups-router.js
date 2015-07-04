@@ -9,6 +9,7 @@ var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 var MessagesModel = require('./messages-model');
 var GroupsFilesModel = require('./files-model');
+var RoomsModel = require('../chat/rooms-model');
 validate.moment = moment;
 
 /**
@@ -18,7 +19,7 @@ Get all groups
 function getGroupsAction (req, res) {
   var user = req.$user;
   var page = req.query.page || 0;
-  GroupsModel.findAll(page).then(function (groups) {
+  GroupsModel.findAllNotMyGroups(page, user).then(function (groups) {
     res.json(groups);
   }).fail(function (err) {
     res.status(400).json(err);
@@ -33,13 +34,11 @@ Get group by slug
 function getBySlugAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
-  GroupsModel.findOneBySlug(slug)
-    .then(function (group) {
-      res.json(group);
-    })
-    .fail(function (err) {
-      res.sendStatus(404);
-    });
+  GroupsModel.findOneBySlug(slug).then(function (group) {
+    res.json(group);
+  }).fail(function (err) {
+    res.sendStatus(404);
+  });
 }
 router.get('/by-slug/:slug', auth.withUser, getBySlugAction);
 
@@ -50,7 +49,6 @@ Get all my groups
 function getMyGroupsAction (req, res) {
   var user = req.$user;
   GroupsModel.findMyGroups(user).then(function (groups) {
-    console.log(groups);
     res.json(groups);
   }).fail(function (err) {
     console.log(err);
@@ -95,22 +93,41 @@ function postCreateGroupeAction(req, res) {
   var group = req._new_group;
   group.slug = utils.slug(group.name);
   group.users_id = user.id;
-  GroupsModel.create(group)
-    .then(function (id) {
-      return GroupsModel.findOneById(id);
-    })
-    .then(function (group) {
-      res.json(group);
-    })
-    .fail(function (err) {
-      if (err.code === 'ER_DUP_ENTRY') {
-        res.status(400).json({
-            error: "Already exist"
-        });
-      } else {
-        res.status(500).json(err);
-      }
+  GroupsModel.create(group).then(function (id) {
+    return GroupsModel.findOneById(id);
+  }).then(function (group) {
+    RoomsModel.create({
+      name: group.slug
+    }).then(function (createdRoomId) {
+      RoomsModel.addUser({
+        rooms_id: createdRoomId,
+        users_id: user.id
+      }).then(function (addUserInsertedId) {
+        console.log("RoomsModel.addUser ok", createdRoomId);
+      }).fail(function (err) {
+        console.log("RoomsModel.addUser err", err);
+      });
+    }).fail(function (err) {
+      console.log("RoomsModel.create err", err);
     });
+
+    MembersModel.create(user.id, group.id).then(function (memberId) {
+      console.log("MembersModel.create ok", memberId);
+    }).fail(function (err) {
+      console.log("MembersModel.create err", err);
+    });
+
+    res.json(group);
+
+  }).fail(function (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      res.status(400).json({
+        error: "Already exist"
+      });
+    } else {
+      res.status(500).json(err);
+    }
+  });
 }
 router.post('/', groupsValidator, auth.withUser, postCreateGroupeAction);
 

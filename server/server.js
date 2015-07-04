@@ -10,6 +10,19 @@ var expressCookieParser = require('cookie-parser');
 var methodOverride = require("method-override");
 var config = require('./config/config');
 var chat = require('./chat/chat');
+var chatSession = require('./chat/chat-session');
+var chatAuth = require('./chat//chat-auth');
+
+var NewsRouter = require('./news/news-router');
+var CommentsRouter = require('./comments/comments-router');
+var UserRouter = require('./user/user-router');
+var GroupsRouter = require('./groups/groups-router');
+var GroupsMembersRouter = require('./groups/members-router');
+var GroupsMessagesRouter = require('./groups/messages-router');
+var GroupsFilesRouter = require('./groups/files-router');
+var ChatRouter = require('./chat/chat-router');
+var RoomsRouter = require('./chat/rooms-router');
+
 
 // Config
 var app  = express();
@@ -34,28 +47,40 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(multer({
-  dest: './uploads/',
+  dest: './uploads/files',
   rename: function (fieldname, filename) {
     return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
   }
 }));
 
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
 });
 
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
-require('./config/routes')(app, express);
+
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + "/public/index.html");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
-chat(io, cookieParser, sessionStore);
+app.use('/users', UserRouter);
+app.use('/news', NewsRouter);
+app.use('/comments', CommentsRouter);
+app.use('/groups', GroupsRouter);
+app.use('/groups/members', GroupsMembersRouter);
+app.use('/groups/messages', GroupsMessagesRouter);
+app.use('/groups/files', GroupsFilesRouter);
+app.use('/chat', ChatRouter);
+app.use('/chat/rooms', RoomsRouter)
+
+chatSession(io, cookieParser, sessionStore);
+chatAuth(io);
+chat(io);
 
 http.listen(config.PORT, function(){
   log.info('listening on ' + config.PORT);

@@ -14,6 +14,43 @@ module.exports.roles = {
   USER: "user"
 };
 
+function makeSqlUserSelect() {
+  return " " +
+    "users.id, " +
+    "users.email, " +
+    "users.role, " +
+    "users.first_name, " +
+    "users.last_name, " +
+    "users.birthday_date, " +
+    "users.status_profile, " +
+    "users.status_connection, " +
+    "users.function, " +
+    "users.description, " +
+    "users.arrival_date, " +
+    "users.last_connection ";
+}
+
+module.exports.findAll = function (user) {
+  return db.findAll(
+    "SELECT " +
+      makeSqlUserSelect() +
+    "FROM users " +
+    "WHERE users.id != ?",
+    [user.id]
+  );
+};
+
+module.exports.findByRoomId = function (roomId) {
+  return db.findAll(
+    "SELECT " +
+      makeSqlUserSelect() +
+    "FROM users " +
+      "JOIN rooms_users ON rooms_users.users_id = users.id " +
+    "WHERE rooms_users.rooms_id = ? ; ",
+    [roomId]
+  );
+};
+
 module.exports.findOneById = function (id) {
   return db.findOne(
     "SELECT * FROM users WHERE id = ? ;",

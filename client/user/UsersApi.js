@@ -52,6 +52,15 @@ module.exports.login = function (user) {
   .then(Qajax.toJSON)
 };
 
+module.exports.getAllUsers = function () {
+  return Qajax({
+    url: BASE_URL + '/users',
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+};
+
 module.exports.changePassword = function (currentPassword, newPassword) {
   return Qajax({
     url: BASE_URL + '/users/password',

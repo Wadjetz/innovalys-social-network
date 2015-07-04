@@ -1,40 +1,83 @@
-import _ from 'lodash'
-import AppDispatcher from '../app/AppDispatcher'
-import ChatConstants from './ChatConstants'
-import ChatActions from './ChatActions'
-import ChatApi from './ChatApi'
-import Store from '../flux/Store'
+import _ from 'lodash';
+import AppDispatcher from '../app/AppDispatcher';
+import ChatActions, {
+  SWITCH_ROOM,
+  SEND_MESSAGE
+} from './ChatActions';
+import ChatApi from './ChatApi';
+import Store from '../flux/Store';
 
-const socket = io(document.location.host);
+const socket = window.io(document.location.host);
 
-let _data = {
-  messages: []
+var _chatData = {
+  messages: [],
+  rooms: [],
+  room: ""
 };
 
-const ChatStore = _.assign(Store, {
+var ChatStore = _.assign(Store, {
   connect: function () {
-    socket.on('global_chat', (msg) => {
-      _data.messages.push(msg);
+    socket.on('connect', function(){
+      socket.emit('add_user');
+    });
+    
+    socket.on('new_message', function (msg, room) {
+      console.log("new_message", msg, room);
+      _chatData.messages.push(msg)
+      _chatData.messages = _.uniq(_chatData.messages, 'id');
       ChatStore.emitChange();
     });
+
+    socket.on('update_chat', (type, message) => {
+      console.log("Chat update_chat", type, message);
+    });
+
+    socket.on('update_rooms', (rooms, room) => {
+      console.log("Chat update_rooms = ", rooms, room);
+      _chatData.rooms = rooms;
+      ChatStore.emitChange();
+    });
+
+    socket.on('update_room_messages', (messages, room) => {
+      console.log("Chat update_room_messages = ", messages, room);
+      _chatData.messages = messages;
+      ChatStore.emitChange();
+    });
+
+    socket.on('chaterrors', (err) => {
+      console.log("chaterrors", err);
+    });
+
+    socket.on('auth_errors', msg => {
+      console.log("Chat error = ", msg);
+      new Notification('Chat error', { 'body': msg });
+    });
   },
-  getMessages: function () {
-    return _data.messages;
+
+  getChatData: function () {
+    return _chatData;
   },
+
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
-      case ChatConstants.LOAD_MESSAGES:
-        ChatApi.getAllMessages(0)
-          .then(history => {
-            _data.messages = _.uniq(_data.messages.concat(history), 'id');
-            ChatStore.emitChange();
-          })
-          .fail(err => console.error(err))
+      //_chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
+      case SWITCH_ROOM:
+        if (action.room) {
+          _chatData.room = action.room;
+          console.log("switch_room", _chatData.room);
+          socket.emit('switch_room', _chatData.room);
+          ChatStore.emitChange();
+        } else {
+          _chatData.room = action.room;
+          ChatStore.emitChange();
+          console.log("back");
+        }
         break;
 
-      case ChatConstants.SEND_MESSAGE:
-        socket.emit('global_chat', action.message);
+      case SEND_MESSAGE:
+        console.log('SEND_MESSAGE', _chatData.room, action.message);
+        socket.emit('send_message', action.message);
         break;
     }
     return true;

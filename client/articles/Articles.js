@@ -1,11 +1,14 @@
-import React from 'react'
-import moment from 'moment'
-import markdown from 'markdown'
-import Router, { Link, Navigation } from 'react-router'
-import Bootstrap, { Grid, Row, Col } from 'react-bootstrap'
-import ArticlesService from './ArticlesService'
-import Chat from '../chat/Chat'
-import i18n from '../../commun/local'
+import React from 'react';
+import moment from 'moment';
+import markdown from 'markdown';
+import Router, { Link, Navigation } from 'react-router';
+import Bootstrap, { Grid, Row, Col } from 'react-bootstrap';
+import ArticlesService from './ArticlesService';
+import AppActions from '../app/AppActions';
+import UsersActions from '../user/UsersActions';
+import Users from '../user/Users';
+import Chat from '../chat/Chat';
+import i18n from '../../commun/local';
 
 export default React.createClass({
   mixins: [Navigation],
@@ -26,9 +29,10 @@ export default React.createClass({
             })}
           </Col>
           <Col xs={4}>
-              <Chat />
+            <Users />
           </Col>
         </Row>
+        <Chat />
       </Grid>
     );
   },
@@ -36,17 +40,17 @@ export default React.createClass({
   getInitialState: function () {
     return {
       articles: []
-    }
+    };
   },
 
   componentDidMount: function () {
+    UsersActions.loadMe();
     ArticlesService.findAll().then(articles => {
       this.setState({
         articles: articles
       });
     }, err => {
-      console.error(err);
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
+      if (err.status === 401) { AppActions.unauthorized(); }
     });
   }
 

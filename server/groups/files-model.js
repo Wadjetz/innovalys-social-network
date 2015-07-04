@@ -4,17 +4,20 @@ var db = require('../config/database');
 Find file by id
 */
 module.exports.findById = function (id) {
-  var sql  = "SELECT documents.*, ";
-      sql += "users.role, ";
-      sql += "users.first_name, ";
-      sql += "users.last_name, ";
-      sql += "users.status_profile, ";
-      sql += "users.status_connection, ";
-      sql += "users.function ";
-      sql += "FROM documents ";
-      sql += "JOIN users ON users.id = documents.users_id ";
-      sql += "WHERE documents.id = ?; ";
-  return db.findOne(sql, [id]);
+  return db.findOne(
+    "SELECT documents.*, " +
+      "users.role, " +
+      "users.first_name, " +
+      "users.last_name, " +
+      "users.status_profile, " +
+      "users.status_connection, " +
+      "users.function " +
+    "FROM documents " +
+      "JOIN users ON users.id = documents.users_id " +
+    "WHERE documents.id = ? " +
+    "ORDER BY documents.created ASC ; ",
+    [id]
+  );
 };
 
 /**
@@ -31,16 +34,19 @@ module.exports.create = function (file) {
 Find all files by groups
 */
 module.exports.findAllByGroupSlug = function (slug) {
-  var sql  = "SELECT documents.*, ";
-      sql += "users.role, ";
-      sql += "users.first_name, ";
-      sql += "users.last_name, ";
-      sql += "users.status_profile, ";
-      sql += "users.status_connection, ";
-      sql += "users.function ";
-      sql += "FROM documents ";
-      sql += "JOIN users ON users.id = documents.users_id ";
-      sql += "JOIN groups ON groups.id = documents.groups_id ";
-      sql += "WHERE groups.slug = ? ; ";
-  return db.findAll(sql, [slug]);
+  return db.findAll(
+    "SELECT documents.*, " +
+      "users.role, " +
+      "users.first_name, " +
+      "users.last_name, " +
+      "users.status_profile, " +
+      "users.status_connection, " +
+      "users.function " +
+    "FROM documents " +
+      "JOIN users ON users.id = documents.users_id " +
+      "JOIN groups ON groups.id = documents.groups_id " +
+    "WHERE groups.slug = ? " +
+    "ORDER BY documents.created ASC ; ",
+    [slug]
+  );
 };

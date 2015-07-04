@@ -1,60 +1,70 @@
 var log = require('log4js').getLogger();
 var MessagesModel = require('./messages-model');
+var GroupsModel = require('../groups/groups-model');
 var UserModel = require('../user/user-model');
+var RoomsModel = require('./rooms-model');
 var config = require('../config/config');
 
-module.exports = function(io, cookieParser, sessionStore) {
-  io.use(function(socket, next) {
-    var request = socket.request;
-    if(!request.headers.cookie) { return next(new Error('No cookie transmitted.')); } // If we want to refuse authentification, we pass an error to the first callback
+var chatGlobal = require('./chat-global');
 
-    cookieParser(request, {}, function(parseErr) {
-      if(parseErr) { return next(new Error('Error parsing cookies.')); }
-      var sidCookie = (request.secureCookies && request.secureCookies[config.EXPRESS_SID_KEY]) ||
-                      (request.signedCookies && request.signedCookies[config.EXPRESS_SID_KEY]) ||
-                      (request.cookies && request.cookies[config.EXPRESS_SID_KEY]);
-      sessionStore.load(sidCookie, function(err, session) {
-        if (err) { return next(err); }
-        else if(!session) { return next(new Error('Session cannot be found/loaded')); }
-        else if (session.isLogged !== true) { return next(new Error('User not logged in')); }
-        else {
-          request.session = session;
-          request.sessionId = sidCookie;
-          return next();
-        }
+module.exports = function(io) {
+  io.on('connection', function(socket) {
+
+    socket.on('add_user', function (msg) {
+      var user = socket.request.$user;
+      console.log("add_user", user.id);
+      socket.room = 'global_chat';
+      socket.join(socket.room);
+      socket.emit('update_chat', 'SERVER', 'you have connected to global_chat');
+      socket.broadcast.to(socket.room).emit('update_chat', 'SERVER', user.id + ' has connected to this room');
+      
+      RoomsModel.findAll(user).then(function (rooms) {
+        socket.emit('update_rooms', rooms, socket.room);
+      }).fail(function (err) {
+        socket.emit('chaterrors', err);
+      });
+
+      MessagesModel.findAllByRoomName(socket.room).then(function (messages) {
+        socket.emit('update_room_messages', messages, socket.room);
+      }).fail(function (err) {
+        socket.emit('chaterrors', err);
+      });
+
+    });
+
+    socket.on('send_message', function (msg) {
+      var user = socket.request.$user;
+      console.log("send_message", msg, socket.room, user.id);
+      RoomsModel.findOneByName(socket.room).then(function (room) {
+        MessagesModel.create({
+          content: msg,
+          users_id: user.id,
+          rooms_id: room.id
+        }).then(function(insertedId) {
+          return MessagesModel.getById(insertedId);
+        }).then(function(createdMessage) {
+          io.sockets.in(socket.room).emit('new_message', createdMessage, socket.room);
+        }).fail(function(err) {
+          socket.emit('chaterrors', err);
+        });
+      }).fail(function (err) {
+        socket.emit('chaterrors', err);
       });
     });
-  });
 
-  io.on('connection', function(socket) {
-    log.debug("user connection");
-    socket.on('global_chat', function(msg) {
-      log.debug("user global_chat", msg, socket.request.session);
-      if(socket.request.session.email) {
-        UserModel
-          .findOneByEmail(socket.request.session.email)
-          .then(function (user) {
-            var newMessage = {
-              content: msg,
-              users_id: user.id
-            };
-
-            MessagesModel
-              .create(newMessage)
-              .then(function(insertedId) {
-                return MessagesModel.getById(insertedId);
-              })
-              .then(function(createdMessage) {
-                io.emit('global_chat', createdMessage);
-              })
-              .fail(function(err) {
-                log.error("global_chat", err);
-              });
-          })
-          .fail(function (err) {
-            io.emit('auth_errors', err);
-          })
-      }
+    socket.on('switch_room', function (newRoom) {
+      console.log('switch_room', newRoom);
+      socket.leave(socket.room);
+      socket.join(newRoom);
+      socket.emit('updatechat', 'SERVER', 'you have connected to '+ newRoom);
+      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.request.$user.id+' has left this room');
+      socket.room = newRoom;
+      MessagesModel.findAllByRoomName(socket.room).then(function (messages) {
+        socket.emit('update_room_messages', messages, socket.room);
+      }).fail(function (err) {
+        socket.emit('chaterrors', err);
+      });
+      socket.broadcast.to(newRoom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
     });
 
     socket.on('auth_errors', function (msg) {
@@ -62,9 +72,7 @@ module.exports = function(io, cookieParser, sessionStore) {
     });
 
     socket.on('disconnect', function(arg) {
-      log.debug('user disconnected', arg);
+      log.debug('user disconnected 1', arg);
     });
-
-    //socket.broadcast.emit('hi');
   });
 };

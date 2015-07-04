@@ -17,7 +17,7 @@ export default {
     throw new Error("findMyGroups not implemented");
   },
 
-  get :function (slug) {
+  get: function (slug) {
     return Qajax({
       url: BASE_URL + '/news/' + slug,
       method: 'GET'
