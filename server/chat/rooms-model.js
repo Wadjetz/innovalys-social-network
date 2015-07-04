@@ -14,17 +14,17 @@ module.exports.findAll = function (user) {
   );
 };
 
-module.exports.create = function (conversation) {
+module.exports.create = function (room) {
   return db.insert(
     "INSERT INTO rooms SET ? ;",
-    [conversation]
+    [room]
   );
 };
 
-module.exports.addUser = function (conversationUser) {
+module.exports.addUser = function (user) {
   return db.insert(
     "INSERT INTO rooms_users SET ? ;",
-    [conversationUser]
+    [user]
   );
 };
 
@@ -35,11 +35,17 @@ module.exports.findById = function (id) {
   );
 };
 
+module.exports.findOneByName = function (name) {
+  return db.findOne(
+    "SELECT * FROM rooms WHERE rooms.name = ? ; ",
+    [name]
+  );
+};
+
 module.exports.delteUser = function (articleId, page, callback) {
     // TODO
     callback(null);
 };
-
 
 module.exports.update = function (comment, callback) {
     // TODO
