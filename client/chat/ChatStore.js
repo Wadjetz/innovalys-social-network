@@ -1,10 +1,7 @@
 import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
 import ChatActions, {
-  LOAD_MESSAGES,
-  LOAD_CONVERSATIONS,
-  LOAD_GROUPS,
-  SET_ROOM,
+  SWITCH_ROOM,
   SEND_MESSAGE
 } from './ChatActions';
 import ChatApi from './ChatApi';
@@ -14,34 +11,40 @@ const socket = window.io(document.location.host);
 
 var _chatData = {
   messages: [],
-  conversations: [],
-  myGroups: [],
+  rooms: [],
   room: ""
 };
 
 var ChatStore = _.assign(Store, {
   connect: function () {
     socket.on('connect', function(){
-      socket.emit('adduser', "");
+      socket.emit('add_user');
     });
-    // socket.on('global_chat', (msg) => {
-    //   console.log(msg);
-    //   _chatData.messages.push(msg);
-    //   new Notification('Nouveaux message', { 'body': msg.content });
-    //   ChatStore.emitChange();
-    // });
     
-    socket.on('sendchat', function (msg, user, room) {
-      console.log("sendchat", msg, user, room);
+    socket.on('new_message', function (msg, user, room) {
+      //_chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
+      console.log("new_message", msg, user, room);
     });
 
-    socket.on('updatechat', (msg, user) => {
-      console.log("Chat updatechat", msg, user);
+    socket.on('update_chat', (type, message) => {
+      console.log("Chat update_chat", type, message);
     });
 
-    socket.on('updaterooms', (msg, a) => {
-      console.log("Chat updaterooms = ", msg, a);
-    })
+    socket.on('update_rooms', (rooms, room) => {
+      console.log("Chat update_rooms = ", rooms, room);
+      _chatData.rooms = rooms;
+      ChatStore.emitChange();
+    });
+
+    socket.on('update_room_messages', (messages, room) => {
+      console.log("Chat update_room_messages = ", messages, room);
+      _chatData.messages = messages;
+      ChatStore.emitChange();
+    });
+
+    socket.on('chaterrors', (err) => {
+      console.log("chaterrors", err);
+    });
 
     socket.on('auth_errors', msg => {
       console.log("Chat error = ", msg);
@@ -56,32 +59,23 @@ var ChatStore = _.assign(Store, {
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
-
-      case LOAD_MESSAGES:
-        _chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
-        ChatStore.emitChange();
-        break;
-
-      case LOAD_CONVERSATIONS:
-        _chatData.conversations = action.conversations;
-        ChatStore.emitChange();
-        break;
-
-      case LOAD_GROUPS:
-        _chatData.myGroups = action.myGroups;
-        ChatStore.emitChange();
-        break;
-
-      case SET_ROOM:
-        _chatData.room = action.room;
-        console.log("switchroom", _chatData.room);
-        socket.emit('switchroom', _chatData.room);
-        ChatStore.emitChange();
+      //_chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
+      case SWITCH_ROOM:
+        if (action.room) {
+          _chatData.room = action.room;
+          console.log("switchroom", _chatData.room);
+          socket.emit('switchroom', _chatData.room);
+          ChatStore.emitChange();
+        } else {
+          _chatData.room = action.room;
+          ChatStore.emitChange();
+          console.log("back");
+        }
         break;
 
       case SEND_MESSAGE:
-        console.log('SEND_MESSAGE global_chat', action.message);
-        socket.emit('sendchat', action.message);
+        console.log('SEND_MESSAGE', _chatData.room, action.message);
+        socket.emit('send_message', action.message);
         break;
     }
     return true;

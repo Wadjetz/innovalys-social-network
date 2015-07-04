@@ -147,11 +147,11 @@ export default React.createClass({
     };
 
     GroupsService.create(newGroup).then(result => {
-      this.state.groups.push(result);
+      this.state.myGroups.push(result);
       this.setState({
         createGroupSuccess: true,
         createGroupError: false,
-        groups: this.state.groups,
+        myGroups: this.state.myGroups,
         name: "",
         description: ""
       });

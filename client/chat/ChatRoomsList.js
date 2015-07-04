@@ -14,20 +14,20 @@ const roomsStyle = {
 export default React.createClass({
   displayName: "ChatRoomsList",
   render: function () {
-    let myGroupsView = this.props.myGroups.map((myGroup, i) =>
-      <div key={myGroup.id} onClick={this.handleSetRoom(myGroup)}>{myGroup.slug}</div>
+    let roomsView = this.props.rooms.map((room, i) =>
+      <div key={room.id} onClick={this.handleSwitchRoom(room)}>{room.name}</div>
     );
 
     return (
       <div style={roomsStyle}>
-        {myGroupsView}
+        {roomsView}
       </div>
     );
   },
 
-  handleSetRoom: function (myGroup) {
+  handleSwitchRoom: function (room) {
     return function () {
-      ChatActions.setRoom(myGroup.slug);
+      ChatActions.switchRoom(room.name);
     };
   }
 });

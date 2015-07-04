@@ -5,7 +5,6 @@ import ChatStore from './ChatStore';
 import MessageSender from './MessageSender';
 import i18n from '../../commun/local';
 import If from '../utils/If';
-import GroupsService from '../groups/GroupsService';
 import ChatRoomsList from './ChatRoomsList';
 import MessagesList from './MessagesList';
 
@@ -60,13 +59,14 @@ export default React.createClass({
         <If condition={hideChat === "true"}>
           <div>
             <If condition={this.state.room === ""}>
-              <ChatRoomsList myGroups={this.state.myGroups} />
+              <ChatRoomsList rooms={this.state.rooms} />
             </If>
             <If condition={this.state.room !== ""}>
               <div>
                 <button style={buttonBackStyle} type="button" className="btn btn-default btn-sm" onClick={this.handleBack}>
                   Back
                 </button>
+                <h2>Room {this.state.room}</h2>
                 <MessagesList messages={this.state.messages} />
                 <MessageSender />
               </div>
@@ -89,13 +89,10 @@ export default React.createClass({
   },
 
   handleBack: function () {
-    ChatActions.setRoom("");
+    ChatActions.switchRoom("");
   },
 
   getInitialState: function () {
-    ChatActions.loadMessages();
-    //ChatActions.loadConversations();
-    ChatActions.loadGroups();
     return getMessages();
   },
   onChange: function () {
