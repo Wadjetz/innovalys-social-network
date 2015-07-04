@@ -36,15 +36,27 @@ module.exports.getById = function (id) {
 };
 
 
-module.exports.findByConversationId = function (conversationsId) {
+module.exports.findByRoomId = function (roomId) {
   return db.findAll(
     "SELECT messages.*, " +
       makeSqlUserSelect() +
     "FROM messages " +
       "JOIN users ON users.id = messages.users_id " +
-      "JOIN conversations ON messages.conversations_id = conversations.id " +
-    "WHERE conversations.id = ? ; ",
-    [conversationsId]
+      "JOIN rooms ON messages.rooms_id = rooms.id " +
+    "WHERE rooms.id = ? ; ",
+    [roomId]
+  );
+};
+
+module.exports.findAllByRoomName = function (roomName) {
+  return db.findAll(
+    "SELECT messages.*, " +
+      makeSqlUserSelect() +
+    "FROM messages " +
+      "JOIN users ON users.id = messages.users_id " +
+      "JOIN rooms ON messages.rooms_id = rooms.id " +
+    "WHERE rooms.name = ? ; ",
+    [roomName]
   );
 };
 
