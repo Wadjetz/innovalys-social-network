@@ -21,9 +21,11 @@ var ChatStore = _.assign(Store, {
       socket.emit('add_user');
     });
     
-    socket.on('new_message', function (msg, user, room) {
-      //_chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
-      console.log("new_message", msg, user, room);
+    socket.on('new_message', function (msg, room) {
+      console.log("new_message", msg, room);
+      _chatData.messages.push(msg)
+      _chatData.messages = _.uniq(_chatData.messages, 'id');
+      ChatStore.emitChange();
     });
 
     socket.on('update_chat', (type, message) => {
@@ -63,8 +65,8 @@ var ChatStore = _.assign(Store, {
       case SWITCH_ROOM:
         if (action.room) {
           _chatData.room = action.room;
-          console.log("switchroom", _chatData.room);
-          socket.emit('switchroom', _chatData.room);
+          console.log("switch_room", _chatData.room);
+          socket.emit('switch_room', _chatData.room);
           ChatStore.emitChange();
         } else {
           _chatData.room = action.room;
