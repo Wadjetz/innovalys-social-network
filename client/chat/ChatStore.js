@@ -40,25 +40,13 @@ var ChatStore = _.assign(Store, {
     switch(action.actionType) {
 
       case ChatConstants.LOAD_MESSAGES:
-        ChatApi
-          .getAllMessages(0)
-          .then(history => {
-            _chatData.messages = _.uniq(_chatData.messages.concat(history), 'id');
-            ChatStore.emitChange();
-          })
-          .fail(err => console.error(err));
+         _chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
+        ChatStore.emitChange();
         break;
 
       case ChatConstants.LOAD_CONVERSATIONS:
-        ChatApi
-          .getConversations()
-          .then(conversations => {
-            _chatData.conversations = conversations;
-            ChatStore.emitChange();
-          })
-          .fail(err => {
-            console.log(err);
-          });
+        _chatData.conversations = action.conversations;
+        ChatStore.emitChange();
         break;
 
       case ChatConstants.SEND_MESSAGE:

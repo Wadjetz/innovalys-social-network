@@ -1,16 +1,33 @@
-import AppDispatcher from '../app/AppDispatcher'
-import ChatConstants from './ChatConstants'
+import AppDispatcher from '../app/AppDispatcher';
+import ChatConstants from './ChatConstants';
+import ChatApi from './ChatApi';
 
 export default {
   loadMessages: function () {
-    AppDispatcher.handleViewAction({
-      actionType: ChatConstants.LOAD_MESSAGES
-    });
+    ChatApi
+      .getAllMessages(0)
+      .then(history => {
+        AppDispatcher.handleViewAction({
+          actionType: ChatConstants.LOAD_MESSAGES,
+          history: history
+        });
+      })
+      .fail(err => {
+        console.error(err);
+      });
   },
   loadConversations: function () {
-    AppDispatcher.handleViewAction({
-      actionType: ChatConstants.LOAD_CONVERSATIONS
-    });
+    ChatApi
+      .getConversations()
+      .then(conversations => {
+        AppDispatcher.handleViewAction({
+          actionType: ChatConstants.LOAD_CONVERSATIONS,
+          conversations: conversations
+        });
+      })
+      .fail(err => {
+        console.log(err);
+      });
   },
   sendMessage: function (message) {
     AppDispatcher.handleViewAction({
