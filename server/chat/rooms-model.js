@@ -1,36 +1,36 @@
 var db = require('../config/database');
 
-module.exports.findAll = function (page, user) {
+module.exports.findAll = function (user) {
   return db.findAll(
-    "SELECT conversations.* " +
-    "FROM conversations " +
+    "SELECT rooms.* " +
+    "FROM rooms " +
     "WHERE 0 < ( " +
       "SELECT count(*) " +
-      "FROM conversations_users " +
-      "WHERE conversations_users.conversations_id = conversations.id " +
-        "AND conversations_users.users_id = 15 " +
+      "FROM rooms_users " +
+      "WHERE rooms_users.rooms_id = rooms.id " +
+        "AND rooms_users.users_id = ? " +
     ") ; ",
-    []
+    [user.id]
   );
 };
 
 module.exports.create = function (conversation) {
   return db.insert(
-    "INSERT INTO conversations SET ? ;",
+    "INSERT INTO rooms SET ? ;",
     [conversation]
   );
 };
 
 module.exports.addUser = function (conversationUser) {
   return db.insert(
-    "INSERT INTO conversations_users SET ? ;",
+    "INSERT INTO rooms_users SET ? ;",
     [conversationUser]
   );
 };
 
 module.exports.findById = function (id) {
   return db.findOne(
-    "SELECT * FROM conversations WHERE conversations.id = ? ; ",
+    "SELECT * FROM rooms WHERE rooms.id = ? ; ",
     [id]
   );
 };

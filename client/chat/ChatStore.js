@@ -1,7 +1,12 @@
 import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
-import ChatConstants from './ChatConstants';
-import ChatActions from './ChatActions';
+import ChatActions, {
+  LOAD_MESSAGES,
+  LOAD_CONVERSATIONS,
+  LOAD_GROUPS,
+  SET_ROOM,
+  SEND_MESSAGE
+} from './ChatActions';
 import ChatApi from './ChatApi';
 import Store from '../flux/Store';
 
@@ -9,17 +14,38 @@ const socket = window.io(document.location.host);
 
 var _chatData = {
   messages: [],
-  conversations: []
+  conversations: [],
+  myGroups: [],
+  room: ""
 };
 
 var ChatStore = _.assign(Store, {
   connect: function () {
-    socket.on('global_chat', (msg) => {
-      _chatData.messages.push(msg);
-      ChatStore.emitChange();
+    socket.on('connect', function(){
+      socket.emit('adduser', "");
     });
+    // socket.on('global_chat', (msg) => {
+    //   console.log(msg);
+    //   _chatData.messages.push(msg);
+    //   new Notification('Nouveaux message', { 'body': msg.content });
+    //   ChatStore.emitChange();
+    // });
+    
+    socket.on('sendchat', function (msg, user, room) {
+      console.log("sendchat", msg, user, room);
+    });
+
+    socket.on('updatechat', (msg, user) => {
+      console.log("Chat updatechat", msg, user);
+    });
+
+    socket.on('updaterooms', (msg, a) => {
+      console.log("Chat updaterooms = ", msg, a);
+    })
+
     socket.on('auth_errors', msg => {
       console.log("Chat error = ", msg);
+      new Notification('Chat error', { 'body': msg });
     });
   },
 
@@ -27,31 +53,35 @@ var ChatStore = _.assign(Store, {
     return _chatData;
   },
 
-  getMessages: function () {
-    return _chatData.messages;
-  },
-
-  getConversations: function () {
-    return _chatData.conversations;
-  },
-
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
 
-      case ChatConstants.LOAD_MESSAGES:
-         _chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
+      case LOAD_MESSAGES:
+        _chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
         ChatStore.emitChange();
         break;
 
-      case ChatConstants.LOAD_CONVERSATIONS:
+      case LOAD_CONVERSATIONS:
         _chatData.conversations = action.conversations;
         ChatStore.emitChange();
         break;
 
-      case ChatConstants.SEND_MESSAGE:
+      case LOAD_GROUPS:
+        _chatData.myGroups = action.myGroups;
+        ChatStore.emitChange();
+        break;
+
+      case SET_ROOM:
+        _chatData.room = action.room;
+        console.log("switchroom", _chatData.room);
+        socket.emit('switchroom', _chatData.room);
+        ChatStore.emitChange();
+        break;
+
+      case SEND_MESSAGE:
         console.log('SEND_MESSAGE global_chat', action.message);
-        socket.emit('global_chat', action.message);
+        socket.emit('sendchat', action.message);
         break;
     }
     return true;

@@ -1,5 +1,5 @@
-import React from 'react'
-import Router, { Link, RouteHandler } from 'react-router'
+import React from 'react';
+import Router, { Link, RouteHandler } from 'react-router';
 import Bootstrap, {
   Navbar,
   Nav,
@@ -7,22 +7,21 @@ import Bootstrap, {
   CollapsableNav,
   NavItem,
   MenuItem
-} from 'react-bootstrap'
-import Chat from '../chat/Chat'
-import AppActions from './AppActions'
-import AppStore from './AppStore'
-import UsersActions from '../user/UsersActions'
-import UsersStore from '../user/UsersStore'
-import Events from '../flux/Events'
-import If from '../utils/If'
-import i18n, { locales, changeLocale } from '../../commun/local'
+} from 'react-bootstrap';
+import AppActions from './AppActions';
+import AppStore from './AppStore';
+import UsersActions from '../user/UsersActions';
+import UsersStore from '../user/UsersStore';
+import Events from '../flux/Events';
+import If from '../utils/If';
+import i18n, { locales, changeLocale } from '../../commun/local';
 
 function getMe() {
   return {
     me: UsersStore.getMe(),
     connected: UsersStore.isConnected(),
     locale: "en"
-  }
+  };
 }
 
 export default React.createClass({
@@ -66,9 +65,6 @@ export default React.createClass({
           </CollapsableNav>
         </Navbar>
         <RouteHandler />
-        <If condition={this.state.connected}>
-          <Chat />
-        </If>
       </div>
     );
   },

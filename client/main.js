@@ -11,6 +11,10 @@ import Signup from './user/Signup'
 import App from './app/App'
 import Forbidden from './app/Forbidden'
 
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
 const Routes = (
   <Route handler={App} path="/">
     <Route name="articles" handler={Articles} path="/articles" />

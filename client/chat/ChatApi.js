@@ -10,9 +10,9 @@ module.exports.getAllMessages = function (page) {
   .then(Qajax.toJSON)
 };
 
-module.exports.createConversation = function (target) {
+module.exports.createRoom = function (target) {
   return Qajax({
-    url: BASE_URL + '/chat/conversations',
+    url: BASE_URL + '/chat/rooms',
     method: 'POST',
     data: target
   })
@@ -20,18 +20,18 @@ module.exports.createConversation = function (target) {
   .then(Qajax.toJSON)
 };
 
-module.exports.getConversations = function () {
+module.exports.getRooms = function () {
   return Qajax({
-    url: BASE_URL + '/chat/conversations',
+    url: BASE_URL + '/chat/rooms',
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
 };
 
-module.exports.getConversationById = function (conversationId) {
+module.exports.getRoomById = function (roomId) {
   return Qajax({
-    url: BASE_URL + '/chat/conversations/' + conversationId,
+    url: BASE_URL + '/chat/rooms/' + roomId,
     method: 'GET'
   })
   .then(Qajax.filterSuccess)

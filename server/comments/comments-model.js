@@ -26,11 +26,10 @@ Find comment by id
 module.exports.findOneById = function (comment_id) {
   return db.findOne(
     "SELECT comments.*, " +
-      "users.id AS user_id, " +
       "users.email, " +
       "users.status_profile, " +
       "users.status_connection, " +
-      "users.function, " +
+      "users.function " +
     "FROM comments JOIN users ON comments.users_id = users.id " +
     "WHERE comments.id = ? ;",
     [comment_id]

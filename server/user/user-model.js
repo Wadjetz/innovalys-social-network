@@ -40,14 +40,14 @@ module.exports.findAll = function (user) {
   );
 };
 
-module.exports.findByConversationId = function (conversationsId) {
+module.exports.findByRoomId = function (roomId) {
   return db.findAll(
     "SELECT " +
       makeSqlUserSelect() +
     "FROM users " +
-      "JOIN conversations_users ON conversations_users.users_id = users.id " +
-    "WHERE conversations_users.conversations_id = ? ; ",
-    [conversationsId]
+      "JOIN rooms_users ON rooms_users.users_id = users.id " +
+    "WHERE rooms_users.rooms_id = ? ; ",
+    [roomId]
   );
 };
 

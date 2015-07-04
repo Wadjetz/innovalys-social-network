@@ -2,7 +2,7 @@ var log = require('log4js').getLogger();
 var MessagesModel = require('./messages-model');
 
 module.exports = function(io, socket) {
-  socket.on('global_chat', function(id, msg) {
+  socket.on('global_chat', function(msg) {
     log.debug("user global_chat", msg, socket.request.$user);
     var newMessage = {
       content: msg,

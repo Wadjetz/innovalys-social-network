@@ -1,7 +1,7 @@
-import React from 'react/addons'
-import moment from 'moment'
-import markdown from 'markdown'
-import Router, { Link, Navigation } from 'react-router'
+import React from 'react/addons';
+import moment from 'moment';
+import markdown from 'markdown';
+import Router, { Link, Navigation } from 'react-router';
 import Bootstrap, {
   Grid,
   Row,
@@ -10,11 +10,12 @@ import Bootstrap, {
   ListGroupItem,
   Button,
   Input
-} from 'react-bootstrap'
-import ArticlesService from './ArticlesService'
-import CommentsService from './CommentsService'
-import AppActions from '../app/AppActions'
-import i18n from '../../commun/local'
+} from 'react-bootstrap';
+import ArticlesService from './ArticlesService';
+import CommentsService from './CommentsService';
+import AppActions from '../app/AppActions';
+import i18n from '../../commun/local';
+import Chat from '../chat/Chat';
 
 
 export default React.createClass({
@@ -51,6 +52,7 @@ export default React.createClass({
           </Col>
           <Col xs={4}>
           </Col>
+          <Chat />
         </Row>
       </Grid>
     );
@@ -74,7 +76,7 @@ export default React.createClass({
       newComment: "",
       newCommentError: false,
       newCommentSuccess: false
-    }
+    };
   },
 
   createComment: function () {
@@ -82,7 +84,7 @@ export default React.createClass({
       let newComment = {
         content: this.state.newComment,
         news_id: this.state.id
-      }
+      };
       CommentsService.create(newComment).then(result => {
         this.state.comments.push(result);
         this.setState({
@@ -97,7 +99,7 @@ export default React.createClass({
           newCommentSuccess: false,
           newCommentError: true
         });
-      })
+      });
     } else {
       this.setState({
         newCommentSuccess: false,
@@ -107,7 +109,7 @@ export default React.createClass({
   },
 
   componentDidMount: function () {
-    let slug = this.context.router.getCurrentParams().slug
+    let slug = this.context.router.getCurrentParams().slug;
     ArticlesService
       .get(slug)
       .then(article => {

@@ -3,30 +3,30 @@ var validate = require("validate.js");
 var moment = require('moment');
 var UserModel = require('../user/user-model');
 var MessagesModel = require('./messages-model');
-var ConversationsModel = require('./conversations-model');
+var RoomsModel = require('./rooms-model');
 var auth = require('../config/auth');
 validate.moment = moment;
 
 /**
-GET /chat/conversations
-Get my conversations
+GET /chat/rooms
+Get my rooms
 */
-function getMyConversationsAction (req, res) {
+function getMyRoomsAction (req, res) {
   var user = req.$user;
   // TODO implement pagination
-  ConversationsModel.findAll(0, user)
-    .then(function (conversations) {
-      res.json(conversations);
+  RoomsModel.findAll(0, user)
+    .then(function (rooms) {
+      res.json(rooms);
     })
     .fail(function (err) {
       res.status(404).json(err);
     });
 }
-router.get('/', auth.withUser, getMyConversationsAction);
+router.get('/', auth.withUser, getMyRoomsAction);
 
-function conversationValidator(req, res, next) {
+function roomsValidator(req, res, next) {
   console.log(req.body);
-  var newConversation = {
+  var newRoom = {
     target_id: req.body.target_id,
     status: req.body.status,
     type: req.body.type
@@ -43,26 +43,26 @@ function conversationValidator(req, res, next) {
       presence: true
     }
   };
-  var validatorRes = validate(newConversation, constraints);
+  var validatorRes = validate(newRoom, constraints);
   if (validatorRes === undefined) {
-    req._newConversation = newConversation;
+    req._newRoom = newRoom;
     next();
   } else {
     res.status(400).json(validatorRes);
   }
 }
 
-function getConversationAction(req, res) {
+function getRoomsAction(req, res) {
   var user = req.$user;
-  var conversationsId = req.params.id;
-  ConversationsModel
-    .findById(conversationsId)
-    .then(function (conversation) {
+  var roomId = req.params.id;
+  RoomsModel
+    .findById(roomId)
+    .then(function (rooms) {
       UserModel
-        .findByConversationId(conversation.id)
+        .findByRoomId(rooms.id)
         .then(function (users) {
           res.json({
-            conversation: conversation,
+            rooms: rooms,
             users: users
           });
         })
@@ -74,43 +74,58 @@ function getConversationAction(req, res) {
       res.status(404).json(err);
     })
 }
-router.get('/:id', auth.withUser, getConversationAction);
+router.get('/:id', auth.withUser, getRoomsAction);
+
+function withTargetUser (req, res, next) {
+  var newRoom = req._newRoom;
+  UserModel
+    .findById(newRoom.target_id)
+    .then(function (targetUser) {
+      req._targetUser = targetUser;
+      next();
+    })
+    .fail(function (err) {
+      res.status(404).json(err);
+    });
+}
 
 /**
-POST /chat/conversations
-Create new conversation
+POST /chat/rooms
+Create new room
 */
-function createConversationsAction (req, res) {
+function createRoomAction (req, res) {
   var user = req.$user;
-  var newConversation = req._newConversation;
-  ConversationsModel
+  var newRoom = req._newRoom;
+  var targetUser = req._targetUser;
+  console.log(targetUser);
+  RoomsModel
     .create({
-      status: newConversation.status,
-      type: newConversation.type
+      status: newRoom.status,
+      type: newRoom.type
     })
-    .then(function (conversationInsertedId) {
-      return ConversationsModel
+    .then(function (roomInsertedId) {
+      return RoomsModel
         .addUser({
-          conversations_id: conversationInsertedId,
-          users_id: newConversation.target_id
+          rooms_id: roomInsertedId,
+          users_id: newRoom.target_id
         })
         .then(function (addTargetInsertedId) {
-          return ConversationsModel
+          return RoomsModel
             .addUser({
-              conversations_id: conversationInsertedId,
+              rooms_id: roomInsertedId,
               users_id: user.id
             })
             .then(function (addMeInsertedId) {
-              return ConversationsModel.findById(conversationInsertedId)
+              return RoomsModel.findById(roomInsertedId)
             });
         });
     })
-    .then(function (conversation) {
+    .then(function (rooms) {
       UserModel
-        .findByConversationId(conversation.id)
+        .findByRoomId(rooms.id)
         .then(function (users) {
           res.json({
-            conversation: conversation,
+            rooms: rooms,
             users: users
           });
         })
@@ -122,6 +137,6 @@ function createConversationsAction (req, res) {
       res.status(400).json(err);
     });
 }
-router.post('/', conversationValidator, auth.withUser, createConversationsAction);
+router.post('/', roomsValidator, auth.withUser, withTargetUser, createRoomAction);
 
 module.exports = router;

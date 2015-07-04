@@ -13,6 +13,17 @@ var chat = require('./chat/chat');
 var chatSession = require('./chat/chat-session');
 var chatAuth = require('./chat//chat-auth');
 
+var NewsRouter = require('./news/news-router');
+var CommentsRouter = require('./comments/comments-router');
+var UserRouter = require('./user/user-router');
+var GroupsRouter = require('./groups/groups-router');
+var GroupsMembersRouter = require('./groups/members-router');
+var GroupsMessagesRouter = require('./groups/messages-router');
+var GroupsFilesRouter = require('./groups/files-router');
+var ChatRouter = require('./chat/chat-router');
+var RoomsRouter = require('./chat/rooms-router');
+
+
 // Config
 var app  = express();
 var http = require('http').Server(app);
@@ -52,10 +63,20 @@ app.use(function (req, res, next) {
 
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
-require('./config/routes')(app, express);
+
 app.get('/', function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
+
+app.use('/users', UserRouter);
+app.use('/news', NewsRouter);
+app.use('/comments', CommentsRouter);
+app.use('/groups', GroupsRouter);
+app.use('/groups/members', GroupsMembersRouter);
+app.use('/groups/messages', GroupsMessagesRouter);
+app.use('/groups/files', GroupsFilesRouter);
+app.use('/chat', ChatRouter);
+app.use('/chat/rooms', RoomsRouter)
 
 chatSession(io, cookieParser, sessionStore);
 chatAuth(io);
