@@ -103,6 +103,7 @@ export default React.createClass({
     ChatStore.addChangeListener(this.onChange);
   },
   componentWillUnmount: function () {
+    ChatStore.disconnect();
     ChatStore.removeChangeListener(this.onChange);
   }
 });

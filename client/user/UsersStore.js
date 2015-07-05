@@ -1,12 +1,13 @@
-import _ from 'lodash'
-import moment from 'moment'
-import utils from '../../commun/utils'
-import AppDispatcher from '../app/AppDispatcher'
-import Store from '../flux/Store'
-import AppActions from '../app/AppActions'
-import UsersActions from './UsersActions'
-import UsersApi from './UsersApi'
-import UsersConstants from './UsersConstants'
+import _ from 'lodash';
+import moment from 'moment';
+import utils from '../../commun/utils';
+import AppDispatcher from '../app/AppDispatcher';
+import Store from '../flux/Store';
+import AppActions from '../app/AppActions';
+import UsersActions from './UsersActions';
+import UsersApi from './UsersApi';
+import UsersConstants from './UsersConstants';
+import ChatStore from '../chat/ChatStore';
 
 var _usersData = {
    me: {
@@ -67,6 +68,7 @@ var UsersStore = _.assign(Store, {
             if(err.status === 401) {
               _date.connected = false;
             }
+            ChatStore.connect();
             UsersStore.emitChange();
           });
         break;

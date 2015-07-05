@@ -17,6 +17,7 @@ var _chatData = {
 
 var ChatStore = _.assign(Store, {
   connect: function () {
+    socket.connect();
     socket.on('connect', function(){
       socket.emit('add_user');
     });
@@ -52,6 +53,10 @@ var ChatStore = _.assign(Store, {
       console.log("Chat error = ", msg);
       new Notification('Chat error', { 'body': msg });
     });
+  },
+
+  disconnect: function () {
+    socket.disconnect();
   },
 
   getChatData: function () {

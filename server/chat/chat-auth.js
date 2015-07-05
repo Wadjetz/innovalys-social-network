@@ -11,9 +11,11 @@ module.exports = function(io) {
         })
         .fail(function (err) {
           io.emit('auth_errors', "Unauthorized");
+          console.log("Chat auth Unauthorized user not found", err);
           return next(new Error('Unauthorized user not found'));
         });
     } else {
+      console.log("Chat auth socket.request.session.email", err);
       io.emit('auth_errors', "Unauthorized");
       return next(new Error('Unauthorized no session'));
     }
