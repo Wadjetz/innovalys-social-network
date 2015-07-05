@@ -17,7 +17,10 @@ function postJoinGroupeAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug).then(function (group) {
-    return MembersModel.create(user.id, group.id);
+    return MembersModel.create({
+      users_id: user.id,
+      groups_id: group.id
+    });
   }).then(function (id) {
     res.json({
       "message": "ok"

@@ -114,6 +114,15 @@ class GroupsService {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
   }
+
+  getMembers(slug) {
+    return Qajax({
+      url: this.base_url + "/groups/members/" + slug,
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
 }
 
 export default new GroupsService(BASE_URL);

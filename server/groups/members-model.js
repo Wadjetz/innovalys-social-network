@@ -3,14 +3,10 @@ var db = require('../config/database');
 /**
 Create group messages
 */
-module.exports.create = function (userId, groupeId) {
-  var members = {
-    users_id: userId,
-    groups_id: groupeId
-  };
+module.exports.create = function (member) {
   return db.insert(
     "INSERT INTO members SET ? ;",
-    [members]
+    [member]
   );
 };
 
