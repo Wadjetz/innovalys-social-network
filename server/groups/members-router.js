@@ -5,6 +5,7 @@ var async    = require('async');
 var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
+var RoomsModel = require('../chat/rooms-model');
 var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 var MessagesModel = require('./messages-model');
@@ -17,6 +18,21 @@ function postJoinGroupeAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug).then(function (group) {
+    console.log("Join", group);
+    RoomsModel.findOneByName(group.slug).then(function (room) {
+      console.log("Join room", room);
+      RoomsModel.addUser({
+        rooms_id: room.id,
+        users_id: user.id
+      }).then(function (addUserInsertedId) {
+        console.log("RoomsModel.addUser ok", addUserInsertedId);
+      }).fail(function (err) {
+        console.log("RoomsModel.addUser err", err);
+      });
+    }).fail(function (err) {
+      console.log("RoomsModel.findOneByName err", err);
+    });
+
     return MembersModel.create({
       users_id: user.id,
       groups_id: group.id
@@ -31,6 +47,7 @@ function postJoinGroupeAction (req, res) {
           error: "Already join"
       });
     } else {
+      console.log(err);
       res.status(400).json(err);
     }
   });
