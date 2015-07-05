@@ -111,7 +111,11 @@ function postCreateGroupeAction(req, res) {
       console.log("RoomsModel.create err", err);
     });
 
-    MembersModel.create(user.id, group.id).then(function (memberId) {
+    MembersModel.create({
+      users_id: user.id,
+      groups_id: group.id,
+      status: 'accepted'
+    }).then(function (memberId) {
       console.log("MembersModel.create ok", memberId);
     }).fail(function (err) {
       console.log("MembersModel.create err", err);

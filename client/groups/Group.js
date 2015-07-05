@@ -145,6 +145,14 @@ export default React.createClass({
     }, err => {
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
+
+    GroupsService.getMembers(slug).then(members => {
+      this.setState({
+        members: members
+      });
+    }).fail(err => {
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
   },
 
   onDrop: function (files) {
