@@ -5,8 +5,6 @@ var UserModel = require('../user/user-model');
 var RoomsModel = require('./rooms-model');
 var config = require('../config/config');
 
-var chatGlobal = require('./chat-global');
-
 module.exports = function(io) {
   io.on('connection', function(socket) {
 

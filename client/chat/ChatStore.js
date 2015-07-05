@@ -12,7 +12,7 @@ const socket = window.io(document.location.host);
 var _chatData = {
   messages: [],
   rooms: [],
-  room: ""
+  room: "global_chat"
 };
 
 var ChatStore = _.assign(Store, {
