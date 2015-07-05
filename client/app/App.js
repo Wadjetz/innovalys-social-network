@@ -74,7 +74,8 @@ export default React.createClass({
     );
   },
   changeLocal: function (locale) {
-    return function () {
+    return function (e) {
+      e.preventDefault();
       changeLocale(locale);
       this.setState({
         locale: locale
