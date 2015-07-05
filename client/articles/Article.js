@@ -15,8 +15,6 @@ import ArticlesService from './ArticlesService';
 import CommentsService from './CommentsService';
 import AppActions from '../app/AppActions';
 import i18n from '../../commun/local';
-import Chat from '../chat/Chat';
-
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
@@ -52,7 +50,6 @@ export default React.createClass({
           </Col>
           <Col xs={4}>
           </Col>
-          <Chat />
         </Row>
       </Grid>
     );

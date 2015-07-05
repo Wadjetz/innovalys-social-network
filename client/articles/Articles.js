@@ -7,7 +7,6 @@ import ArticlesService from './ArticlesService';
 import AppActions from '../app/AppActions';
 import UsersActions from '../user/UsersActions';
 import Users from '../user/Users';
-import Chat from '../chat/Chat';
 import i18n from '../../commun/local';
 
 export default React.createClass({
@@ -32,7 +31,6 @@ export default React.createClass({
             <Users />
           </Col>
         </Row>
-        <Chat />
       </Grid>
     );
   },

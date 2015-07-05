@@ -13,6 +13,7 @@ import AppStore from './AppStore';
 import UsersActions from '../user/UsersActions';
 import UsersStore from '../user/UsersStore';
 import Events from '../flux/Events';
+import Chat from '../chat/Chat';
 import If from '../utils/If';
 import i18n, { locales, changeLocale } from '../../commun/local';
 
@@ -65,6 +66,9 @@ export default React.createClass({
           </CollapsableNav>
         </Navbar>
         <RouteHandler />
+        <If condition={this.state.connected}>
+          <Chat />
+        </If>
       </div>
     );
   },

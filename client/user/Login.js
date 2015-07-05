@@ -1,13 +1,14 @@
-import React from 'react/addons'
-import Router from 'react-router'
-import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap'
-import validate from "validate.js"
-import UserValidator from '../../commun/user-validator'
-import UsersActions from './UsersActions'
-import UsersStore from './UsersStore'
-import UsersApi from './UsersApi'
-import If from '../utils/If'
-import i18n from '../../commun/local'
+import React from 'react/addons';
+import Router from 'react-router';
+import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
+import validate from 'validate.js';
+import UserValidator from '../../commun/user-validator';
+import UsersActions from './UsersActions';
+import UsersStore from './UsersStore';
+import UsersApi from './UsersApi';
+import ChatStore from '../chat/ChatStore';
+import If from '../utils/If';
+import i18n from '../../commun/local';
 
 export default React.createClass({
   displayName: "Login",
@@ -74,6 +75,8 @@ export default React.createClass({
   onChange: function () {
     if(UsersStore.isConnected()) {
       UsersActions.loadMe();
+      ChatStore.disconnect();
+      ChatStore.connect();
       this.context.router.transitionTo('articles');
     }
     else {
