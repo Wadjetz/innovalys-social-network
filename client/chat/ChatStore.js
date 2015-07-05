@@ -2,7 +2,8 @@ import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
 import ChatActions, {
   SWITCH_ROOM,
-  SEND_MESSAGE
+  SEND_MESSAGE,
+  JOIN_USER_ROOM
 } from './ChatActions';
 import ChatApi from './ChatApi';
 import Store from '../flux/Store';
@@ -45,8 +46,16 @@ var ChatStore = _.assign(Store, {
       ChatStore.emitChange();
     });
 
+    socket.on('update_chat', (type, msg) => {
+      console.log("update_chat", type, msg);
+    });
+
     socket.on('chaterrors', (err) => {
       console.log("chaterrors", err);
+    });
+
+    socket.on('switch_room', room => {
+      console.log("switch_room", room);
     });
 
     socket.on('auth_errors', msg => {
@@ -66,7 +75,6 @@ var ChatStore = _.assign(Store, {
   dispatcherIndex: AppDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
-      //_chatData.messages = _.uniq(_chatData.messages.concat(action.history), 'id');
       case SWITCH_ROOM:
         if (action.room) {
           _chatData.room = action.room;
@@ -83,6 +91,11 @@ var ChatStore = _.assign(Store, {
       case SEND_MESSAGE:
         console.log('SEND_MESSAGE', _chatData.room, action.message);
         socket.emit('send_message', action.message);
+        break;
+
+      case JOIN_USER_ROOM:
+        console.log("JOIN_ROOM", action.user);
+        socket.emit('join_user_room', action.user);
         break;
     }
     return true;

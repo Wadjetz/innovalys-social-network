@@ -10,6 +10,7 @@ import Bootstrap, {
 } from 'react-bootstrap';
 import AppActions from './AppActions';
 import AppStore from './AppStore';
+import ChatStore from '../chat/ChatStore';
 import UsersActions from '../user/UsersActions';
 import UsersStore from '../user/UsersStore';
 import Events from '../flux/Events';
@@ -88,10 +89,13 @@ export default React.createClass({
     this.setState(getMe());
   },
   componentDidMount: function () {
+    // ChatStore.disconnect();
+    // ChatStore.connect();
     UsersStore.addChangeListener(this.onChange);
     AppStore.addEventListener(Events.UNAUTHORIZED_EVENT, this.onUnauthorized);
   },
   componentWillUnmount: function () {
+    // ChatStore.disconnect();
     UsersStore.removeChangeListener(this.onChange);
     AppStore.removeEventListener(Events.UNAUTHORIZED_EVENT, this.onUnauthorized);
   },

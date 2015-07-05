@@ -21,7 +21,7 @@ export default React.createClass({
     return (
       <Row>
         <Col xs={12}>
-          <h2>Users</h2>
+          <h2>{i18n.__n('users')}</h2>
           <div>
             {usersView}
           </div>

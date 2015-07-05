@@ -4,7 +4,7 @@ import ChatStore from './ChatStore';
 
 const roomsStyle = {
   width: '100%',
-  height: '200px',
+  height: '234px',
   verticalAlign: 'top',
   display: 'inline-block',
   overflowX: 'auto',

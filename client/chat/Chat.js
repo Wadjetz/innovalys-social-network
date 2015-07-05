@@ -52,7 +52,7 @@ export default React.createClass({
     let hideChat = Storage.getItem("hideChat");
     return (
       <div style={wrapStyle}>
-        <h4>{i18n.__n('chat')}</h4>
+        <h4>{i18n.__n('chat')} {i18n.__n('room') + ": " + this.state.room}</h4>
         <button style={buttonStyle} type="button" className="btn btn-default btn-sm" onClick={this.hideChat}>
           <span className={(hideChat === "true") ? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-up"}></span>
         </button>
@@ -64,9 +64,8 @@ export default React.createClass({
             <If condition={this.state.room !== ""}>
               <div>
                 <button style={buttonBackStyle} type="button" className="btn btn-default btn-sm" onClick={this.handleBack}>
-                  Back
+                  {i18n.__n('back')}
                 </button>
-                <h2>Room {this.state.room}</h2>
                 <MessagesList messages={this.state.messages} />
                 <MessageSender />
               </div>
@@ -99,6 +98,7 @@ export default React.createClass({
     this.setState(getMessages());
   },
   componentDidMount: function () {
+    ChatStore.disconnect();
     ChatStore.connect();
     ChatStore.addChangeListener(this.onChange);
   },

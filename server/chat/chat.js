@@ -5,6 +5,10 @@ var UserModel = require('../user/user-model');
 var RoomsModel = require('./rooms-model');
 var config = require('../config/config');
 
+function makeRoomUserName(user, target) {
+  return user.first_name + "_" + user.last_name + "_" + target.first_name + "_" + target.last_name;
+}
+
 module.exports = function(io) {
   io.on('connection', function(socket) {
 
@@ -51,26 +55,73 @@ module.exports = function(io) {
     });
 
     socket.on('switch_room', function (newRoom) {
+      var user = socket.request.$user;
       console.log('switch_room', newRoom);
       socket.leave(socket.room);
       socket.join(newRoom);
-      socket.emit('updatechat', 'SERVER', 'you have connected to '+ newRoom);
-      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.request.$user.id+' has left this room');
+      socket.emit('update_chat', 'SERVER', 'you have connected to '+ newRoom);
+      socket.broadcast.to(socket.room).emit('update_chat', 'SERVER', user.id+' has left this room');
       socket.room = newRoom;
       MessagesModel.findAllByRoomName(socket.room).then(function (messages) {
         socket.emit('update_room_messages', messages, socket.room);
       }).fail(function (err) {
         socket.emit('chaterrors', err);
       });
-      socket.broadcast.to(newRoom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
+      socket.broadcast.to(newRoom).emit('update_chat', 'SERVER', user.id+' has joined this room');
     });
 
-    socket.on('auth_errors', function (msg) {
-      log.debug("auth_errors", msg);
+    socket.on('join_user_room', function (target) {
+      var user = socket.request.$user;
+      var userRoomName = makeRoomUserName(user, target);
+      console.log("join_user_room", userRoomName);
+      RoomsModel.findOneByName(userRoomName).then(function (room) {
+        console.log(room);
+        return RoomsModel.addUser({
+          rooms_id: room.id,
+          users_id: user.id
+        }).then(function (res) {
+          return RoomsModel.addUser({
+            rooms_id: room.id,
+            users_id: target.id
+          })
+        }).then(function (res) {
+          console.log(res);
+        });
+      }).fail(function (err) {
+        if (err.error === 'Not Found') {
+          RoomsModel.create({
+            name: userRoomName
+          }).then(function (roomCreatedId) {
+            return RoomsModel.findById(roomCreatedId)
+          }).then(function (room) {
+            return RoomsModel.addUser({
+              rooms_id: room.id,
+              users_id: user.id
+            }).then(function (res) {
+              return RoomsModel.addUser({
+                rooms_id: room.id,
+                users_id: target.id
+              })
+            }).then(function (res) {
+              console.log(res);
+            });
+          }).fail(function (err) {
+            console.log(err);
+            socket.emit('chaterrors', err);
+          })
+        } else {
+          console.log(err);
+          socket.emit('chaterrors', err);
+        }
+      });
     });
 
-    socket.on('disconnect', function(arg) {
-      log.debug('user disconnected 1', arg);
+    socket.on('disconnect', function() {
+      var user = socket.request.$user;
+      io.sockets.emit('update_users', user.id);
+      // echo globally that this client has left
+      socket.broadcast.emit('update_chat', 'SERVER', user.id + ' has disconnected');
+      socket.leave(socket.room);
     });
   });
 };
