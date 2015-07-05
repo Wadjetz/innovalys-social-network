@@ -75,8 +75,8 @@ export default React.createClass({
   onChange: function () {
     if(UsersStore.isConnected()) {
       UsersActions.loadMe();
-      ChatStore.disconnect();
-      ChatStore.connect();
+      // ChatStore.disconnect();
+      // ChatStore.connect();
       this.context.router.transitionTo('articles');
     }
     else {

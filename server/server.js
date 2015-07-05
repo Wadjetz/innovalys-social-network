@@ -22,6 +22,7 @@ var GroupsMessagesRouter = require('./groups/messages-router');
 var GroupsFilesRouter = require('./groups/files-router');
 var ChatRouter = require('./chat/chat-router');
 var RoomsRouter = require('./chat/rooms-router');
+var RoomsModel = require('./chat/rooms-model');
 
 
 // Config
@@ -30,6 +31,23 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var cookieParser = expressCookieParser(config.COOKIE_SECRET);
 var sessionStore = new session.MemoryStore();
+
+RoomsModel.findOneByName('global_chat').then(function (room) {
+  console.log(room);
+}).fail(function (err) {
+  if (err.error === 'Not Found') {
+    RoomsModel.create({
+      name: 'global_chat',
+      type: 'public'
+    }).then(function (insertedId) {
+      console.log("RoomsModel.create global_chat ", insertedId);
+    }).fail(function (err) {
+      console.log("RoomsModel.create ", err);
+    });
+  } else {
+    console.log("RoomsModel.findOneByName('global_chat')", err);
+  }
+});
 
 log.setLevel('TRACE');
 

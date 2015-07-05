@@ -1,6 +1,7 @@
-import React from 'react/addons'
-import Bootstrap, { Row, Col, Input, Button } from 'react-bootstrap'
-import i18n from '../../commun/local'
+import React from 'react/addons';
+import Bootstrap, { Row, Col, Input, Label, Button } from 'react-bootstrap';
+import i18n from '../../commun/local';
+import ChatActions from '../chat/ChatActions';
 
 export default React.createClass({
   displayName: "User",
@@ -16,10 +17,18 @@ export default React.createClass({
           </div>
           <div className="media-body">
             <h4>{user.first_name} {user.last_name}</h4>
+            <p>
+              <Label bsStyle='info'>{user.function}</Label> <Label bsStyle='info'>{user.role}</Label>
+            </p>
+            <Button onClick={this.chatRoom}>{i18n.__n('message')}</Button>
           </div>
         </div>
       </div>
     );
+  },
+
+  chatRoom: function () {
+    ChatActions.joinUserRoom(this.props.user);
   }
 
 });

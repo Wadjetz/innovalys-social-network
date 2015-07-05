@@ -8,18 +8,16 @@ var fs = require('fs');
 var utils = require('../../commun/utils');
 var userValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
+var RoomsModel = require('../chat/rooms-model');
 var auth = require('../config/auth');
 
 router.get('/', auth.withUser, function (req, res) {
   var user = req.$user;
-  UserModel
-    .findAll(user)
-    .then(function (users) {
-      res.json(users);
-    })
-    .fail(function (err) {
-      res.status(500).json(err);
-    });
+  UserModel.findAll(user).then(function (users) {
+    res.json(users);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
 });
 
 function signupValidator(req, res, next) {
@@ -51,24 +49,32 @@ router.post('/signup', signupValidator, function(req, res) {
   var newUser = req._new_user;
   var generatedPassword = generatePassword(8, false);
   newUser.password = passwordHash.generate(generatedPassword);
-  UserModel.create(newUser)
-    .then(function(id) {
-      res.status(201).json({
-        access: {
-          email: newUser.email,
-          password: generatedPassword
-        }
-      });
-    })
-    .fail(function(err) {
-      if (err.code === 'ER_DUP_ENTRY') {
-        res.status(400).json({
-            error: "Already exist"
-        });
-      } else {
-        res.status(400).json(err);
+  UserModel.create(newUser).then(function(id) {
+    res.status(201).json({
+      access: {
+        email: newUser.email,
+        password: generatedPassword
       }
     });
+    RoomsModel.findOneByName('global_chat').then(function (room) {
+      return RoomsModel.addUser({
+        rooms_id: room.id,
+        users_id: id
+      });
+    }).then(function (addTargetInsertedId) {
+      console.log("signup RoomsModel.addUser", addTargetInsertedId);
+    }).fail(function (err) {
+      console.log("signup RoomsModel.findOneByName", err);
+    });
+  }).fail(function(err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      res.status(400).json({
+          error: "Already exist"
+      });
+    } else {
+      res.status(400).json(err);
+    }
+  });
 });
 
 function loginValidator(req, res, next) {
