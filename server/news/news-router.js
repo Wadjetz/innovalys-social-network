@@ -56,6 +56,7 @@ function newsValidator (req, res, next) {
     },
     publish: {
       presence: true,
+      datetime: true
     }
   };
   var validatorRes = validate(news, constraints);
@@ -88,6 +89,46 @@ function postCreateNewsAction (req, res) {
       res.status(400).json(err);
     });
 }
-router.post('/', newsValidator, auth.withRole([UserModel.roles.RH]), postCreateNewsAction);
+router.post('/', auth.withRole([UserModel.roles.RH]), newsValidator, postCreateNewsAction);
+
+/**
+ * PUT /news/:id
+ * Update news
+ * Permissions: RH, Admin
+ */
+function updateNewsAction (req, res) {
+  var user = req.$user;
+  var news = req._new_news;
+  var id = req.params.id;
+  NewsModel.findOneById(id).then(function (article) {
+    return NewsModel.update(article.id, news);
+  }).then(function (result) {
+    console.log(result);
+    return NewsModel.findOneById(id);
+  }).then(function (updatedNews) {
+    res.json(updatedNews);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.put('/:id', auth.withRole([UserModel.roles.RH]), newsValidator, updateNewsAction);
+
+/**
+ * DELETE /news/:id
+ * Delete news
+ * Permissions: RH, Admin
+ */
+function deleteNewsAction(req, res) {
+  var user = req.$user;
+  var id = req.params.id;
+  NewsModel.findOneById(id).then(function (article) {
+    return NewsModel.delete(id);
+  }).then(function (result) {
+    res.json({ "delete": result });
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteNewsAction);
 
 module.exports = router;
