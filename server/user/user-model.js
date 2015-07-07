@@ -79,4 +79,10 @@ module.exports.changePassword = function (user, newPassword) {
     "UPDATE users SET ? WHERE users.id = ?",
     [newPassword, user.id]
   );
-}
+};
+
+// module.exports.userConnect = function () {
+//   return db.update(
+//   );
+// }
+

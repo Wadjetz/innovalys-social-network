@@ -46,6 +46,12 @@ export default React.createClass({
             />
             <Button bsStyle='success' onClick={this.submit}>{i18n.__n('login')}</Button>
           </Col>
+          <Col xs={12} md={6} mdOffset={3}>
+            <h4>Compte demo</h4>
+            <p>
+              email: root@root.com password: uYK4UQZ_
+            </p>
+          </Col>
         </Row>
       </Grid>
     );
@@ -64,10 +70,9 @@ export default React.createClass({
     }
   },
   getInitialState: function() {
-    // TODO remove mock
     return {
-      email: "root@root.com",
-      password: "uYK4UQZ_",
+      email: "",
+      password: "",
       loginError: UsersStore.getLoginError(),
       validator: validate(this, UserValidator.loginConstraints)
     };

@@ -7,6 +7,7 @@ module.exports.signupValidator = function (newUser, callback) {
     var constraints = {
         email: {
             presence: true,
+            email: true
         },
         first_name: {
             presence: true,
@@ -35,7 +36,8 @@ module.exports.signupValidator = function (newUser, callback) {
 
 module.exports.loginConstraints = {
     email: {
-        presence: true
+        presence: true,
+        email: true
     },
     password: {
         presence: true,
