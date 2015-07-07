@@ -15,7 +15,7 @@ export default React.createClass({
             <Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link>
           </h2>
           <p>
-            <Link className="btn btn-default" to="createArticle">{i18n.__n('update')}</Link>
+            <Link className="btn btn-default" to="updateArticle" params={{slug: article.slug}}>{i18n.__n('update')}</Link>
             <Button bsStyle='danger' onClick={this.deleteNews(article)}>{i18n.__n('delete')}</Button>
           </p>
         </Panel>
@@ -35,7 +35,6 @@ export default React.createClass({
   deleteNews: function (article) {
     return function (e) {
       ArticlesService.delete(article).then(result => {
-        console.log(result);
         if(result.delete > 0) {
           let articles = this.state.articles.filter(a => a.id !== article.id);
           this.setState({
@@ -58,7 +57,6 @@ export default React.createClass({
 
   componentDidMount: function () {
     ArticlesService.findAll().then(articles => {
-      console.log(articles);
       this.setState({
         articles: articles
       });

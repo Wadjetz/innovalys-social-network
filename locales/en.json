@@ -48,5 +48,6 @@
   "room": "Room",
   "admin_news": "Admin News",
   "update": "Update",
-  "delete": "Delete"
+  "delete": "Delete",
+  "update_news": "Update News"
 }

@@ -43,6 +43,16 @@ export default {
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
+  },
+
+  update: function (id, article) {
+    return Qajax({
+      url: BASE_URL + '/news/' + id,
+      method: 'PUT',
+      data: article
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
   }
 
 };

@@ -9,16 +9,12 @@ import i18n from '../../commun/local';
 
 export default React.createClass({
   displayName: "ArticleForm",
-  mixins: [
-    React.addons.LinkedStateMixin
-  ],
-
+  mixins: [React.addons.LinkedStateMixin],
 
   render: function () {
     return (
       <Row>
         <Col xs={12} sm={6}>
-          <h1>{i18n.__n('create_news')}</h1>
           <Input
             type='text'
             placeholder={i18n.__n('title')}
@@ -60,11 +56,19 @@ export default React.createClass({
     this.props.successAction(newArticle);
   },
 
+  componentWillReceiveProps: function (props) {
+    this.setState({
+      title: props.article.title || "",
+      body: props.article.body || "",
+      publish: moment(props.article.publish).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat)
+    });
+  },
+
   getInitialState: function() {
     return {
       title: this.props.article.title || "",
       body: this.props.article.body || "",
-      publish: this.props.article.publish || moment().format(utils.mysqlDateFormat)
+      publish: moment(this.props.article.publish).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat)
     }
   },
 
