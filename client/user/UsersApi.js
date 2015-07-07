@@ -1,8 +1,7 @@
-const request = require('superagent');
+import Qajax from 'qajax';
+import utils from '../utils/utils';
 const baseUrl = require('../conf').baseUrl;
-const utils   = require('../utils/utils');
 
-import Qajax from 'qajax'
 const BASE_URL = document.location.origin;
 
 module.exports.getAll = function () {
@@ -22,6 +21,15 @@ module.exports.me = function () {
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
 };
+
+module.exports.getProfil = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/profil/' + id,
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+}
 
 module.exports.roles = function () {
   return Qajax({

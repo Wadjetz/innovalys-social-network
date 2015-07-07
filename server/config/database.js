@@ -2,9 +2,9 @@ var Q = require('q');
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
     host     : 'localhost',
-    user     : 'root',
     database : 'innovalys',
-    password : ''
+    user     : 'root',
+    password : 'root',
 });
 
 module.exports = connection;

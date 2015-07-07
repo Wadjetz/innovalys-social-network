@@ -1,5 +1,6 @@
 import React from 'react/addons';
 import Bootstrap, { Row, Col, Input, Label, Button } from 'react-bootstrap';
+import Router, { Link, Navigation } from 'react-router';
 import i18n from '../../commun/local';
 import ChatActions from '../chat/ChatActions';
 
@@ -16,7 +17,9 @@ export default React.createClass({
             </a>
           </div>
           <div className="media-body">
-            <h4>{user.first_name} {user.last_name}</h4>
+            <h4>
+              <Link to="profil" params={{id: user.id}}>{user.first_name} {user.last_name}</Link>
+            </h4>
             <p>
               <Label bsStyle='info'>{user.function}</Label> <Label bsStyle='info'>{user.role}</Label>
             </p>

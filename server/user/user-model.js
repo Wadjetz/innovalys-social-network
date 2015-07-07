@@ -53,7 +53,9 @@ module.exports.findByRoomId = function (roomId) {
 
 module.exports.findOneById = function (id) {
   return db.findOne(
-    "SELECT * FROM users WHERE id = ? ;",
+    "SELECT " +
+      makeSqlUserSelect() +
+    "FROM users WHERE id = ? ;",
     [id]
   );
 };

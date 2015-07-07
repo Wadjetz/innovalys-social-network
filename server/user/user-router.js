@@ -210,6 +210,19 @@ router.get('/me', auth.withUser, function(req, res) {
     last_connection: user.last_connection
   });
 });
+/**
+ * GET /users/profil/:id
+ * Get user profile
+ */
+function getProfilAction (req, res) {
+  var id = req.params.id;
+  UserModel.findOneById(id).then(function (user) {
+    res.json(user);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.get('/profil/:id', getProfilAction);
 
 router.get('/logout', function (req, res) {
   req.session.destroy(function(err) {
