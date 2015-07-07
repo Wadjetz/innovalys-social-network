@@ -31,6 +31,16 @@ module.exports.findAllNews = function (page) {
 };
 
 /**
+Find all published news by page
+*/
+module.exports.findAllPunlishedNews = function (page) {
+  return db.findAll(
+    "SELECT * FROM news WHERE news.publish < NOW() ORDER BY news.created DESC LIMIT 10 OFFSET ? ; ",
+    [page]
+  );
+};
+
+/**
 Create news
 */
 module.exports.create = function (news) {

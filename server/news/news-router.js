@@ -29,7 +29,7 @@ Get all news
 */
 function getAllNewsAction (req, res) {
   var page = req.query.page || 0;
-  NewsModel.findAllNews(page)
+  NewsModel.findAllPunlishedNews(page)
     .then(function (news) {
       res.json(news);
     })
@@ -41,7 +41,7 @@ router.get('/', auth.withUser, getAllNewsAction);
 
 function newsValidator (req, res, next) {
   var news = {
-    slug: utils.slug(req.body.title),
+    slug: utils.slug(req.body.title || ""),
     title: req.body.title,
     body: req.body.body,
     publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS")
