@@ -11,12 +11,13 @@ function makeRoomUserName(user, target) {
 
 module.exports = function(io) {
   io.on('connection', function(socket) {
-
-    UserModel.connect(socket.request.$user.id).then(function (result) {
-      console.log("connect ok", socket.request.$user);
-    }).fail(function (err) {
-      console.log("connect err", socket.request.$user);
-    })
+    socket.on('connect', function (msg) {
+      UserModel.connect(socket.request.$user.id).then(function (result) {
+        console.log("connect ok", socket.request.$user.email);
+      }).fail(function (err) {
+        console.log("connect err", socket.request.$user.email);
+      });
+    });
 
     socket.on('add_user', function (msg) {
       var user = socket.request.$user;
