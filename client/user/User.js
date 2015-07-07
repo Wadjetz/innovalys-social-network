@@ -8,6 +8,9 @@ export default React.createClass({
   displayName: "User",
   render: function () {
     let user = this.props.user;
+    let connect = (user.status_connection == 'online')
+                  ? <Label bsStyle='success'>online</Label>
+                  : <Label>offline</Label>
     return (
       <div style={{ marginBottom: 15 }}>
         <div className="media">
@@ -21,7 +24,7 @@ export default React.createClass({
               <Link to="profil" params={{id: user.id}}>{user.first_name} {user.last_name}</Link>
             </h4>
             <p>
-              <Label bsStyle='info'>{user.function}</Label> <Label bsStyle='info'>{user.role}</Label>
+               {connect} <Label bsStyle='info'>{user.function}</Label> <Label bsStyle='info'>{user.role}</Label>
             </p>
             <Button onClick={this.chatRoom}>{i18n.__n('message')}</Button>
           </div>

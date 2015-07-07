@@ -35,7 +35,8 @@ module.exports.findAll = function (user) {
     "SELECT " +
       makeSqlUserSelect() +
     "FROM users " +
-    "WHERE users.id != ?",
+    "WHERE users.id != ? " +
+    "ORDER BY users.status_connection DESC ; ",
     [user.id]
   );
 };
@@ -81,8 +82,17 @@ module.exports.changePassword = function (user, newPassword) {
   );
 };
 
-// module.exports.userConnect = function () {
-//   return db.update(
-//   );
-// }
+module.exports.connect = function (id) {
+  return db.update(
+    "UPDATE users SET users.status_connection = 'online' WHERE users.id = ? ; ",
+    [id]
+  );
+};
+
+module.exports.deconnect = function (id) {
+  return db.update(
+    "UPDATE users SET users.status_connection = 'offline' WHERE users.id = ? ; ",
+    [id]
+  );
+};
 

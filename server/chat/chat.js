@@ -12,6 +12,12 @@ function makeRoomUserName(user, target) {
 module.exports = function(io) {
   io.on('connection', function(socket) {
 
+    UserModel.connect(socket.request.$user.id).then(function (result) {
+      console.log("connect ok", socket.request.$user);
+    }).fail(function (err) {
+      console.log("connect err", socket.request.$user);
+    })
+
     socket.on('add_user', function (msg) {
       var user = socket.request.$user;
       console.log("add_user", user.id);
@@ -122,6 +128,11 @@ module.exports = function(io) {
       // echo globally that this client has left
       socket.broadcast.emit('update_chat', 'SERVER', user.id + ' has disconnected');
       socket.leave(socket.room);
+      UserModel.deconnect(socket.request.$user.id).then(function (result) {
+        console.log("deconnect ok", socket.request.$user);
+      }).fail(function (err) {
+        console.log("deconnect err", socket.request.$user);
+      });
     });
   });
 };
