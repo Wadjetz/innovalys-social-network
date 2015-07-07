@@ -45,5 +45,8 @@
   "new_password": "New Password",
   "users": "Users",
   "back": "Back",
-  "room": "Room"
+  "room": "Room",
+  "admin_news": "Admin News",
+  "update": "Update",
+  "delete": "Delete"
 }
