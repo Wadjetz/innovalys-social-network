@@ -23,7 +23,7 @@ export default React.createClass({
           </div>
           <div className={ (err.body) ? 'form-group has-error' : 'form-group'}>
             <label className="control-label" htmlFor="content">{ (err.body) ? err.body : i18n.__n('body')}</label>
-            <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='body' valueLink={this.linkState('body')} />
+            <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='body' valueLink={this.linkState('body')} rows={20} />
           </div>
           <div className={ (err.publish) ? 'form-group has-error' : 'form-group'}>
             <label className="control-label" htmlFor="content">{ (err.publish) ? err.publish : i18n.__n('publish')}</label>

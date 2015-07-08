@@ -9,11 +9,20 @@ import i18n from '../../commun/local';
 export default React.createClass({
   displayName: "AdminUsers",
   render: function () {
+    let users = this.state.users;
+    console.log(users);
+    let usersView = users.map(user => {
+      return (
+        <div key={user.id}>
+          <h2>{user.first_name} {user.last_name}</h2>
+        </div>
+      );
+    });
     return (
       <Grid>
         <Row>
           <Col xs={8}>
-            User Admin
+            {usersView}
           </Col>
         </Row>
       </Grid>
