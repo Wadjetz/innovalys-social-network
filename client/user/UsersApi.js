@@ -80,4 +80,24 @@ module.exports.changePassword = function (currentPassword, newPassword) {
   })
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON)
-}
+};
+
+module.exports.delete = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'DELETE'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+};
+
+module.exports.update = function (id, user) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'PUT',
+    data: user
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON)
+};
+

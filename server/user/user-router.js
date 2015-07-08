@@ -20,7 +20,7 @@ router.get('/', auth.withUser, function (req, res) {
   });
 });
 
-function signupValidator(req, res, next) {
+function userValidator(req, res, next) {
   var newUser = {
     email: req.body.email,
     role: req.body.role,
@@ -41,7 +41,7 @@ function signupValidator(req, res, next) {
   });
 }
 
-router.post('/signup', signupValidator, function(req, res) {
+router.post('/signup', userValidator, function(req, res) {
   var newUser = req._new_user;
   var generatedPassword = generatePassword(8, false);
   newUser.password = passwordHash.generate(generatedPassword);
@@ -213,7 +213,11 @@ router.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
-function deleteUser(req, res) {
+/**
+ * DELETE /users/:id
+ * Delete user
+ */
+function deleteUserAction(req, res) {
   var id = req.params.id;
   UserModel.findOneById(id).then(function (user) {
     return UserModel.delete(user.id);
@@ -223,6 +227,27 @@ function deleteUser(req, res) {
     res.status(404).json(err);
   });
 }
-router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteUser);
+router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteUserAction);
+
+/**
+ * PUT /users/:id
+ * Update user
+ */
+function updateUserAction(req, res) {
+  var id = req.params.id;
+  var user = req._new_user;
+  UserModel.findOneById(id).then(function () {
+    return UserModel.update(id, user);
+  }).then(function (result) {
+    return UserModel.findOneById(id);
+  }).then(function (updatedUser) {
+    res.json(updatedUser);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.put('/:id', auth.withRole([UserModel.roles.RH]), userValidator, updateUserAction)
+
+
 
 module.exports = router;
