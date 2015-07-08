@@ -96,3 +96,23 @@ module.exports.deconnect = function (id) {
   );
 };
 
+/**
+ * Update users
+ */
+module.exports.update = function (id, user) {
+  return db.update(
+    "UPDATE users SET ? WHERE users.id = ? ; ",
+    [user, id]
+  );
+};
+
+/**
+ * Delete users
+ */
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM users WHERE users.id = ? ; ",
+    [id]
+  );
+};
+

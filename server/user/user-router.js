@@ -213,4 +213,16 @@ router.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
+function deleteUser(req, res) {
+  var id = req.params.id;
+  UserModel.findOneById(id).then(function (user) {
+    return UserModel.delete(user.id);
+  }).then(function (result) {
+    res.json({ "delete": result });
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteUser);
+
 module.exports = router;
