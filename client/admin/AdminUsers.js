@@ -12,13 +12,15 @@ export default React.createClass({
     let users = this.state.users;
     let usersView = users.map(user => {
       return (
-        <div key={user.id}>
-          <h2>{user.first_name} {user.last_name}</h2>
+        <Panel key={user.id}>
+          <h2>
+            <Link to="profil" params={{id: user.id}}>{user.first_name} {user.last_name}</Link>
+          </h2>
           <p>
             <Link className="btn btn-default" to="updateUser" params={{id: user.id}}>{i18n.__n('update')}</Link>
             <Button bsStyle='danger' onClick={this.deleteUser(user)}>{i18n.__n('delete')}</Button>
           </p>
-        </div>
+        </Panel>
       );
     });
     return (
