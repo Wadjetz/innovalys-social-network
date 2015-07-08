@@ -11,6 +11,7 @@ import Signup from './user/Signup';
 import App from './app/App';
 import Forbidden from './app/Forbidden';
 import AdminNews from './admin/AdminNews';
+import AdminUsers from './admin/AdminUsers';
 import UpdateArticle from './articles/UpdateArticle';
 import Profil from './user/Profil';
 
@@ -24,7 +25,8 @@ const Routes = (
     <Route name="singleArticle" handler={Article} path="/articles/:slug" />
     <Route name="createArticle" handler={CreateArticle} path="/create/article" />
     <Route name="updateArticle" handler={UpdateArticle} path="/update/article/:slug" />
-    <Route name="adminNews" handler={AdminNews} path="/admin/articles" />
+    <Route name="adminNews" handler={AdminNews} path="/admin/news" />
+    <Route name="adminUsers" handler={AdminUsers} path="/admin/users" />
     <Route name="groups" handler={Groups} path="/groups" />
     <Route name="singleGroup" handler={Group} path="/groups/:slug" />
     <Route name="user" handler={UserProfile} path="/user" />

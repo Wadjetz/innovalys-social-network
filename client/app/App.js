@@ -37,6 +37,7 @@ export default React.createClass({
                       <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
                       <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
                       <li><Link to="adminNews">{i18n.__n('admin_news')}</Link></li>
+                      <li><Link to="adminUsers">{i18n.__n('admin_users')}</Link></li>
                     </DropdownButton>
                   </If>
               </Nav>
