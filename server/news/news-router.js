@@ -3,6 +3,7 @@ var moment = require('moment');
 var validate = require("validate.js");
 var NewsModel = require('./news-model');
 var utils = require('../../commun/utils');
+var NewsValidator = require('../../commun/news-validator');
 var UserModel = require('../user/user-model');
 var auth = require('../config/auth');
 validate.moment = moment;
@@ -40,35 +41,17 @@ function getAllNewsAction (req, res) {
 router.get('/', auth.withUser, getAllNewsAction);
 
 function newsValidator (req, res, next) {
-  var news = {
+  NewsValidator.newsValidate({
     slug: utils.slug(req.body.title || ""),
     title: req.body.title,
     body: req.body.body,
     publish: moment(req.body.publish, "YYYY-MM-DD HH:MM:SS").format("YYYY-MM-DD HH:MM:SS")
-  };
-  // TOTO Move this in commun module
-  var constraints = {
-    title: {
-      presence: true,
-    },
-    body: {
-      presence: true,
-    },
-    publish: {
-      presence: true,
-      datetime: true
-    }
-  };
-  var validatorRes = validate(news, constraints);
-  if (validatorRes === undefined) {
+  }).then(function (news) {
     req._new_news = news;
     next();
-  } else {
-    res.status(400).json({
-      error: true,
-      message: validatorRes
-    });
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 
 /**

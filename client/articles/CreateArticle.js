@@ -4,6 +4,7 @@ import moment from 'moment';
 import _markdown, { markdown } from 'markdown';
 import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
 import ArticlesService from './ArticlesService';
+import NewsValidator from '../../commun/news-validator';
 import utils from'../../commun/utils';
 import If from '../utils/If';
 import i18n from '../../commun/local';
@@ -22,7 +23,7 @@ export default React.createClass({
         <Row>
           <Col xs={12}>
             <h1>{i18n.__n('create_news')}</h1>
-            <If condition={this.state.createArticleError}>
+            <If condition={createArticleError}>
               <Alert bsStyle='danger'>
                 {i18n.__n('error')}
               </Alert>
@@ -48,7 +49,7 @@ export default React.createClass({
           createArticleError: false,
           createArticleSuccess: true
       });
-    }, err => {
+    }).fail(err => {
       if (err.status === 401) { this.context.router.transitionTo('login'); }
       this.setState({
         createArticleError: true,

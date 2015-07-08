@@ -1,7 +1,3 @@
-var validate = require("validate.js");
-var moment = require('moment');
-validate.moment = moment;
-var Q = require('q');
 var validator = require('./validator');
 
 module.exports.userValidate = function (user) {
