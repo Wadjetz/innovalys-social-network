@@ -6,7 +6,7 @@ var moment = require('moment');
 var async = require('async');
 var fs = require('fs');
 var utils = require('../../commun/utils');
-var userValidator = require('../../commun/user-validator');
+var UserValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
 var RoomsModel = require('../chat/rooms-model');
 var auth = require('../config/auth');
@@ -33,15 +33,11 @@ function signupValidator(req, res, next) {
     arrival_date: req.body.arrival_date
   };
 
-  userValidator.signupValidator(newUser, function(validatorRes) {
-    if (validatorRes === undefined) {
-      req._new_user = newUser;
-      next();
-    } else {
-      res.status(400).json({
-        error: validatorRes
-      });
-    }
+  UserValidator.userValidate(newUser).then(function (user) {
+    req._new_user = newUser;
+    next();
+  }).fail(function (err) {
+    res.status(400).json(err);
   });
 }
 
@@ -78,21 +74,18 @@ router.post('/signup', signupValidator, function(req, res) {
 });
 
 function loginValidator(req, res, next) {
-  var login = {
+  UserValidator.loginsValidate({
     email: req.body.email,
     password: req.body.password
-  };
-
-  var validatorRes = validate(login, userValidator.loginConstraints);
-  if (validatorRes === undefined) {
+  }).then(function (login) {
     req._login = login;
     next();
-  } else {
+  }).fail(function (err) {
     res.status(400).json({
       error: "Login ou password invalide",
-      errors: validatorRes
+      errors: err
     });
-  }
+  });
 }
 
 var jsonError = {
@@ -119,27 +112,15 @@ router.post('/login', loginValidator, function(req, res, next) {
 });
 
 function changePasswordValidator(req, res, next) {
-  var newPassword = {
+  UserValidator.changePasswordValidate({
     current_password: req.body.current_password,
     new_password: req.body.new_password
-  }
-
-  var newPasswordConstraints = {
-    current_password: {
-      presence: true
-    },
-    new_password: {
-      presence: true,
-    }
-  };
-
-  var validatorRes = validate(newPassword, newPasswordConstraints);
-  if (validatorRes === undefined) {
+  }).then(function (passwords) {
     req._newPassword = newPassword;
     next();
-  } else {
-    res.status(400).json(validatorRes);
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 
 router.put('/password', changePasswordValidator, auth.withUser, function (req, res) {
@@ -210,6 +191,7 @@ router.get('/me', auth.withUser, function(req, res) {
     last_connection: user.last_connection
   });
 });
+
 /**
  * GET /users/profil/:id
  * Get user profile
