@@ -10,7 +10,7 @@ module.exports.getAll = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.me = function () {
@@ -19,7 +19,7 @@ module.exports.me = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.getProfil = function (id) {
@@ -28,7 +28,7 @@ module.exports.getProfil = function (id) {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 }
 
 module.exports.roles = function () {
@@ -37,7 +37,7 @@ module.exports.roles = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.create = function (user) {
@@ -47,7 +47,7 @@ module.exports.create = function (user) {
     data: user
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.login = function (user) {
@@ -57,7 +57,7 @@ module.exports.login = function (user) {
     data: user
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.getAllUsers = function () {
@@ -66,7 +66,7 @@ module.exports.getAllUsers = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.changePassword = function (currentPassword, newPassword) {
@@ -79,8 +79,17 @@ module.exports.changePassword = function (currentPassword, newPassword) {
     }
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
+
+module.exports.getOneById = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON);
+}
 
 module.exports.delete = function (id) {
   return Qajax({
@@ -88,7 +97,7 @@ module.exports.delete = function (id) {
     method: 'DELETE'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.update = function (id, user) {
@@ -98,6 +107,6 @@ module.exports.update = function (id, user) {
     data: user
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
