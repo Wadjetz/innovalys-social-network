@@ -13,7 +13,14 @@ export default React.createClass({
 
   render: function () {
     let err = this.state.errors;
-    let rolesView = this.state.roles.map((role, i) => (<option value={role} key={i}>{role}</option>));
+    let user = this.state.user;
+    let rolesView = this.state.roles.map((role, i) => {
+      if (user && user.role && user.role === role) {
+        return <option selected value={role} key={i}>{role}</option>
+      } else {
+        return <option value={role} key={i}>{role}</option>
+      }
+    });
     return (
       <Row>
         <Col xs={12}>
@@ -162,12 +169,12 @@ export default React.createClass({
       email: props.user.email || "",
       first_name: props.user.first_name || "",
       last_name: props.user.last_name || "",
-      birthday_date: props.user.birthday_date || moment().format(utils.mysqlDateFormat),
+      birthday_date: moment(this.props.user.birthday_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       adress: props.user.adress || "",
       role: props.user.role || "",
       function: props.user['function'] || "",
       description: props.user.description || "",
-      arrival_date: props.user.arrival_date || moment().format(utils.mysqlDateFormat),
+      arrival_date: moment(this.props.user.arrival_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       roles: props.roles || []
     });
   },
@@ -177,12 +184,12 @@ export default React.createClass({
       email: this.props.user.email || "",
       first_name: this.props.user.first_name || "",
       last_name: this.props.user.last_name || "",
-      birthday_date: this.props.user.birthday_date || moment().format(utils.mysqlDateFormat),
+      birthday_date: moment(this.props.user.birthday_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       adress: this.props.user.adress || "",
       role: this.props.user.role || "",
       function: this.props.user['function'] || "",
       description: this.props.user.description || "",
-      arrival_date: this.props.user.arrival_date || moment().format(utils.mysqlDateFormat),
+      arrival_date: moment(this.props.user.arrival_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       errors: {},
       roles: [],
       signupResult: {

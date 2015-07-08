@@ -50,5 +50,6 @@
   "admin_users": "Admin Users",
   "update": "Update",
   "delete": "Delete",
-  "update_news": "Update News"
+  "update_news": "Update News",
+  "update_user": "Update User"
 }
