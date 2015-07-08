@@ -32,7 +32,7 @@
   "roles": "Roles",
   "file": "Files",
   "members": "Members",
-  "dropzone": "Try dropping some files here, or click to select files to upload.",
+  "dropzone": "Try dropping file here, or click to select files to upload.",
   "my_groups": "My Groups",
   "name": "Name",
   "accesses": "Accesses",
@@ -45,5 +45,10 @@
   "new_password": "New Password",
   "users": "Users",
   "back": "Back",
-  "room": "Room"
+  "room": "Room",
+  "admin_news": "Admin News",
+  "admin_users": "Admin Users",
+  "update": "Update",
+  "delete": "Delete",
+  "update_news": "Update News"
 }

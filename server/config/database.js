@@ -2,9 +2,9 @@ var Q = require('q');
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
     host     : 'localhost',
-    user     : 'root',
     database : 'innovalys',
-    password : ''
+    user     : 'root',
+    password : 'root',
 });
 
 module.exports = connection;
@@ -13,7 +13,11 @@ module.exports.insert = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {
     if (err) {
-      deferred.reject(err);
+      if (err.code === "ER_DUP_ENTRY") {
+        deferred.reject({"error": "Already exist"});
+      } else {
+        deferred.reject(err);
+      }
     } else if (res.affectedRows > 0) {
       deferred.resolve(res.insertId);
     } else {

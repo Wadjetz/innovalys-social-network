@@ -1,8 +1,7 @@
-const request = require('superagent');
+import Qajax from 'qajax';
+import utils from '../utils/utils';
 const baseUrl = require('../conf').baseUrl;
-const utils   = require('../utils/utils');
 
-import Qajax from 'qajax'
 const BASE_URL = document.location.origin;
 
 module.exports.getAll = function () {
@@ -11,7 +10,7 @@ module.exports.getAll = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.me = function () {
@@ -20,8 +19,17 @@ module.exports.me = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
+
+module.exports.getProfil = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/profil/' + id,
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON);
+}
 
 module.exports.roles = function () {
   return Qajax({
@@ -29,7 +37,7 @@ module.exports.roles = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.create = function (user) {
@@ -39,7 +47,7 @@ module.exports.create = function (user) {
     data: user
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.login = function (user) {
@@ -49,7 +57,7 @@ module.exports.login = function (user) {
     data: user
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.getAllUsers = function () {
@@ -58,7 +66,7 @@ module.exports.getAllUsers = function () {
     method: 'GET'
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
 };
 
 module.exports.changePassword = function (currentPassword, newPassword) {
@@ -71,5 +79,34 @@ module.exports.changePassword = function (currentPassword, newPassword) {
     }
   })
   .then(Qajax.filterSuccess)
-  .then(Qajax.toJSON)
+  .then(Qajax.toJSON);
+};
+
+module.exports.getOneById = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'GET'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON);
 }
+
+module.exports.delete = function (id) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'DELETE'
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON);
+};
+
+module.exports.update = function (id, user) {
+  return Qajax({
+    url: BASE_URL + '/users/' + id,
+    method: 'PUT',
+    data: user
+  })
+  .then(Qajax.filterSuccess)
+  .then(Qajax.toJSON);
+};
+

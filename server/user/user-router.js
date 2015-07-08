@@ -6,7 +6,7 @@ var moment = require('moment');
 var async = require('async');
 var fs = require('fs');
 var utils = require('../../commun/utils');
-var userValidator = require('../../commun/user-validator');
+var UserValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
 var RoomsModel = require('../chat/rooms-model');
 var auth = require('../config/auth');
@@ -20,7 +20,7 @@ router.get('/', auth.withUser, function (req, res) {
   });
 });
 
-function signupValidator(req, res, next) {
+function userValidator(req, res, next) {
   var newUser = {
     email: req.body.email,
     role: req.body.role,
@@ -33,19 +33,15 @@ function signupValidator(req, res, next) {
     arrival_date: req.body.arrival_date
   };
 
-  userValidator.signupValidator(newUser, function(validatorRes) {
-    if (validatorRes === undefined) {
-      req._new_user = newUser;
-      next();
-    } else {
-      res.status(400).json({
-        error: validatorRes
-      });
-    }
+  UserValidator.userValidate(newUser).then(function (user) {
+    req._new_user = newUser;
+    next();
+  }).fail(function (err) {
+    res.status(400).json(err);
   });
 }
 
-router.post('/signup', signupValidator, function(req, res) {
+router.post('/signup', userValidator, function(req, res) {
   var newUser = req._new_user;
   var generatedPassword = generatePassword(8, false);
   newUser.password = passwordHash.generate(generatedPassword);
@@ -78,21 +74,18 @@ router.post('/signup', signupValidator, function(req, res) {
 });
 
 function loginValidator(req, res, next) {
-  var login = {
+  UserValidator.loginsValidate({
     email: req.body.email,
     password: req.body.password
-  };
-
-  var validatorRes = validate(login, userValidator.loginConstraints);
-  if (validatorRes === undefined) {
+  }).then(function (login) {
     req._login = login;
     next();
-  } else {
+  }).fail(function (err) {
     res.status(400).json({
       error: "Login ou password invalide",
-      errors: validatorRes
+      errors: err
     });
-  }
+  });
 }
 
 var jsonError = {
@@ -119,27 +112,15 @@ router.post('/login', loginValidator, function(req, res, next) {
 });
 
 function changePasswordValidator(req, res, next) {
-  var newPassword = {
+  UserValidator.changePasswordValidate({
     current_password: req.body.current_password,
     new_password: req.body.new_password
-  }
-
-  var newPasswordConstraints = {
-    current_password: {
-      presence: true
-    },
-    new_password: {
-      presence: true,
-    }
-  };
-
-  var validatorRes = validate(newPassword, newPasswordConstraints);
-  if (validatorRes === undefined) {
+  }).then(function (passwords) {
     req._newPassword = newPassword;
     next();
-  } else {
-    res.status(400).json(validatorRes);
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 
 router.put('/password', changePasswordValidator, auth.withUser, function (req, res) {
@@ -211,11 +192,70 @@ router.get('/me', auth.withUser, function(req, res) {
   });
 });
 
+/**
+ * GET /users/profil/:id
+ * Get user profile
+ */
+function getProfilAction (req, res) {
+  var id = req.params.id;
+  UserModel.findOneById(id).then(function (user) {
+    res.json(user);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.get('/profil/:id', getProfilAction);
+
 router.get('/logout', function (req, res) {
   req.session.destroy(function(err) {
     console.log(err);
   })
   res.redirect('/');
 });
+
+/**
+ * DELETE /users/:id
+ * Delete user
+ */
+function deleteUserAction(req, res) {
+  var id = req.params.id;
+  UserModel.findOneById(id).then(function (user) {
+    return UserModel.delete(user.id);
+  }).then(function (result) {
+    res.json({ "delete": result });
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteUserAction);
+
+/**
+ * PUT /users/:id
+ * Update user
+ */
+function updateUserAction(req, res) {
+  var id = req.params.id;
+  var user = req._new_user;
+  UserModel.findOneById(id).then(function () {
+    return UserModel.update(id, user);
+  }).then(function (result) {
+    return UserModel.findOneById(id);
+  }).then(function (updatedUser) {
+    res.json(updatedUser);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.put('/:id', auth.withRole([UserModel.roles.RH]), userValidator, updateUserAction)
+
+function getOneByIdAction (req, res) {
+  var id = req.params.id;
+  UserModel.findOneById(id).then(function (user) {
+    res.json(user);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.get('/:id', auth.withRole([UserModel.roles.RH]), getOneByIdAction);
 
 module.exports = router;

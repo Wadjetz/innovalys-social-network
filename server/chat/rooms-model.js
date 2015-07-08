@@ -1,4 +1,5 @@
 var db = require('../config/database');
+var Q = require('q');
 
 module.exports.findAll = function (user) {
   return db.findAll(
@@ -20,6 +21,8 @@ module.exports.create = function (room) {
     [room]
   );
 };
+
+
 
 module.exports.addUser = function (user) {
   return db.insert(
@@ -47,10 +50,6 @@ module.exports.delteUser = function (articleId, page, callback) {
     callback(null);
 };
 
-module.exports.update = function (comment, callback) {
-    // TODO
-    callback(null);
-};
 
 module.exports.delete = function (id, callback) {
     // TODO

@@ -31,8 +31,18 @@ module.exports.findAllNews = function (page) {
 };
 
 /**
-Create news
+Find all published news by page
 */
+module.exports.findAllPunlishedNews = function (page) {
+  return db.findAll(
+    "SELECT * FROM news WHERE news.publish < NOW() ORDER BY news.created DESC LIMIT 10 OFFSET ? ; ",
+    [page]
+  );
+};
+
+/**
+ * Create news
+ */
 module.exports.create = function (news) {
   return db.insert(
     "INSERT INTO news SET ? ;",
@@ -40,5 +50,22 @@ module.exports.create = function (news) {
   );
 };
 
-// TODO update
-// TODO delete
+/**
+ * Update news
+ */
+module.exports.update = function (id, news) {
+  return db.update(
+    "UPDATE news SET ? WHERE news.id = ? ; ",
+    [news, id]
+  );
+};
+
+/**
+ * Delete news
+ */
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM news WHERE news.id = ? ; ",
+    [id]
+  );
+};

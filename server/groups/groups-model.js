@@ -51,7 +51,7 @@ module.exports.findAllNotMyGroups = function (page, user) {
   return db.findAll(
     "SELECT groups.* " +
     "FROM groups " +
-    "WHERE 0 = ( " +
+    "WHERE groups.access != 'private' AND 0 = ( " +
       "SELECT count(*) " +
         "FROM members " +
         "WHERE members.groups_id = groups.id " +

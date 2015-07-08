@@ -2,15 +2,7 @@ import React from 'react/addons';
 import moment from 'moment';
 import markdown from 'markdown';
 import Router, { Link, Navigation } from 'react-router';
-import Bootstrap, {
-  Grid,
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Button,
-  Input
-} from 'react-bootstrap';
+import Bootstrap, { Grid, Row, Col, ListGroup, ListGroupItem, Button, Input } from 'react-bootstrap';
 import ArticlesService from './ArticlesService';
 import CommentsService from './CommentsService';
 import AppActions from '../app/AppActions';

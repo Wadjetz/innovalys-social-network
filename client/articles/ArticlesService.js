@@ -1,4 +1,4 @@
-import Qajax from 'qajax'
+import Qajax from 'qajax';
 
 const BASE_URL = document.location.origin;
 
@@ -10,7 +10,7 @@ export default {
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
-    .then(Qajax.toJSON)
+    .then(Qajax.toJSON);
   },
 
   findMyGroups: function (user) {
@@ -23,7 +23,7 @@ export default {
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
-    .then(Qajax.toJSON)
+    .then(Qajax.toJSON);
   },
 
   create: function (article) {
@@ -33,7 +33,26 @@ export default {
       data: article
     })
     .then(Qajax.filterSuccess)
-    .then(Qajax.toJSON)
+    .then(Qajax.toJSON);
+  },
+
+  delete: function (article) {
+    return Qajax({
+      url: BASE_URL + '/news/' + article.id,
+      method: 'DELETE'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  },
+
+  update: function (id, article) {
+    return Qajax({
+      url: BASE_URL + '/news/' + id,
+      method: 'PUT',
+      data: article
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
   }
 
 };

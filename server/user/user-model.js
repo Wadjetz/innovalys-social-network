@@ -35,7 +35,8 @@ module.exports.findAll = function (user) {
     "SELECT " +
       makeSqlUserSelect() +
     "FROM users " +
-    "WHERE users.id != ?",
+    "WHERE users.id != ? " +
+    "ORDER BY users.status_connection DESC ; ",
     [user.id]
   );
 };
@@ -53,7 +54,9 @@ module.exports.findByRoomId = function (roomId) {
 
 module.exports.findOneById = function (id) {
   return db.findOne(
-    "SELECT * FROM users WHERE id = ? ;",
+    "SELECT " +
+      makeSqlUserSelect() +
+    "FROM users WHERE id = ? ;",
     [id]
   );
 };
@@ -77,4 +80,39 @@ module.exports.changePassword = function (user, newPassword) {
     "UPDATE users SET ? WHERE users.id = ?",
     [newPassword, user.id]
   );
-}
+};
+
+module.exports.connect = function (id) {
+  return db.update(
+    "UPDATE users SET users.status_connection = 'online' WHERE users.id = ? ; ",
+    [id]
+  );
+};
+
+module.exports.deconnect = function (id) {
+  return db.update(
+    "UPDATE users SET users.status_connection = 'offline' WHERE users.id = ? ; ",
+    [id]
+  );
+};
+
+/**
+ * Update users
+ */
+module.exports.update = function (id, user) {
+  return db.update(
+    "UPDATE users SET ? WHERE users.id = ? ; ",
+    [user, id]
+  );
+};
+
+/**
+ * Delete users
+ */
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM users WHERE users.id = ? ; ",
+    [id]
+  );
+};
+

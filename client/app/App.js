@@ -1,13 +1,6 @@
 import React from 'react';
 import Router, { Link, RouteHandler } from 'react-router';
-import Bootstrap, {
-  Navbar,
-  Nav,
-  DropdownButton,
-  CollapsableNav,
-  NavItem,
-  MenuItem
-} from 'react-bootstrap';
+import Bootstrap, { Navbar, Nav, DropdownButton, CollapsableNav, NavItem, MenuItem } from 'react-bootstrap';
 import AppActions from './AppActions';
 import AppStore from './AppStore';
 import ChatStore from '../chat/ChatStore';
@@ -43,6 +36,8 @@ export default React.createClass({
                     <DropdownButton eventKey={4} title='RH' navItem={true}>
                       <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
                       <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
+                      <li><Link to="adminNews">{i18n.__n('admin_news')}</Link></li>
+                      <li><Link to="adminUsers">{i18n.__n('admin_users')}</Link></li>
                     </DropdownButton>
                   </If>
               </Nav>
@@ -74,7 +69,8 @@ export default React.createClass({
     );
   },
   changeLocal: function (locale) {
-    return function () {
+    return function (e) {
+      e.preventDefault();
       changeLocale(locale);
       this.setState({
         locale: locale

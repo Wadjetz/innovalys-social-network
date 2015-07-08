@@ -2,7 +2,6 @@ import React from 'react/addons';
 import Router from 'react-router';
 import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
 import validate from 'validate.js';
-import UserValidator from '../../commun/user-validator';
 import UsersActions from './UsersActions';
 import UsersStore from './UsersStore';
 import UsersApi from './UsersApi';
@@ -17,7 +16,6 @@ export default React.createClass({
     Router.Navigation
   ],
   render: function() {
-    let validator = validate(this.state, UserValidator.loginConstraints);
     let loginError = this.state.loginError;
     return (
       <Grid>
@@ -30,12 +28,12 @@ export default React.createClass({
               </Alert>
             </If>
             <Input
+                id="login"
                 type='email'
                 placeholder={i18n.__n('email')}
                 label={i18n.__n('email')}
-                ref='email'
-                valueLink={this.linkState('email')}
-                bsStyle={ (validator && validator.email) ? "error": "success" }
+                ref='login'
+                valueLink={this.linkState('login')}
             />
             <Input
                 type='password'
@@ -51,32 +49,21 @@ export default React.createClass({
     );
   },
   submit: function () {
-    // TODO validate data
-    let user = {
-      email: this.state.email,
+    UsersActions.login({
+      email: this.state.login,
       password: this.state.password,
-    };
-    let validator = validate(user, UserValidator.loginConstraints);
-    if (validator) {
-      console.log(validator);
-    } else {
-      UsersActions.login(user);
-    }
+    });
   },
   getInitialState: function() {
-    // TODO remove mock
     return {
-      email: "root@root.com",
-      password: "uYK4UQZ_",
-      loginError: UsersStore.getLoginError(),
-      validator: validate(this, UserValidator.loginConstraints)
+      login: "",
+      password: "",
+      loginError: UsersStore.getLoginError()
     };
   },
   onChange: function () {
     if(UsersStore.isConnected()) {
       UsersActions.loadMe();
-      // ChatStore.disconnect();
-      // ChatStore.connect();
       this.context.router.transitionTo('articles');
     }
     else {
