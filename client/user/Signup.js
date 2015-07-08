@@ -148,6 +148,7 @@ export default React.createClass({
       arrival_date: this.state.arrival_date,
       role: this.state.role
     };
+    console.log(newUser);
     UsersApi.create(newUser)
       .then(createdUser => {
         this.setState({
@@ -156,6 +157,7 @@ export default React.createClass({
       })
       .fail(err => {
         if (err.status === 401) { AppActions.unauthorized(); }
+        console.log(err);
         this.setState({
           signupError: err
         });

@@ -2,7 +2,6 @@ import React from 'react/addons';
 import Router from 'react-router';
 import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
 import validate from 'validate.js';
-import UserValidator from '../../commun/user-validator';
 import UsersActions from './UsersActions';
 import UsersStore from './UsersStore';
 import UsersApi from './UsersApi';
@@ -17,7 +16,6 @@ export default React.createClass({
     Router.Navigation
   ],
   render: function() {
-    let validator = validate(this.state, UserValidator.loginConstraints);
     let loginError = this.state.loginError;
     return (
       <Grid>
@@ -30,12 +28,12 @@ export default React.createClass({
               </Alert>
             </If>
             <Input
+                id="login"
                 type='email'
                 placeholder={i18n.__n('email')}
                 label={i18n.__n('email')}
-                ref='email'
-                valueLink={this.linkState('email')}
-                bsStyle={ (validator && validator.email) ? "error": "success" }
+                ref='login'
+                valueLink={this.linkState('login')}
             />
             <Input
                 type='password'
@@ -46,42 +44,26 @@ export default React.createClass({
             />
             <Button bsStyle='success' onClick={this.submit}>{i18n.__n('login')}</Button>
           </Col>
-          <Col xs={12} md={6} mdOffset={3}>
-            <h4>Compte demo</h4>
-            <p>
-              email: root@root.com password: uYK4UQZ_
-            </p>
-          </Col>
         </Row>
       </Grid>
     );
   },
   submit: function () {
-    // TODO validate data
-    let user = {
-      email: this.state.email,
+    UsersActions.login({
+      email: this.state.login,
       password: this.state.password,
-    };
-    let validator = validate(user, UserValidator.loginConstraints);
-    if (validator) {
-      console.log(validator);
-    } else {
-      UsersActions.login(user);
-    }
+    });
   },
   getInitialState: function() {
     return {
-      email: "",
+      login: "",
       password: "",
-      loginError: UsersStore.getLoginError(),
-      validator: validate(this, UserValidator.loginConstraints)
+      loginError: UsersStore.getLoginError()
     };
   },
   onChange: function () {
     if(UsersStore.isConnected()) {
       UsersActions.loadMe();
-      // ChatStore.disconnect();
-      // ChatStore.connect();
       this.context.router.transitionTo('articles');
     }
     else {

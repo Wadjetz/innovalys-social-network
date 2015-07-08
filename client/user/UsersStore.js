@@ -4,9 +4,8 @@ import utils from '../../commun/utils';
 import AppDispatcher from '../app/AppDispatcher';
 import Store from '../flux/Store';
 import AppActions from '../app/AppActions';
-import UsersActions from './UsersActions';
+import UsersActions, { LOAD_USERS, LOAD_ME, LOAD_ROLES, CREATE_USER, LOGIN, LOGIN_ERROR } from './UsersActions';
 import UsersApi from './UsersApi';
-import UsersConstants from './UsersConstants';
 import ChatStore from '../chat/ChatStore';
 
 var _usersData = {
@@ -44,7 +43,7 @@ var UsersStore = _.assign(Store, {
     let action = payload.action;
     switch(action.actionType) {
 
-      case UsersConstants.LOAD_USERS:
+      case LOAD_USERS:
         UsersApi.getAllUsers()
           .then(users => {
             _usersData.users = users;
@@ -55,25 +54,18 @@ var UsersStore = _.assign(Store, {
           })
         break;
 
-      case UsersConstants.LOGIN:
+      case LOGIN:
+        console.log(action.result);
+        _usersData.connected = true;
+        UsersStore.emitChange();
+        break;
+      case LOGIN_ERROR:
         _usersData.connected = false;
-        _usersData.loginError = "";
-        UsersApi.login(action.login)
-          .then(result => {
-            _usersData.connected = true;
-            UsersStore.emitChange();
-          })
-          .fail(err => {
-            _usersData.loginError = err;
-            if(err.status === 401) {
-              _date.connected = false;
-            }
-            ChatStore.connect();
-            UsersStore.emitChange();
-          });
+        _usersData.loginError = action.error;
+        UsersStore.emitChange();
         break;
 
-      case UsersConstants.LOAD_ME:
+      case LOAD_ME:
         UsersApi.me()
           .then(me => {
             _usersData.me = me;
