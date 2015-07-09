@@ -21,7 +21,6 @@ function getMe() {
 
 function isAuthorized(me, group) {
   let r = (me.role === 'admin') || (me.role === 'chef') || (me.id === group.id);
-  console.log("r=", r);
   return r;
 }
 
@@ -71,7 +70,7 @@ export default React.createClass({
                 {filesView}
               </TabPane>
               <TabPane eventKey={3} tab='Members'>
-                <If condition={isAuthorized(this.state.me.me, this.state.group) === true}>
+                <If condition={(isAuthorized(this.state.me.me, this.state.group) === true) && this.state.newMembers.length > 0}>
                   <div>
                     <h1>News Members</h1>
                     {newMembersView}

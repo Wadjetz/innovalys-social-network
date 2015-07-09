@@ -141,6 +141,15 @@ class GroupsService {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
   }
+
+  refuseMember(users_id, groups_id) {
+    return Qajax({
+      url: this.base_url + "/groups/members/refuse/" + groups_id + "/" + users_id,
+      method: 'PUT'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
 }
 
 export default new GroupsService(BASE_URL);

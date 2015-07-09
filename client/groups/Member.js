@@ -7,7 +7,6 @@ export default React.createClass({
   displayName: "Member",
   render: function () {
     let memeber = this.props.memeber;
-    console.log(memeber);
     return (
       <div className="media">
         <div className="media-left">
@@ -38,6 +37,11 @@ export default React.createClass({
   },
 
   refuse: function () {
+    GroupsService.refuseMember(this.props.memeber.id, this.props.group.id).then(result => {
+      console.log("refuse ok", result);
+    }).fail(err => {
+      console.log("refuse err", err);
+    });
     console.log("refuse");
   }
 
