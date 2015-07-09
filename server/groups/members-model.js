@@ -65,3 +65,25 @@ module.exports.findAllByGroupId = function (groupId) {
   sql += "WHERE groups.id = ? ;";
   return db.findAll(sql, [groupId]);
 };
+
+/**
+ * Get Members
+ */
+module.exports.getOneMember = function (users_id, groups_id) {
+  return db.findOne(
+    "SELECT * FROM members WHERE members.users_id = ? AND members.groups_id = ? ; ",
+    [users_id, groups_id]
+  );
+};
+
+/**
+ * Accept member in group
+ */
+module.exports.accept = function (users_id, groups_id) {
+  return db.update(
+    "UPDATE members SET status = 'accepted' WHERE members.users_id = ? AND members.groups_id = ? ; ",
+    [users_id, groups_id]
+  );
+};
+
+

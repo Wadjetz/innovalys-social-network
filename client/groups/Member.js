@@ -1,8 +1,10 @@
-import React from 'react'
-import Bootstrap, { Label } from 'react-bootstrap'
-import moment from 'moment'
+import React from 'react';
+import Bootstrap, { Label, Button } from 'react-bootstrap';
+import moment from 'moment';
+import GroupsService from './GroupsService';
 
 export default React.createClass({
+  displayName: "Member",
   render: function () {
     let memeber = this.props.memeber;
     console.log(memeber);
@@ -18,8 +20,25 @@ export default React.createClass({
           <p>
             <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
           </p>
+          <p>
+            <Button onClick={this.accept}>Accept</Button>
+            <Button onClick={this.refuse}>Refuse</Button>
+          </p>
         </div>
       </div>
     );
+  },
+
+  accept: function () {
+    GroupsService.acceptMember(this.props.memeber.id, this.props.group.id).then(result => {
+      console.log("accept ok", result);
+    }).fail(err => {
+      console.log("accept err", err);
+    });
+  },
+
+  refuse: function () {
+    console.log("refuse");
   }
+
 });

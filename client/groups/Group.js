@@ -1,26 +1,29 @@
-import React from 'react/addons'
-import moment from 'moment'
-import _ from 'lodash'
-import Dropzone from 'react-dropzone'
-import Router, { Link, Navigation } from 'react-router'
-import Bootstrap, {
-  Grid,
-  Row,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  TabbedArea,
-  TabPane,
-  Button,
-  Input,
-  Label
-} from 'react-bootstrap'
+import React from 'react/addons';
+import moment from 'moment';
+import _ from 'lodash';
+import Dropzone from 'react-dropzone';
+import Router, { Link, Navigation } from 'react-router';
+import Bootstrap, { Grid, Row, Col, ListGroup, ListGroupItem, TabbedArea, TabPane, Button, Input, Label } from 'react-bootstrap';
+import GroupsService from './GroupsService';
+import UsersStore from '../user/UsersStore';
+import MessageGroup from './MessageGroup';
+import FileGroup from './FileGroup';
+import Member from './Member';
+import If from '../utils/If';
+import i18n from '../../commun/local';
 
-import GroupsService from './GroupsService'
-import MessageGroup from './MessageGroup'
-import FileGroup from './FileGroup'
-import Member from './Member'
-import i18n from '../../commun/local'
+function getMe() {
+  return {
+    me: UsersStore.getMe(),
+    connected: UsersStore.isConnected()
+  };
+}
+
+function isAuthorized(me, group) {
+  let r = (me.role === 'admin') || (me.role === 'chef') || (me.id === group.id);
+  console.log("r=", r);
+  return r;
+}
 
 export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
@@ -36,7 +39,11 @@ export default React.createClass({
     );
 
     let membersView = this.state.members.map(memeber =>
-      <Member memeber={memeber} key={memeber.id} />
+      <Member memeber={memeber} group={this.state.group} key={memeber.id} />
+    );
+
+    let newMembersView = this.state.newMembers.map(memeber =>
+      <Member memeber={memeber} group={this.state.group} key={memeber.id} />
     );
 
     return (
@@ -63,14 +70,22 @@ export default React.createClass({
                 <h1>{i18n.__n('file')}</h1>
                 {filesView}
               </TabPane>
+              <TabPane eventKey={3} tab='Members'>
+                <If condition={isAuthorized(this.state.me.me, this.state.group) === true}>
+                  <div>
+                    <h1>News Members</h1>
+                    {newMembersView}
+                  </div>
+                </If>
+                <h2>{i18n.__n('members')}</h2>
+                {membersView}
+              </TabPane>
             </TabbedArea>
           </Col>
           <Col xs={4}>
             <h1>{this.state.group.name}</h1>
             <Label bsStyle='default'>{this.state.group.type}</Label>
             <p>{this.state.group.description}</p>
-            <h2>{i18n.__n('members')}</h2>
-            {membersView}
           </Col>
         </Row>
       </Grid>
@@ -109,10 +124,12 @@ export default React.createClass({
         users_id: "",
       },
       members: [],
+      newMembers: [],
       messages: [],
       newMessage: "",
       files: [],
-      file: null
+      file: null,
+      me: getMe()
     }
   },
 
@@ -120,7 +137,7 @@ export default React.createClass({
     router: React.PropTypes.func
   },
 
-  componentDidMount: function () {
+  componentWillMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
     GroupsService.getBySlug(slug).then(group => {
       this.setState({
@@ -153,6 +170,14 @@ export default React.createClass({
     }).fail(err => {
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
+
+    GroupsService.getPendingMembers(slug).then(newMembers => {
+      this.setState({
+        newMembers: newMembers
+      });
+    }).fail(err => {
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    });
   },
 
   onDrop: function (files) {
@@ -173,6 +198,19 @@ export default React.createClass({
 
   selectFile: function (e) {
     console.log(e);
+  },
+
+  onChange: function () {
+    this.setState({
+      me: getMe()
+    });
+  },
+
+  componentDidMount: function () {
+    UsersStore.addChangeListener(this.onChange);
+  },
+  componentWillUnmount: function () {
+    UsersStore.removeChangeListener(this.onChange);
   },
 
 });

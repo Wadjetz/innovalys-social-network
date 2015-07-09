@@ -92,10 +92,10 @@ module.exports.groupsTypes = {
   other: 'other'
 };
 
-module.exports.update = function (group) {
+module.exports.update = function (id, group) {
   return db.update(
-    "UPDATE posts SET ? ;",
-    [group]
+    "UPDATE posts SET ? WHERE groups.id = ? ; ",
+    [group, id]
   );
 };
 

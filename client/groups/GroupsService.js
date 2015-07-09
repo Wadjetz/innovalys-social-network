@@ -123,6 +123,24 @@ class GroupsService {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
   }
+
+  getPendingMembers(slug) {
+    return Qajax({
+      url: this.base_url + "/groups/members/pending/" + slug,
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  acceptMember(users_id, groups_id) {
+    return Qajax({
+      url: this.base_url + "/groups/members/accept/" + groups_id + "/" + users_id,
+      method: 'PUT'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
 }
 
 export default new GroupsService(BASE_URL);
