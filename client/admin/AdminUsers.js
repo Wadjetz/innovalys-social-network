@@ -10,12 +10,17 @@ export default React.createClass({
   displayName: "AdminUsers",
   render: function () {
     let users = this.state.users;
-    console.log(users);
     let usersView = users.map(user => {
       return (
-        <div key={user.id}>
-          <h2>{user.first_name} {user.last_name}</h2>
-        </div>
+        <Panel key={user.id}>
+          <h2>
+            <Link to="profil" params={{id: user.id}}>{user.first_name} {user.last_name}</Link>
+          </h2>
+          <p>
+            <Link className="btn btn-default" to="updateUser" params={{id: user.id}}>{i18n.__n('update')}</Link>
+            <Button bsStyle='danger' onClick={this.deleteUser(user)}>{i18n.__n('delete')}</Button>
+          </p>
+        </Panel>
       );
     });
     return (
@@ -31,7 +36,18 @@ export default React.createClass({
 
   deleteUser: function (user) {
     return function (e) {
-      console.log(user);
+      UsersApi.delete(user.id).then(result => {
+        if(result.delete > 0) {
+          let users = this.state.users.filter(u => u.id !== user.id);
+          this.setState({
+            users: users
+          });
+        } else {
+          console.log(result);
+        }
+      }).fail(err => {
+        console.log(err);
+      });
     }.bind(this);
   },
 
@@ -43,7 +59,6 @@ export default React.createClass({
 
   componentDidMount: function () {
     UsersApi.getAll().then(users => {
-      console.log(users);
       this.setState({
         users: users
       });

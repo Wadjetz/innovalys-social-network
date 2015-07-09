@@ -248,6 +248,10 @@ function updateUserAction(req, res) {
 }
 router.put('/:id', auth.withRole([UserModel.roles.RH]), userValidator, updateUserAction)
 
+/**
+ * GET /users/:id
+ * Get user by id
+ */
 function getOneByIdAction (req, res) {
   var id = req.params.id;
   UserModel.findOneById(id).then(function (user) {

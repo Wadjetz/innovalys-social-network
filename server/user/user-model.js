@@ -25,6 +25,7 @@ function makeSqlUserSelect() {
     "users.status_profile, " +
     "users.status_connection, " +
     "users.function, " +
+    "users.adress, " +
     "users.description, " +
     "users.arrival_date, " +
     "users.last_connection ";

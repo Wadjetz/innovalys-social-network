@@ -2,26 +2,26 @@ import React from 'react/addons';
 import Router, { Navigation } from 'react-router';
 import moment from 'moment';
 import _ from 'lodash';
-import _markdown, { markdown } from 'markdown';
 import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
-import ArticlesService from './ArticlesService';
 import utils from'../../commun/utils';
 import If from '../utils/If';
 import i18n from '../../commun/local';
-import ArticleForm from './ArticleForm';
+import UsersApi from './UsersApi';
+import UserForm from './UserForm';
 
 export default React.createClass({
-  displayName: "UpdateArticle",
+  displayName: "UpdateUser",
   mixins: [
     React.addons.LinkedStateMixin,
     Navigation
   ],
+
   render: function() {
     return (
       <Grid fluid>
         <Row>
           <Col xs={12}>
-            <h1>{i18n.__n('update_news')}</h1>
+            <h1>{i18n.__n('update_user')}</h1>
             <If condition={this.state.createArticleError}>
               <Alert bsStyle='danger'>
                 {i18n.__n('error')}
@@ -34,53 +34,59 @@ export default React.createClass({
             </If>
           </Col>
         </Row>
-        <ArticleForm
-          article={this.state.article}
-          successAction={this.successAction}
-        />
+        <UserForm user={this.state.user} successAction={this.update} roles={this.state.roles} />
       </Grid>
     );
   },
 
-  successAction: function (article) {
-    ArticlesService.update(this.state.article.id, article).then(result => {
-      article.id = this.state.article.id;
+  update: function (user) {
+    let id = this.state.user.id;
+    UsersApi.update(id, user).then(result => {
+      user.id = this.state.user.id;
       this.setState({
-          article: article,
-          createArticleError: false,
-          createArticleSuccess: true
+        user: user,
+        createUserError: false,
+        createUserSuccess: true
       });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
+    }).fail(function (err) {
       this.setState({
-        createArticleError: true,
-        createArticleSuccess: false
+        createUserError: true,
+        createUserSuccess: false
       });
     });
   },
 
   getInitialState: function() {
     return {
-      article: {},
-      createArticleError: false,
-      createArticleSuccess: false
+      user: {},
+      roles: [],
+      createUserError: false,
+      createUserSuccess: false
     };
   },
 
-  contextTypes: {
-    router: React.PropTypes.func
-  },
-
   componentWillMount: function () {
-    let slug = this.context.router.getCurrentParams().slug;
-    ArticlesService.get(slug).then(article => {
+    let id = this.context.router.getCurrentParams().id;
+    UsersApi.getOneById(id).then(user => {
       this.setState({
-        article: article
+        user: user
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
       console.log(err);
     });
-  }
 
+    UsersApi.roles().then(roles => {
+      this.setState({
+        roles: roles
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      else console.log(err);
+    });
+  },
+
+  contextTypes: {
+    router: React.PropTypes.func
+  },
 });

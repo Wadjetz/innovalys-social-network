@@ -9,6 +9,8 @@ import ChatStore from '../chat/ChatStore';
 import If from '../utils/If';
 import i18n from '../../commun/local';
 
+const KEY_ENTER = 13;
+
 export default React.createClass({
   displayName: "Login",
   mixins: [
@@ -34,19 +36,28 @@ export default React.createClass({
                 label={i18n.__n('email')}
                 ref='login'
                 valueLink={this.linkState('login')}
-            />
+                onKeyDown={this.onKeyDown} />
             <Input
                 type='password'
                 placeholder={i18n.__n('password')}
                 label={i18n.__n('password')}
                 ref='password'
                 valueLink={this.linkState('password')}
-            />
+                onKeyDown={this.onKeyDown} />
             <Button bsStyle='success' onClick={this.submit}>{i18n.__n('login')}</Button>
           </Col>
         </Row>
       </Grid>
     );
+  },
+  onKeyDown: function (e) {
+    if (e.which === KEY_ENTER) {
+      e.preventDefault();
+      UsersActions.login({
+        email: this.state.login,
+        password: this.state.password,
+      });
+    }
   },
   submit: function () {
     UsersActions.login({
