@@ -14,7 +14,7 @@ export default {
   },
 
   findMyGroups: function (user) {
-    throw new Error("findMyGroups not implemented");
+    throw new Error("f  indMyGroups not implemented");
   },
 
   get: function (slug) {

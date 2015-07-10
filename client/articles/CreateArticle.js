@@ -9,6 +9,7 @@ import utils from'../../commun/utils';
 import If from '../utils/If';
 import i18n from '../../commun/local';
 import ArticleForm from './ArticleForm';
+import ArticleStore from './articleStore'
 
 export default React.createClass({
   mixins: [
@@ -49,6 +50,7 @@ export default React.createClass({
           createArticleError: false,
           createArticleSuccess: true
       });
+      ArticleStore.newArticle(article.title);
     }).fail(err => {
       if (err.status === 401) { this.context.router.transitionTo('login'); }
       this.setState({

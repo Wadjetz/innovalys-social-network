@@ -121,7 +121,7 @@ export default React.createClass({
         status: "",
         access: "",
         type: "",
-        users_id: "",
+        users_id: ""
       },
       members: [],
       newMembers: [],
@@ -211,7 +211,7 @@ export default React.createClass({
   },
   componentWillUnmount: function () {
     UsersStore.removeChangeListener(this.onChange);
-  },
+  }
 
 });
 
@@ -220,4 +220,4 @@ let dropzoneStyle = {
   height: 50,
   borderStyle: "dashed",
   marginTop: '10px'
-}
+};

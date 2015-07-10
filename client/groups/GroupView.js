@@ -6,6 +6,7 @@ import markd, { markdown } from 'markdown'
 import If from '../utils/If'
 import i18n from '../../commun/local'
 
+
 export default React.createClass({
   render: function() {
     let group = this.props.group;

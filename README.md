@@ -18,7 +18,7 @@ npm install -g nodemon browserify watchify reactify
 #windows/
 nom install esprima-fb base62 source-map envify
 npm install
-```
+```n
 
 ## Lancer le server
 
