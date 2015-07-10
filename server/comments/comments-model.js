@@ -46,7 +46,15 @@ module.exports.create = function (comment) {
   );
 };
 
-// TODO update
+/**
+ * Update comment
+ */
+module.exports.update = function (id, comment) {
+  return db.update(
+    "UPDATE comments SET ? WHERE comments.id = ? ;",
+    [comment, id]
+  );
+};
 
 /**
 Delete comment by id

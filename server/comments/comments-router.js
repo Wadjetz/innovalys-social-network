@@ -57,6 +57,20 @@ function postCreateCommentAction (req, res) {
 }
 router.post('/', commentsValidator, auth.withUser, postCreateCommentAction);
 
+function updateCommentAction (req, res) {
+  var user = req.$user;
+  var comment = req.$comment;
+  var newComment = req._new_comment;
+  CommentsModel.update(comment.id, newComment).then(function (result) {
+    return CommentsModel.findOneById(comment.id);
+  }).then(function (commentUpdated) {
+    res.json(commentUpdated);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.put('/:id', commentsValidator, auth.commentWithRoleOrOwner([UserModel.roles.ADMIN]), updateCommentAction);
+
 /**
 GET /comments/news/:slug
 Get all comments by news slug

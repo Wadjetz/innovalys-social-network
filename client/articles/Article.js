@@ -36,18 +36,30 @@ export default React.createClass({
             </div>
             <div className="thumbnail">
               {this.state.comments.map(comment => {
-                return (
-                  <Well key={comment.id}>
-                    <h5>{comment.email}</h5>
-                    <p dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></p>
-                    <If condition={this.state.me.me.id === comment.users_id}>
-                      <Button bsStyle='danger' bsSize='xsmall' onClick={this.delete(comment)}>{i18n.__n('delete')}</Button>
-                    </If>
-                  </Well>
-                );
+                if (this.state.wouldUpdateComment && this.state.wouldUpdateComment.id === comment.id) {
+                  return (
+                    <Well key={comment.id + "update"}>
+                      <h5>{comment.email}</h5>
+                      <CommentForm key={comment.id} comment={comment} successAction={this.updateComment} />
+                    </Well>
+                  );
+                } else {
+                  return (
+                    <Well key={comment.id}>
+                      <h5>{comment.email}</h5>
+                      <p dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></p>
+                      <If condition={this.state.me.me.id === comment.users_id}>
+                        <div>
+                          <Button bsStyle='danger' bsSize='xsmall' onClick={this.delete(comment)}>{i18n.__n('delete')}</Button>
+                          <Button bsStyle='warning' bsSize='xsmall' onClick={this.wouldUpdateComment(comment)}>{i18n.__n('update')}</Button>
+                        </div>
+                      </If>
+                    </Well>
+                  );
+                }
               })}
               <h4>{i18n.__n('create_new_comment')}</h4>
-              <CommentForm content={""} successAction={this.createComment} />
+              <CommentForm comment={{}} successAction={this.createComment} />
             </div>
           </Col>
           <Col xs={4}>
@@ -60,7 +72,6 @@ export default React.createClass({
 
   delete: function (comment) {
     return function (e) {
-      console.log("delete comment", comment);
       CommentsService.delete(comment.id).then(result => {
         let comments = this.state.comments.filter(c => c.id !== comment.id);
         this.setState({
@@ -68,6 +79,14 @@ export default React.createClass({
         });
       }).fail(function (err) {
         console.log(err);
+      });
+    }.bind(this);
+  },
+
+  wouldUpdateComment: function (comment) {
+    return function (e) {
+      this.setState({
+        wouldUpdateComment: comment
       });
     }.bind(this);
   },
@@ -87,8 +106,24 @@ export default React.createClass({
       created: "",
       updated: "",
       users_id: 0,
-      me: getMe()
+      me: getMe(),
+      wouldUpdateComment: null
     };
+  },
+
+  updateComment: function (content, comment) {
+    console.log(content, comment);
+    CommentsService.update(comment.id, {
+      content: content,
+      news_id: this.state.id
+    }).then(result => {
+      comment.content = result.content;
+      this.setState({
+        wouldUpdateComment: null
+      });
+    }).fail(err => {
+      console.log(err);
+    });
   },
 
   createComment: function (content) {

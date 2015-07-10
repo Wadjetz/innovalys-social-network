@@ -17,9 +17,9 @@ class CommentsService {
     .then(Qajax.toJSON);
   }
 
-  update(comment) {
+  update(id, comment) {
     return Qajax({
-      url: `${this.base_url}/comments`,
+      url: `${this.base_url}/comments/${id}`,
       method: 'PUT',
       data: comment
     })

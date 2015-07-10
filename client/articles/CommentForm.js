@@ -13,9 +13,9 @@ export default React.createClass({
     let err = this.state.errors;
     return (
       <div>
-        <div className={ (err.content) ? 'form-group has-error' : 'form-group'}>
-            <label className="control-label" htmlFor="content">{ (err.content) ? err.content : i18n.__n('content')}</label>
-            <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='content' valueLink={this.linkState('content')} />
+        <div className={ (err.newContent) ? 'form-group has-error' : 'form-group'}>
+            <label className="control-label" htmlFor="content">{ (err.newContent) ? err.newContent : i18n.__n('content')}</label>
+            <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='newContent' valueLink={this.linkState('newContent')} />
           </div>
         <Button bsStyle='success' onClick={this.successAction}>{i18n.__n('save')}</Button>
       </div>
@@ -23,16 +23,16 @@ export default React.createClass({
   },
 
   successAction: function (e) {
-    if (this.state.content) {
-      this.props.successAction(this.state.content);
+    if (this.state.newContent) {
+      this.props.successAction(this.state.newContent, this.props.comment);
       this.setState({
         errors: {},
-        content: ""
+        newContent: ""
       });
     } else {
       this.setState({
         errors: {
-          content: "content can't be blanc"
+          newContent: "content can't be blanc"
         }
       });
     }
@@ -40,13 +40,13 @@ export default React.createClass({
 
   componentWillReceiveProps: function (props) {
     this.setState({
-      content: props.content || ""
+      newContent: props.comment.content || ""
     });
   },
 
   getInitialState: function() {
     return {
-      content: this.props.content || "",
+      newContent: this.props.comment.content || "",
       errors: {}
     }
   },
