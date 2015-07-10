@@ -10,7 +10,7 @@ class GroupsService {
 
   getAll() {
     return Qajax({
-      url: this.base_url + '/groups',
+      url: `${this.base_url}/groups`,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
@@ -146,6 +146,15 @@ class GroupsService {
     return Qajax({
       url: this.base_url + "/groups/members/refuse/" + groups_id + "/" + users_id,
       method: 'PUT'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  delete(slug) {
+    return Qajax({
+      url: `${this.base_url}/groups/${slug}`,
+      method: 'DELETE'
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
