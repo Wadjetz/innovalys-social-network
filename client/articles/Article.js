@@ -7,8 +7,20 @@ import ArticlesService from './ArticlesService';
 import CommentsService from './CommentsService';
 import AppActions from '../app/AppActions';
 import i18n from '../../commun/local';
+import UsersStore from '../user/UsersStore';
+import CommentForm from './CommentForm';
+import If from '../utils/If';
+
+function getMe() {
+  return {
+    me: UsersStore.getMe(),
+    connected: UsersStore.isConnected()
+  };
+}
 
 export default React.createClass({
+  displayName: "Article",
+
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function () {
@@ -25,19 +37,15 @@ export default React.createClass({
                   <ListGroup key={comment.id}>
                     <ListGroupItem header={comment.email}>
                       <span dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></span>
+                      <If condition={this.state.me.me.id === comment.users_id}>
+                        <div>Delete</div>
+                      </If>
                     </ListGroupItem>
                   </ListGroup>
                 );
               })}
               <h4>{i18n.__n('create_new_comment')}</h4>
-              <Input
-                  type='textarea'
-                  placeholder={i18n.__n('content')}
-                  label={i18n.__n('content')}
-                  ref='content'
-                  valueLink={this.linkState('newComment')}
-              />
-              <Button bsStyle='success' onClick={this.createComment}>{i18n.__n('save')}</Button>
+              <CommentForm content={""} successAction={this.createComment} />
             </div>
           </Col>
           <Col xs={4}>
@@ -62,63 +70,54 @@ export default React.createClass({
       created: "",
       updated: "",
       users_id: 0,
-      newComment: "",
-      newCommentError: false,
-      newCommentSuccess: false
+      me: getMe()
     };
   },
 
-  createComment: function () {
-    if (this.state.newComment !== "") {
-      let newComment = {
-        content: this.state.newComment,
-        news_id: this.state.id
-      };
-      CommentsService.create(newComment).then(result => {
-        this.state.comments.push(result);
-        this.setState({
-          newCommentSuccess: true,
-          newCommentError: false,
-          comments: this.state.comments,
-          newComment: ""
-        });
-      }, err => {
-        if (err.status === 401) { AppActions.unauthorized(); }
-        this.setState({
-          newCommentSuccess: false,
-          newCommentError: true
-        });
-      });
-    } else {
+  createComment: function (content) {
+    let newComment = {
+      content: content,
+      news_id: this.state.id
+    };
+    CommentsService.create(newComment).then(result => {
+      this.state.comments.push(result);
       this.setState({
-        newCommentSuccess: false,
-        newCommentError: true
+        comments: this.state.comments
       });
-    }
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.log(err);
+    });
+  },
+
+  onChange: function () {
+    this.setState({
+      me: getMe()
+    });
   },
 
   componentDidMount: function () {
+    UsersStore.addChangeListener(this.onChange);
     let slug = this.context.router.getCurrentParams().slug;
-    ArticlesService
-      .get(slug)
-      .then(article => {
-        this.setState(article);
-      })
-      .fail(err => {
-        if (err.status === 401) { AppActions.unauthorized(); }
+    ArticlesService.get(slug).then(article => {
+      this.setState(article);
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.log(err);
+    });
 
+    CommentsService.getAllBySlug(slug).then(comments => {
+      this.setState({
+        comments: comments
       });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.log(err);
+    });
+  },
 
-    CommentsService
-      .getAllBySlug(slug)
-      .then(comments => {
-        this.setState({
-          comments: comments
-        });
-      })
-      .fail(err => {
-        if (err.status === 401) { AppActions.unauthorized(); }
-      });
-  }
+  componentWillUnmount: function () {
+    UsersStore.removeChangeListener(this.onChange);
+  },
 
 });
