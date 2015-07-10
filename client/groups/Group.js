@@ -20,8 +20,7 @@ function getMe() {
 }
 
 function isAuthorized(me, group) {
-  let r = (me.role === 'admin') || (me.role === 'chef') || (me.id === group.id);
-  return r;
+  return (me.role === 'admin') || (me.role === 'chef') || (me.id === group.id);
 }
 
 export default React.createClass({
@@ -38,11 +37,11 @@ export default React.createClass({
     );
 
     let membersView = this.state.members.map(memeber =>
-      <Member memeber={memeber} group={this.state.group} key={memeber.id} />
+      <Member memeber={memeber} group={this.state.group} key={memeber.id} isAccepted={true}/>
     );
 
     let newMembersView = this.state.newMembers.map(memeber =>
-      <Member memeber={memeber} group={this.state.group} key={memeber.id} />
+      <Member memeber={memeber} group={this.state.group} key={memeber.id} isAccepted={false} />
     );
 
     return (
@@ -79,16 +78,45 @@ export default React.createClass({
                 <h2>{i18n.__n('members')}</h2>
                 {membersView}
               </TabPane>
+              <TabPane eventKey={4} tab='Parametres'>
+                <If condition={isAuthorized(this.state.me.me, this.state.group)}>
+                  <div>
+                    <h1>Add members</h1>
+                    <h1>Delete group</h1>
+                    <Button onClick={this.delete} bsStyle='danger'>{i18n.__n('delete')}</Button>
+                  </div>
+                </If>
+              </TabPane>
             </TabbedArea>
           </Col>
           <Col xs={4}>
             <h1>{this.state.group.name}</h1>
-            <Label bsStyle='default'>{this.state.group.type}</Label>
+            <p>
+              <Label bsStyle='default'>{this.state.group.type}</Label>
+              <Label bsStyle='default'>{this.state.group.access}</Label>
+              <Label bsStyle='default'>{this.state.group.status}</Label>
+            </p>
             <p>{this.state.group.description}</p>
+            <p>
+              <Label bsStyle='default'>by {this.state.group.users_first_name} {this.state.group.users_last_name}</Label>
+              <Label bsStyle='default'>{this.state.group.users_function}</Label>
+              <Label bsStyle='default'>{this.state.group.users_role}</Label>
+            </p>
           </Col>
         </Row>
       </Grid>
     );
+  },
+
+  delete: function () {
+    let slug = this.context.router.getCurrentParams().slug;
+    GroupsService.delete(slug).then(result => {
+      console.log("delete group result=", result);
+      this.context.router.transitionTo('groups');
+    }).fail(err => {
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+      console.log(err);
+    });
   },
 
   createMessage: function () {
@@ -139,6 +167,7 @@ export default React.createClass({
   componentWillMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
     GroupsService.getBySlug(slug).then(group => {
+      console.log("getGroupBySlug", group);
       this.setState({
         group: group
       });
@@ -208,9 +237,30 @@ export default React.createClass({
   componentDidMount: function () {
     UsersStore.addChangeListener(this.onChange);
   },
+
   componentWillUnmount: function () {
     UsersStore.removeChangeListener(this.onChange);
   },
+
+  accept: function (group, memeber) {
+    return function (e) {
+      GroupsService.acceptMember(memeber.id, group.id).then(result => {
+        console.log("accept ok", result);
+      }).fail(err => {
+        console.log("accept err", err);
+      });
+    }
+  },
+
+  refuse: function (group, memeber) {
+    return function (e) {
+      GroupsService.refuseMember(memeber.id, group.id).then(result => {
+        console.log("refuse ok", result);
+      }).fail(err => {
+        console.log("refuse err", err);
+      });
+    }
+  }
 
 });
 
