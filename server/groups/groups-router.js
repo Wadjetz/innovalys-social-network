@@ -161,4 +161,19 @@ function getGroupsTypesAction(req, res) {
 }
 router.get('/types', auth.withUser, getGroupsTypesAction);
 
+
+/**
+ * Delete group
+ */
+function deleteGroup (req, res) {
+  var user = req.$user;
+  var group = req.$group;
+  GroupsModel.delete(group.id).then(function (result) {
+    res.json(result);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.delete('/:slug', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), deleteGroup);
+
 module.exports = router;
