@@ -2,6 +2,7 @@ import React from 'react';
 import Bootstrap, { Label, Button } from 'react-bootstrap';
 import moment from 'moment';
 import GroupsService from './GroupsService';
+import If from '../utils/If';
 
 export default React.createClass({
   displayName: "Member",
@@ -19,10 +20,12 @@ export default React.createClass({
           <p>
             <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
           </p>
-          <p>
-            <Button onClick={this.accept}>Accept</Button>
-            <Button onClick={this.refuse}>Refuse</Button>
-          </p>
+          <If condition={this.props.isAccepted === false}>
+            <p>
+              <Button onClick={this.accept}>Accept</Button>
+              <Button onClick={this.refuse}>Refuse</Button>
+            </p>
+          </If> 
         </div>
       </div>
     );
