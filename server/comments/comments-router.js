@@ -74,17 +74,16 @@ function getCommentsByNewsSlug (req, res) {
 }
 router.get('/news/:slug', auth.withUser, getCommentsByNewsSlug);
 
-// TODO not finished
 router.delete('/:comment_id', auth.withUser, function (req, res) {
   var user = req.$user;
   var comment_id = req.params.comment_id;
-  CommentsModel.findOneById(comment_id)
-    .then(function (comment) {
-      res.json(comment);
-    })
-    .fail(function (err) {
-      res.status(404).json(err);
-    });
+  CommentsModel.findOneById(comment_id).then(function (comment) {
+    return CommentsModel.delete(comment.id);
+  }).then(function (result) {
+    res.json(result);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
 });
 
 module.exports = router;

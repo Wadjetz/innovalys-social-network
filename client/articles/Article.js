@@ -2,12 +2,13 @@ import React from 'react/addons';
 import moment from 'moment';
 import markdown from 'markdown';
 import Router, { Link, Navigation } from 'react-router';
-import Bootstrap, { Grid, Row, Col, ListGroup, ListGroupItem, Button, Input } from 'react-bootstrap';
+import Bootstrap, { Grid, Row, Col, Well, Button, Input } from 'react-bootstrap';
 import ArticlesService from './ArticlesService';
 import CommentsService from './CommentsService';
 import AppActions from '../app/AppActions';
 import i18n from '../../commun/local';
 import UsersStore from '../user/UsersStore';
+import Users from '../user/Users';
 import CommentForm from './CommentForm';
 import If from '../utils/If';
 
@@ -32,16 +33,17 @@ export default React.createClass({
               <h2><Link to="singleArticle" params={{slug: this.state.slug}}>{this.state.title}</Link></h2>
               <span className="label label-default">{i18n.__n('publish')} : {moment(this.state.publish).fromNow()}</span>
               <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(this.state.body) }}></div>
+            </div>
+            <div className="thumbnail">
               {this.state.comments.map(comment => {
                 return (
-                  <ListGroup key={comment.id}>
-                    <ListGroupItem header={comment.email}>
-                      <span dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></span>
-                      <If condition={this.state.me.me.id === comment.users_id}>
-                        <div>Delete</div>
-                      </If>
-                    </ListGroupItem>
-                  </ListGroup>
+                  <Well key={comment.id}>
+                    <h5>{comment.email}</h5>
+                    <p dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></p>
+                    <If condition={this.state.me.me.id === comment.users_id}>
+                      <Button bsStyle='danger' bsSize='xsmall' onClick={this.delete(comment)}>{i18n.__n('delete')}</Button>
+                    </If>
+                  </Well>
                 );
               })}
               <h4>{i18n.__n('create_new_comment')}</h4>
@@ -49,10 +51,25 @@ export default React.createClass({
             </div>
           </Col>
           <Col xs={4}>
+            <Users />
           </Col>
         </Row>
       </Grid>
     );
+  },
+
+  delete: function (comment) {
+    return function (e) {
+      console.log("delete comment", comment);
+      CommentsService.delete(comment.id).then(result => {
+        let comments = this.state.comments.filter(c => c.id !== comment.id);
+        this.setState({
+          comments: comments
+        });
+      }).fail(function (err) {
+        console.log(err);
+      });
+    }.bind(this);
   },
 
   contextTypes: {
