@@ -169,6 +169,10 @@ function deleteGroup (req, res) {
   var user = req.$user;
   var group = req.$group;
   GroupsModel.delete(group.id).then(function (result) {
+    return RoomsModel.findOneByName(group.slug);
+  }).then(function (room) {
+    return RoomsModel.delete(room.id);
+  }).then(function (result) {
     res.json(result);
   }).fail(function (err) {
     res.status(500).json(err);

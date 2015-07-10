@@ -45,13 +45,9 @@ module.exports.findOneByName = function (name) {
   );
 };
 
-module.exports.delteUser = function (articleId, page, callback) {
-    // TODO
-    callback(null);
-};
-
-
-module.exports.delete = function (id, callback) {
-    // TODO
-    callback(null);
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM rooms WHERE rooms.id = ? ; ",
+    [id]
+  );
 };
