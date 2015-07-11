@@ -13,17 +13,18 @@ const socket = window.io(document.location.host);
 
 
 var _ArticleData = {
-  name:"" ,
-  room:"article_new"
+  name:""
 };
 
 var articleStore = _.assign(Store, {
-    connect: function (news){
-        socket.on("connection"), function () {
-            console.log("connection");
-        }
+    connect: function (){
+
+        console.log("connect");
+        socket.on("connect", function () {
+            console.log("connect");
+        });
         
-        socket.on('new_article', function (msg, room) {
+        socket.on('new_article', function (msg) {
             console.log("new_article", msg);
             notification.newNotification(msg);
 
@@ -33,7 +34,12 @@ var articleStore = _.assign(Store, {
         socket.disconnect();
     },
 
-    newArticle : function (news) {
-        socket.emit("new_article", news);
+    newArticle:function(title){
+        _ArticleData.name = title;
+        socket.emit("new_article", _ArticleData.name);
     }
 });
+
+
+
+export default articleStore;

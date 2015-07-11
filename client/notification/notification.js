@@ -2,6 +2,7 @@
  * Created by Damien on 24/04/2015.
  */
 
+import i18n from '../../commun/local';
 
 
 
@@ -10,7 +11,7 @@
  */
 module.exports.newNotification = function(message){
 
-    new Notification('Nouveaux article', {
+    new Notification(i18n.__n("news_notify"), {
         body: message
     });
 }

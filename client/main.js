@@ -15,6 +15,10 @@ import AdminUsers from './admin/AdminUsers';
 import UpdateArticle from './articles/UpdateArticle';
 import UpdateUser from './user/UpdateUser';
 import Profil from './user/Profil';
+import articleStore from './articles/articleStore'
+
+articleStore.connect();
+
 
 if (Notification.permission !== "granted") {
   Notification.requestPermission();

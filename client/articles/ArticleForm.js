@@ -7,6 +7,8 @@ import utils from'../../commun/utils';
 import If from '../utils/If';
 import i18n from '../../commun/local';
 import NewsValidator from '../../commun/news-validator';
+import articleStore from './articleStore'
+
 
 export default React.createClass({
   displayName: "ArticleForm",
@@ -49,8 +51,12 @@ export default React.createClass({
       this.setState({
         errors: {}
       });
+        articleStore.connect();
+        articleStore.newArticle(art.title);
+        articleStore.disconnect();
       this.props.successAction(art);
     }).fail(err => {
+      console.log(err);
       this.setState({
         errors: err
       });

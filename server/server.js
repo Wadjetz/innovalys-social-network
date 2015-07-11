@@ -25,6 +25,8 @@ var RoomsRouter = require('./chat/rooms-router');
 var RoomsModel = require('./chat/rooms-model');
 
 
+var notificationArticle = require("./notification/notificationArticle");
+
 // Config
 var app  = express();
 var http = require('http').Server(app);
@@ -99,6 +101,8 @@ app.use('/chat/rooms', RoomsRouter)
 chatSession(io, cookieParser, sessionStore);
 chatAuth(io);
 chat(io);
+notificationArticle(io);
+
 
 http.listen(config.PORT, function(){
   log.info('listening on ' + config.PORT);

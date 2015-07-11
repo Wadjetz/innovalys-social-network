@@ -50,5 +50,6 @@
   "update": "Update",
   "delete": "Delete",
   "update_news": "Update News",
-  "update_user": "Update User"
+  "update_user": "Update User",
+  "news_notify": "New article"
 }
