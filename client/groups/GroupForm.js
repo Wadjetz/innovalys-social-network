@@ -2,6 +2,7 @@ import React from 'react/addons';
 import Router, { Navigation } from 'react-router';
 import Bootstrap, { Grid, Row, Col, ListGroup, ListGroupItem, Button, Input } from 'react-bootstrap';
 import GroupsService from './GroupsService';
+import GroupsValidator from '../../commun/groups-validator';
 import i18n from '../../commun/local';
 
 export default React.createClass({
@@ -18,16 +19,20 @@ export default React.createClass({
         </div>
         <Input type='select' label={i18n.__n('accesses')} placeholder={i18n.__n('accesses')} valueLink={this.linkState('access')}>
           {this.state.accesses.map((access, i) => {
-            return (
-              <option value={access} key={access + i}>{access}</option>
-            );
+            if (access === this.state.access) {
+              return <option selected value={access} key={i}>{access}</option>
+            } else {
+              return <option value={access} key={i}>{access}</option>
+            }
           })}
         </Input>
         <Input type='select' label={i18n.__n('types')} placeholder={i18n.__n('types')} valueLink={this.linkState('type')}>
           {this.state.types.map((type, i) => {
-            return (
-              <option value={type} key={type + i}>{type}</option>
-            );
+            if (type === this.state.type) {
+              return <option selected value={type} key={i}>{type}</option>
+            } else {
+              return <option value={type} key={i}>{type}</option>
+            }
           })}
         </Input>
         <div className={ (err.description) ? 'form-group has-error' : 'form-group'}>
@@ -40,13 +45,17 @@ export default React.createClass({
   },
 
   successAction: function (e) {
-    var newGroup = {
+    GroupsValidator.groupValidate({
       name: this.state.name,
       description: this.state.description,
       access: this.state.access,
       type: this.state.type
-    };
-    this.props.successAction(newGroup);
+    }).then(group => {
+      this.setState({ errors: {} });
+      this.props.successAction(group);
+    }).fail(err => {
+      this.setState({ errors: err });
+    })
   },
 
   componentWillReceiveProps: function (props) {
