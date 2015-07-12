@@ -1,32 +1,30 @@
 /**
- * Created by Damien on 08/07/2015.
+ * Created by Damien on 12/07/2015.
  */
-
 
 import _ from 'lodash';
 
 import Store from '../flux/Store';
 var notification = require("../notification/notification");
 
-
 const socket = window.io(document.location.host);
 
-
-var _ArticleData = {
-  name:""
+var _GroupData = {
+    name:""
 };
 
-var articleStore = _.assign(Store, {
+
+var groupStore = _.assign(Store, {
     connect: function (){
 
         console.log("connect");
         socket.on("connect", function () {
             console.log("connect");
         });
-        
-        socket.on('new_article', function (msg) {
-            console.log("new_article", msg);
-            notification.newNotification(msg);
+
+        socket.on('update_groups', function (msg) {
+            console.log("update_groups", msg);
+            notification.groupUpdate(msg);
 
         });
     },
@@ -34,12 +32,10 @@ var articleStore = _.assign(Store, {
         socket.disconnect();
     },
 
-    newArticle:function(title){
-        _ArticleData.name = title;
-        socket.emit("new_article", _ArticleData.name);
+    groupUpdate:function(title){
+        _GroupData.name = title;
+        socket.emit("update_groups", _GroupData.name);
     }
 });
 
-
-
-export default articleStore;
+export default groupStore;

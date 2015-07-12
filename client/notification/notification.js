@@ -8,6 +8,7 @@ import i18n from '../../commun/local';
 
 /**
  * notification news
+ * @param message - the title of the new article who has been add
  */
 module.exports.newNotification = function(message){
 
@@ -18,21 +19,15 @@ module.exports.newNotification = function(message){
 
 
 /**
- * notification groups (en cour)
- * @param {int} id_group - the id of the group who is updated
+ * notification groups
+ * @param  message - the new element who has been add to the group
  */
 
-module.exports.groupUpdate = function(id_group) {
-    /*var requet = "SELECT users_id FROM members WHERE groups_id = ?";
-    var data = [id_group];
-    db.query(requet, data, function (error, results, fields) {
-        if (error)console.error(error);
-        if (results.length > 0) {
-            //var clients = io.socket.clients();
-            console.log();
-        }
+module.exports.groupUpdate = function(message) {
+    new Notification(i18n.__n("group_notify_title"),{
+        body:message+i18n.__n("group_notify_msg")
     });
-*/
+
 };
 
 /**

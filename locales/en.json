@@ -51,5 +51,7 @@
   "delete": "Delete",
   "update_news": "Update News",
   "update_user": "Update User",
-  "news_notify": "New article"
+  "news_notify": "New article",
+  "group_notify_title": "A group has been updated",
+  "group_notify_msg": " has been add"
 }
