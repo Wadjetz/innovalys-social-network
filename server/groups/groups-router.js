@@ -10,6 +10,7 @@ var UserModel    = require('../user/user-model');
 var MessagesModel = require('./messages-model');
 var GroupsFilesModel = require('./files-model');
 var RoomsModel = require('../chat/rooms-model');
+var GroupsValidator = require('../../commun/groups-validator');
 validate.moment = moment;
 
 /**
@@ -58,31 +59,18 @@ function getMyGroupsAction (req, res) {
 router.get('/my-groups', auth.withUser, getMyGroupsAction);
 
 function groupsValidator(req, res, next) {
-  var newGroup = {
+  GroupsValidator.groupValidate({
     name: req.body.name,
     description: req.body.description || "",
     status: req.body.status || 'open',
     access: req.body.access || 'private',
     type: req.body.type || 'project'
-  };
-
-  // TOTO Move this in commun module
-  var constraints = {
-    name: {
-      presence: true,
-    }
-  };
-
-  var validatorRes = validate(newGroup, constraints);
-  if (validatorRes === undefined) {
+  }).then(function (group) {
     req._new_group = newGroup;
     next();
-  } else {
-    res.status(400).json({
-      error: true,
-      message: validatorRes
-    });
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 
 /**
