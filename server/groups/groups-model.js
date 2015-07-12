@@ -90,10 +90,23 @@ module.exports.findMyGroups = function (user) {
     "SELECT groups.*, members.status AS members_status " +
     "FROM groups " +
     "JOIN members ON members.groups_id = groups.id " +
-    "WHERE members.users_id = ? ;",
+    "WHERE members.status = 'accepted' AND members.users_id = ? ;",
     [user.id]
   );
 };
+
+/**
+ * Is user into group
+ */
+module.exports.inGroup = function (slug, user) {
+  return db.findOne(
+    "SELECT groups.*, members.status AS members_status " +
+    "FROM groups " +
+    "JOIN members ON members.groups_id = groups.id " +
+    "WHERE members.status = 'accepted' AND members.users_id = ? AND groups.slug = ? ; ",
+    [user.id, slug]
+  );
+}
 
 module.exports.groupsStatus = {
   open: 'open',

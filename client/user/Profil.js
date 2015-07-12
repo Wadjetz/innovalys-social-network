@@ -15,6 +15,7 @@ export default React.createClass({
         <Row>
           <Col xs={8}>
             <h2>{profil.first_name} {profil.last_name}</h2>
+            <p>{profil.description}</p>
           </Col>
         </Row>
       </Grid>

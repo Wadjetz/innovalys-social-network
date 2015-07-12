@@ -141,3 +141,22 @@ module.exports.groupsWithRoleOrOwner = function (roles) {
     }
   };
 };
+
+module.exports.inGroups = function (req, res, next) {
+  if (isAuth(req.session.email)) {
+    console.log("inGroups", req.params.slug);
+    UserModel.findOneByEmail(req.session.email).then(function (user) {
+      GroupsModel.inGroup(req.params.slug, user).then(function (result) {
+        console.log("inGroup result", result);
+        req.$user = user;
+        next();
+      }).fail(function (err) {
+        res.status(404).json(err);
+      });
+    }).fail(function (err) {
+      res.status(500).json(err);
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};

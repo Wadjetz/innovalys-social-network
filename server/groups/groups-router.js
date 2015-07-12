@@ -41,7 +41,7 @@ function getBySlugAction (req, res) {
     res.sendStatus(404);
   });
 }
-router.get('/by-slug/:slug', auth.withUser, getBySlugAction);
+router.get('/by-slug/:slug', auth.inGroups, getBySlugAction);
 
 /**
 GET /groups/my-groups
@@ -123,13 +123,15 @@ function postCreateGroupeAction(req, res) {
 }
 router.post('/', groupsValidator, auth.withUser, postCreateGroupeAction);
 
+/**
+ * PUT /groups/:slug
+ * Update group
+ */
 function updateGroupAction (req, res) {
   var user = req.$user;
   var group = req.$group;
   var newGroup = req._new_group;
   var slug = req.params.slug;
-  console.log(group);
-  console.log(newGroup);
   GroupsModel.update(group.id, newGroup).then(function (result) {
     return GroupsModel.findOneBySlug(slug);
   }).then(function (updatedGroup) {

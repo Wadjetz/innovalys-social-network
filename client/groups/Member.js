@@ -22,30 +22,13 @@ export default React.createClass({
           </p>
           <If condition={this.props.isAccepted === false}>
             <p>
-              <Button onClick={this.accept}>Accept</Button>
-              <Button onClick={this.refuse}>Refuse</Button>
+              <Button onClick={this.props.accept}>Accept</Button>
+              <Button onClick={this.props.refuse}>Refuse</Button>
             </p>
           </If> 
         </div>
       </div>
     );
-  },
-
-  accept: function () {
-    GroupsService.acceptMember(this.props.memeber.id, this.props.group.id).then(result => {
-      console.log("accept ok", result);
-    }).fail(err => {
-      console.log("accept err", err);
-    });
-  },
-
-  refuse: function () {
-    GroupsService.refuseMember(this.props.memeber.id, this.props.group.id).then(result => {
-      console.log("refuse ok", result);
-    }).fail(err => {
-      console.log("refuse err", err);
-    });
-    console.log("refuse");
   }
 
 });

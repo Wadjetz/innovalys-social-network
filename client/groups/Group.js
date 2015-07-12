@@ -42,7 +42,13 @@ export default React.createClass({
     );
 
     let newMembersView = this.state.newMembers.map(memeber =>
-      <Member memeber={memeber} group={this.state.group} key={memeber.id} isAccepted={false} />
+      <Member
+        memeber={memeber}
+        group={this.state.group}
+        key={memeber.id}
+        accept={this.accept(this.state.group, memeber)}
+        refuse={this.refuse(this.state.group, memeber)}
+        isAccepted={false} />
     );
 
     return (
@@ -261,21 +267,29 @@ export default React.createClass({
   accept: function (group, memeber) {
     return function (e) {
       GroupsService.acceptMember(memeber.id, group.id).then(result => {
-        console.log("accept ok", result);
+        this.state.members.push(memeber);
+        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
+        this.setState({
+          members: this.state.members,
+          newMembers: newMembers
+        });
       }).fail(err => {
         console.log("accept err", err);
       });
-    }
+    }.bind(this);
   },
 
   refuse: function (group, memeber) {
     return function (e) {
       GroupsService.refuseMember(memeber.id, group.id).then(result => {
-        console.log("refuse ok", result);
+        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
+        this.setState({
+          newMembers: newMembers
+        });
       }).fail(err => {
         console.log("refuse err", err);
       });
-    }
+    }.bind(this);
   }
 
 });
