@@ -1,6 +1,6 @@
 var Q = require('q');
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
     host     : 'localhost',
     database : 'innovalys',
     user     : 'root',

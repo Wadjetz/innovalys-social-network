@@ -14,9 +14,9 @@ export default React.createClass({
     return (
       <div>
         <div className={ (err.newContent) ? 'form-group has-error' : 'form-group'}>
-            <label className="control-label" htmlFor="content">{ (err.newContent) ? err.newContent : i18n.__n('content')}</label>
-            <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='newContent' valueLink={this.linkState('newContent')} />
-          </div>
+          <label className="control-label" htmlFor="content">{ (err.newContent) ? err.newContent : i18n.__n('content')}</label>
+          <textarea className="form-control" id="content" placeholder={i18n.__n('content')} ref='newContent' valueLink={this.linkState('newContent')} />
+        </div>
         <Button bsStyle='success' onClick={this.successAction}>{i18n.__n('save')}</Button>
       </div>
     );
