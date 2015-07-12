@@ -113,7 +113,7 @@ module.exports.groupsTypes = {
 
 module.exports.update = function (id, group) {
   return db.update(
-    "UPDATE posts SET ? WHERE groups.id = ? ; ",
+    "UPDATE groups SET ? WHERE groups.id = ? ; ",
     [group, id]
   );
 };

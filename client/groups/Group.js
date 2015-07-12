@@ -11,6 +11,7 @@ import FileGroup from './FileGroup';
 import Member from './Member';
 import If from '../utils/If';
 import i18n from '../../commun/local';
+import GroupForm from './GroupForm';
 
 function getMe() {
   return {
@@ -81,6 +82,8 @@ export default React.createClass({
               <TabPane eventKey={4} tab='Parametres'>
                 <If condition={isAuthorized(this.state.me.me, this.state.group)}>
                   <div>
+                    <h2>Update group</h2>
+                    <GroupForm group={this.state.group} successAction={this.updateGroup}/>
                     <h1>Add members</h1>
                     <h1>Delete group</h1>
                     <Button onClick={this.delete} bsStyle='danger'>{i18n.__n('delete')}</Button>
@@ -162,6 +165,19 @@ export default React.createClass({
 
   contextTypes: {
     router: React.PropTypes.func
+  },
+
+  updateGroup: function (group) {
+    console.log("updateGroup", group);
+    let slug = this.context.router.getCurrentParams().slug;
+    GroupsService.update(slug, group).then(updatedGroup => {
+      this.setState({
+        group: updatedGroup
+      });
+    }).fail(err => {
+      if (err.status === 401) { this.context.router.transitionTo('login'); }
+      console.log("updateGroup err", err);
+    });
   },
 
   componentWillMount: function () {

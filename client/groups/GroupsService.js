@@ -159,6 +159,16 @@ class GroupsService {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
   }
+
+  update(slug, group) {
+    return Qajax({
+      url: `${this.base_url}/groups/${slug}`,
+      method: 'PUT',
+      data: group
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
 }
 
 export default new GroupsService(BASE_URL);

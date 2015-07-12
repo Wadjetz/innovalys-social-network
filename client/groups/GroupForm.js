@@ -17,7 +17,7 @@ export default React.createClass({
           <label className="control-label" htmlFor="name">{ (err.name) ? err.name : i18n.__n('name')}</label>
           <input type="text" className="form-control" id="name" placeholder={i18n.__n('name')} ref='name' valueLink={this.linkState('name')} />
         </div>
-        <Input type='select' label={i18n.__n('accesses')} placeholder={i18n.__n('accesses')} valueLink={this.linkState('access')}>
+        <Input type='select' label={i18n.__n('accesses')} placeholder={i18n.__n('accesses')} ref="access" valueLink={this.linkState('access')}>
           {this.state.accesses.map((access, i) => {
             if (access === this.state.access) {
               return <option selected value={access} key={i}>{access}</option>
@@ -26,7 +26,7 @@ export default React.createClass({
             }
           })}
         </Input>
-        <Input type='select' label={i18n.__n('types')} placeholder={i18n.__n('types')} valueLink={this.linkState('type')}>
+        <Input type='select' label={i18n.__n('types')} placeholder={i18n.__n('types')} ref="type"  valueLink={this.linkState('type')}>
           {this.state.types.map((type, i) => {
             if (type === this.state.type) {
               return <option selected value={type} key={i}>{type}</option>

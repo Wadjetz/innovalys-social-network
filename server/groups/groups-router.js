@@ -66,7 +66,7 @@ function groupsValidator(req, res, next) {
     access: req.body.access || 'private',
     type: req.body.type || 'project'
   }).then(function (group) {
-    req._new_group = newGroup;
+    req._new_group = group;
     next();
   }).fail(function (err) {
     res.status(400).json(err);
@@ -122,6 +122,23 @@ function postCreateGroupeAction(req, res) {
   });
 }
 router.post('/', groupsValidator, auth.withUser, postCreateGroupeAction);
+
+function updateGroupAction (req, res) {
+  var user = req.$user;
+  var group = req.$group;
+  var newGroup = req._new_group;
+  var slug = req.params.slug;
+  console.log(group);
+  console.log(newGroup);
+  GroupsModel.update(group.id, newGroup).then(function (result) {
+    return GroupsModel.findOneBySlug(slug);
+  }).then(function (updatedGroup) {
+    res.json(updatedGroup);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.put('/:slug', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), groupsValidator, updateGroupAction);
 
 /*
 GET /groups/types
