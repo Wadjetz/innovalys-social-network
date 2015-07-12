@@ -7,7 +7,7 @@ import utils from'../../commun/utils';
 import If from '../utils/If';
 import i18n from '../../commun/local';
 import NewsValidator from '../../commun/news-validator';
-import articleStore from './articleStore'
+import articleStore from './articleStore.js'
 
 
 export default React.createClass({

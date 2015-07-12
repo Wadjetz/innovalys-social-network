@@ -10,7 +10,8 @@ var notification = require("../notification/notification");
 const socket = window.io(document.location.host);
 
 var _GroupData = {
-    name:""
+    name:"",
+    slug:""
 };
 
 
@@ -32,9 +33,10 @@ var groupStore = _.assign(Store, {
         socket.disconnect();
     },
 
-    groupUpdate:function(title){
+    groupUpdate:function(title, slug){
         _GroupData.name = title;
-        socket.emit("update_groups", _GroupData.name);
+        _GroupData.slug = slug;
+        socket.emit("update_groups", _GroupData);
     }
 });
 

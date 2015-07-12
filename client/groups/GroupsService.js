@@ -1,4 +1,5 @@
 import Qajax from 'qajax'
+import groupStore from './groupStore.js'
 
 const BASE_URL = document.location.origin;
 
@@ -65,6 +66,9 @@ class GroupsService {
   }
 
   createMessageGroup(slug, message) {
+      groupStore.connect();
+      groupStore.groupUpdate(message, slug);
+      groupStore.disconnect();
     return Qajax({
       url: this.base_url + "/groups/messages/" + slug,
       method: 'POST',

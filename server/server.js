@@ -26,6 +26,8 @@ var RoomsModel = require('./chat/rooms-model');
 
 
 var notificationArticle = require("./notification/notificationArticle");
+var notificationGroup = require("./notification/notificationGroup");
+
 
 // Config
 var app  = express();
@@ -102,7 +104,7 @@ chatSession(io, cookieParser, sessionStore);
 chatAuth(io);
 chat(io);
 notificationArticle(io);
-
+notificationGroup(io);
 
 http.listen(config.PORT, function(){
   log.info('listening on ' + config.PORT);
