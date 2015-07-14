@@ -5,9 +5,34 @@ import ArticlesService from '../articles/ArticlesService';
 import AppActions from '../app/AppActions';
 import i18n from '../../commun/local';
 
-export default React.createClass({
-  displayName: "AdminNews",
-  render: function () {
+/**
+ * Admin News components
+ */
+export default class AdminNews extends React.Component {
+  /**
+   * Call ArticlesService for find All news
+   * @param  {object} props Props
+   */
+  constructor(props) {
+    super(props);
+    ArticlesService.findAll().then(articles => {
+      this.setState({
+        articles: articles
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+    });
+
+    this.state = {
+      articles: []
+    };
+  }
+
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     let articlesView = this.state.articles.map(article => {
       return (
         <Panel key={article.id}>
@@ -30,9 +55,14 @@ export default React.createClass({
         </Row>
       </Grid>
     );
-  },
+  }
 
-  deleteNews: function (article) {
+  /**
+   * Delete news Handler
+   * @param  {object} article Article
+   * @return {Function}         Event handler with article closure
+   */
+  deleteNews (article) {
     return function (e) {
       ArticlesService.delete(article).then(result => {
         if(result.delete > 0) {
@@ -47,22 +77,5 @@ export default React.createClass({
         console.log(err);
       });
     }.bind(this);
-  },
-
-  getInitialState: function () {
-    return {
-      articles: []
-    };
-  },
-
-  componentDidMount: function () {
-    ArticlesService.findAll().then(articles => {
-      this.setState({
-        articles: articles
-      });
-    }, err => {
-      if (err.status === 401) { AppActions.unauthorized(); }
-    });
   }
-
-});
+}

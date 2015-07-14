@@ -1,15 +1,14 @@
-import Qajax from 'qajax'
-
-const BASE_URL = document.location.origin;
+import Qajax from 'qajax';
+import { BASE_URL } from '../conf';
 
 class CommentsService {
-  constructor(base_url) {
-    this.base_url = base_url;
+  constructor(url) {
+    this.url = url;
   }
 
   create(comment) {
     return Qajax({
-      url: `${this.base_url}/comments`,
+      url: `${this.url}/comments`,
       method: 'POST',
       data: comment
     })
@@ -19,7 +18,7 @@ class CommentsService {
 
   update(id, comment) {
     return Qajax({
-      url: `${this.base_url}/comments/${id}`,
+      url: `${this.url}/comments/${id}`,
       method: 'PUT',
       data: comment
     })
@@ -29,7 +28,7 @@ class CommentsService {
 
   delete(id) {
     return Qajax({
-      url: `${this.base_url}/comments/${id}`,
+      url: `${this.url}/comments/${id}`,
       method: 'DELETE'
     })
     .then(Qajax.filterSuccess)
@@ -38,7 +37,7 @@ class CommentsService {
 
   getAllBySlug(slug) {
     return Qajax({
-      url: `${this.base_url}/comments/news/${slug}`,
+      url: `${this.url}/comments/news/${slug}`,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)

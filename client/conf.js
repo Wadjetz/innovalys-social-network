@@ -1,4 +1,9 @@
+/**
+ * App config
+ */
 
-module.exports = {
-    baseUrl: document.location.origin
-};
+/**
+ * Api base url
+ * @type {string}
+ */
+export const BASE_URL = document.location.origin;

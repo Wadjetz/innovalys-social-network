@@ -1,0 +1,4 @@
+{
+  "source": "./client",
+  "destination": "./server/public/doc-client"
+}
