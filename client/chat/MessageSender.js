@@ -1,8 +1,8 @@
-import React from 'react/addons'
-import Bootstrap, { Row, Col, Input, Button } from 'react-bootstrap'
-import ChatActions from './ChatActions'
-import ChatStore from './ChatStore'
-import i18n from '../../commun/local'
+import React from 'react/addons';
+import Bootstrap, { Row, Col, Input, Button } from 'react-bootstrap';
+import ChatActions from './ChatActions';
+import ChatStore from './ChatStore';
+import i18n from '../../commun/local';
 
 const KEY_ENTER = 13;
 

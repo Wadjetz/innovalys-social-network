@@ -1,17 +1,22 @@
-import React from 'react'
-import Router, { Link } from 'react-router'
-import Bootstrap, { Label, Button } from 'react-bootstrap'
-import moment from 'moment'
-import markd, { markdown } from 'markdown'
-import If from '../utils/If'
-import i18n from '../../commun/local'
+import React from 'react';
+import Router, { Link } from 'react-router';
+import Bootstrap, { Label, Button } from 'react-bootstrap';
+import moment from 'moment';
+import markd, { markdown } from 'markdown';
+import If from '../utils/If';
+import i18n from '../../commun/local';
 
-
-export default React.createClass({
-  render: function() {
+/**
+ * Group components
+ */
+export default class GroupView extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     let group = this.props.group;
     let isJoin = this.props.isJoin;
-    console.log(isJoin);
     return (
       <div className="thumbnail">
         <If condition={isJoin === true}>
@@ -28,4 +33,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

@@ -4,9 +4,15 @@ import Router, { Link, Navigation } from 'react-router';
 import i18n from '../../commun/local';
 import ChatActions from '../chat/ChatActions';
 
-export default React.createClass({
-  displayName: "User",
-  render: function () {
+/**
+ * User components
+ */
+export default class User extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     let user = this.props.user;
     let connect = (user.status_connection == 'online')
                   ? <Label bsStyle='success'>online</Label>
@@ -31,10 +37,9 @@ export default React.createClass({
         </div>
       </div>
     );
-  },
-
-  chatRoom: function () {
-    ChatActions.joinUserRoom(this.props.user);
   }
 
-});
+  chatRoom () {
+    ChatActions.joinUserRoom(this.props.user);
+  }
+}

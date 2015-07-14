@@ -2,8 +2,15 @@ import React from 'react';
 import Bootstrap, { Label } from 'react-bootstrap';
 import moment from 'moment';
 
-export default React.createClass({
-  render: function () {
+/**
+ * MessageGroup components
+ */
+export default class MessageGroup extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     let message = this.props.message;
     return (
       <div className="media">
@@ -21,4 +28,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

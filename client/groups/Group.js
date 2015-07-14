@@ -12,6 +12,7 @@ import Member from './Member';
 import If from '../utils/If';
 import i18n from '../../commun/local';
 import GroupForm from './GroupForm';
+import GroupMessageForm from './GroupMessageForm';
 
 function getMe() {
   return {
@@ -59,6 +60,7 @@ export default React.createClass({
               <TabPane eventKey={1} tab='Messages'>
                 {messagesView}
                 <h4>{i18n.__n('create_message')}</h4>
+                  <GroupMessageForm />
                   <Input
                       type='textarea'
                       placeholder='Content'

@@ -11,23 +11,33 @@ const roomsStyle = {
   overflowY: 'auto'
 };
 
-export default React.createClass({
-  displayName: "ChatRoomsList",
-  render: function () {
-    let roomsView = this.props.rooms.map((room, i) =>
-      <div key={room.id} onClick={this.handleSwitchRoom(room)}>{room.name}</div>
-    );
-
+/**
+ * Chat Rooms List components
+ */
+export default class ChatRoomsList extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render () {
+    let roomsView = this.props.rooms.map((room, i) => {
+      return (<div className="chat-room" key={room.id} onClick={this.handleSwitchRoom(room)}>{room.name}</div>);
+    });
     return (
       <div style={roomsStyle}>
         {roomsView}
       </div>
     );
-  },
+  }
 
-  handleSwitchRoom: function (room) {
+  /**
+   * Handle Switch Room
+   * @param  {string} room Room Name
+   * @return {void}
+   */
+  handleSwitchRoom(room) {
     return function () {
       ChatActions.switchRoom(room.name);
     };
   }
-});
+}
