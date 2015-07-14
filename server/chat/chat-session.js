@@ -1,6 +1,15 @@
-var UserModel = require('../user/user-model');
+/** Chat Session
+ * @module server/chat/chat-session
+ */
 var config = require('../config/config');
 
+/**
+ * Chat session extract and config
+ * @param  {Server} io           Server IO
+ * @param  {CookieParser} cookieParser Parse cookie object
+ * @param  {SessionStore} sessionStore Session Store object
+ * @return {void}
+ */
 module.exports = function(io, cookieParser, sessionStore) {
   io.use(function(socket, next) {
     var request = socket.request;
@@ -38,4 +47,4 @@ module.exports = function(io, cookieParser, sessionStore) {
       });
     });
   });
-}
+};

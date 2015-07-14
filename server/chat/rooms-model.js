@@ -1,6 +1,13 @@
+/** Rooms Model
+ * @module server/chat/rooms-model
+ */
 var db = require('../config/database');
-var Q = require('q');
 
+/**
+ * Find all my rooms
+ * @param  {User} user User Object
+ * @return {promise}      List of rooms
+ */
 module.exports.findAll = function (user) {
   return db.findAll(
     "SELECT rooms.* " +
@@ -15,6 +22,11 @@ module.exports.findAll = function (user) {
   );
 };
 
+/**
+ * Create new chat room
+ * @param  {Room} room Chat room object
+ * @return {promise}      InsertResult
+ */
 module.exports.create = function (room) {
   return db.insert(
     "INSERT INTO rooms SET ? ;",
@@ -22,8 +34,10 @@ module.exports.create = function (room) {
   );
 };
 
-
-
+/**
+ * Add user into room
+ * @param {User} user User object
+ */
 module.exports.addUser = function (user) {
   return db.insert(
     "INSERT INTO rooms_users SET ? ;",
@@ -31,6 +45,11 @@ module.exports.addUser = function (user) {
   );
 };
 
+/**
+ * Find chat room by id
+ * @param  {number} id Room Id
+ * @return {promise}    Room object
+ */
 module.exports.findById = function (id) {
   return db.findOne(
     "SELECT * FROM rooms WHERE rooms.id = ? ; ",
@@ -38,6 +57,11 @@ module.exports.findById = function (id) {
   );
 };
 
+/**
+ * Find chat room by name
+ * @param  {string} name Room name
+ * @return {promise}      Room object
+ */
 module.exports.findOneByName = function (name) {
   return db.findOne(
     "SELECT * FROM rooms WHERE rooms.name = ? ; ",
@@ -45,6 +69,11 @@ module.exports.findOneByName = function (name) {
   );
 };
 
+/**
+ * Delete chat room
+ * @param  {number} id Room Id
+ * @return {promise}    DeleteResult
+ */
 module.exports.delete = function (id) {
   return db.delete(
     "DELETE FROM rooms WHERE rooms.id = ? ; ",

@@ -1,5 +1,12 @@
+/** Chat Model
+ * @module server/chat/messages-model
+ */
 var db = require('../config/database');
 
+/**
+ * Build Select SQL Query for users table
+ * @return {string} SQL Query
+ */
 function makeSqlUserSelect() {
   return " " +
     "users.role, " +
@@ -11,8 +18,10 @@ function makeSqlUserSelect() {
 }
 
 /**
-Find all news by page
-*/
+ * Find all news by page
+ * @param  {number} page  Page
+ * @return {promise}      list of chat messages
+ */
 module.exports.getAll = function (page) {
   return db.findAll(
     "SELECT messages.*, " +
@@ -24,8 +33,10 @@ module.exports.getAll = function (page) {
 };
 
 /**
-Find one message by id
-*/
+ * Find one message by id
+ * @param  {number} id  Message id
+ * @return {promise}    Message
+ */
 module.exports.getById = function (id) {
   return db.findOne(
     "SELECT messages.*, " +
@@ -35,7 +46,11 @@ module.exports.getById = function (id) {
   );
 };
 
-
+/**
+ * Find Room By Id
+ * @param  {number} roomId Room Id
+ * @return {promise}       List of chat messages
+ */
 module.exports.findByRoomId = function (roomId) {
   return db.findAll(
     "SELECT messages.*, " +
@@ -48,6 +63,11 @@ module.exports.findByRoomId = function (roomId) {
   );
 };
 
+/**
+ * Find all room by name
+ * @param  {string} roomName Room Name
+ * @return {promise}         List of rooms
+ */
 module.exports.findAllByRoomName = function (roomName) {
   return db.findAll(
     "SELECT messages.*, " +
@@ -61,8 +81,10 @@ module.exports.findAllByRoomName = function (roomName) {
 };
 
 /**
-Create message
-*/
+ * Create new chat message
+ * @param  {object} message Message object
+ * @return {promise}        Insert result object
+ */
 module.exports.create = function (message) {
   return db.insert(
     "INSERT INTO messages SET ? ; ",

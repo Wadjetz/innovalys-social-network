@@ -1,3 +1,6 @@
+/** Document File Router
+ * @module server/groups/files-router
+ */
 var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
@@ -8,37 +11,38 @@ var GroupsFilesModel = require('./files-model');
 validate.moment = moment;
 
 /**
-POST /groups/files/:slug
-Upload files for groups
-*/
+ * Upload files for groups
+ * POST /groups/files/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 var uploadFile = function (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
   var file = req.files.file;
   if (file) {
     log.debug(req.files);
-    GroupsModel.findOneBySlug(slug)
-      .then(function (group) {
-        var groupFile = {
-          name: file.originalname,
-          mimetype: file.mimetype,
-          extension: file.extension,
-          size: file.size,
-          path: file.path,
-          groups_id: group.id,
-          users_id: user.id
-        };
-        GroupsFilesModel.create(groupFile).then(function (createdId) {
-          return GroupsFilesModel.findById(createdId);
-        }).then(function (groupfile) {
-          res.json(groupfile);
-        }).fail(function (err) {
-          res.status(500).json(err);
-        });
-      })
-      .fail(function (err) {
-        res.status(404).json(err);
+    GroupsModel.findOneBySlug(slug).then(function (group) {
+      var groupFile = {
+        name: file.originalname,
+        mimetype: file.mimetype,
+        extension: file.extension,
+        size: file.size,
+        path: file.path,
+        groups_id: group.id,
+        users_id: user.id
+      };
+      GroupsFilesModel.create(groupFile).then(function (createdId) {
+        return GroupsFilesModel.findById(createdId);
+      }).then(function (groupfile) {
+        res.json(groupfile);
+      }).fail(function (err) {
+        res.status(500).json(err);
       });
+    }).fail(function (err) {
+      res.status(404).json(err);
+    });
   } else {
     res.status(400).json({
       error: "file required"
@@ -48,10 +52,13 @@ var uploadFile = function (req, res) {
 router.post('/:slug', auth.withUser, uploadFile);
 
 /**
-Find all files group by slug
-*/
+ * Find all files group by slug
+ * GET /groups/files/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getAllGroupBySlugAction (req, res) {
-  var user = req.$user;
   var slug = req.params.slug;
   GroupsFilesModel.findAllByGroupSlug(slug)
     .then(function (file) {
@@ -60,7 +67,7 @@ function getAllGroupBySlugAction (req, res) {
     .fail(function (err) {
       res.status(404).json(err);
     });
-};
+}
 router.get('/:slug', auth.withUser, getAllGroupBySlugAction);
 
 module.exports = router;

@@ -7,8 +7,9 @@
     "test": "mocha",
     "js-build": "browserify -d client/main.js -t [ babelify --sourceMapRelative .] --outfile server/public/main.js",
     "js-watch": "watchify -d client/main.js -t [ babelify --sourceMapRelative .] --outfile server/public/main.js",
+    "js-doc": "jsdoc -d server/public/doc server/chat/* server/comments/* server/config/* server/groups/* server/news/* server/user/* server/server.js",
     "watch": "npm run js-watch",
-    "build": "npm run js-build && jsdoc server/chat/* server/comments/* server/config/* server/groups/* server/news/* server/user/* server/server.js"
+    "build": "npm run js-build & npm run js-doc"
   },
   "repository": {
     "type": "git",

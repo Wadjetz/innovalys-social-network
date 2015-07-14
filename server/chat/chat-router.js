@@ -1,12 +1,17 @@
+/** Chat Router
+ * @module server/chat/chat-router
+ */
 var router = require("express").Router();
-var UserModel = require('../user/user-model');
 var MessagesModel = require('./messages-model');
 var auth = require('../config/auth');
 
 /**
-GET /chat/global/history
-Get chat history
-*/
+ * Get chat history
+ * GET /chat/global/history
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getAllChatMessagesAction (req, res) {
   // TODO implement pagination
   MessagesModel.getAll(0)

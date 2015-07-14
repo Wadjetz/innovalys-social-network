@@ -1,5 +1,12 @@
+/** User Model
+ * @module server/user/user-model
+ */
 var db = require('../config/database');
 
+/**
+ * User's status connection
+ * @type {Object}
+ */
 module.exports.status_connection = {
   OFFLINE: "offline",
   ONLINE: "online",
@@ -7,6 +14,10 @@ module.exports.status_connection = {
   ABSENT: "absent"
 };
 
+/**
+ * User's roles
+ * @type {Object}
+ */
 module.exports.roles = {
   ADMIN: "admin",
   RH: "rh",
@@ -14,6 +25,10 @@ module.exports.roles = {
   USER: "user"
 };
 
+/**
+ * Generate Select user SQL query
+ * @return {string} SQL query
+ */
 function makeSqlUserSelect() {
   return " " +
     "users.id, " +
@@ -31,6 +46,11 @@ function makeSqlUserSelect() {
     "users.last_connection ";
 }
 
+/**
+ * Find all users
+ * @param  {User} user User object
+ * @return {promise}      List of users
+ */
 module.exports.findAll = function (user) {
   return db.findAll(
     "SELECT " +
@@ -42,6 +62,11 @@ module.exports.findAll = function (user) {
   );
 };
 
+/**
+ * Find users by room id
+ * @param  {number} roomId Chat Room id
+ * @return {promise}        List of user
+ */
 module.exports.findByRoomId = function (roomId) {
   return db.findAll(
     "SELECT " +
@@ -53,6 +78,11 @@ module.exports.findByRoomId = function (roomId) {
   );
 };
 
+/**
+ * Find user by id
+ * @param  {number} id User id
+ * @return {promise}    User object
+ */
 module.exports.findOneById = function (id) {
   return db.findOne(
     "SELECT " +
@@ -62,6 +92,11 @@ module.exports.findOneById = function (id) {
   );
 };
 
+/**
+ * Find user by email
+ * @param  {string} email Email
+ * @return {promise}       User object
+ */
 module.exports.findOneByEmail = function (email) {
   return db.findOne(
     "SELECT * FROM users WHERE email = ? ;",
@@ -69,6 +104,11 @@ module.exports.findOneByEmail = function (email) {
   );
 };
 
+/**
+ * Create new user
+ * @param  {User} user User object
+ * @return {promise}      Insert result
+ */
 module.exports.create = function (user) {
   return db.insert(
     "INSERT INTO users SET ? ;",
@@ -76,6 +116,12 @@ module.exports.create = function (user) {
   );
 };
 
+/**
+ * Change user's password
+ * @param  {User} user        User object
+ * @param  {string} newPassword new password
+ * @return {promise}             Update result
+ */
 module.exports.changePassword = function (user, newPassword) {
   return db.update(
     "UPDATE users SET ? WHERE users.id = ?",
@@ -83,6 +129,11 @@ module.exports.changePassword = function (user, newPassword) {
   );
 };
 
+/**
+ * User connection
+ * @param  {number} id User id
+ * @return {promise}    Update result
+ */
 module.exports.connect = function (id) {
   return db.update(
     "UPDATE users SET users.status_connection = 'online' WHERE users.id = ? ; ",
@@ -90,6 +141,11 @@ module.exports.connect = function (id) {
   );
 };
 
+/**
+ * User deconnection
+ * @param  {number} id User id
+ * @return {promise}    Update result
+ */
 module.exports.deconnect = function (id) {
   return db.update(
     "UPDATE users SET users.status_connection = 'offline' WHERE users.id = ? ; ",
@@ -99,6 +155,9 @@ module.exports.deconnect = function (id) {
 
 /**
  * Update users
+ * @param  {number} id   User id
+ * @param  {User} user User object
+ * @return {promise}      Update result
  */
 module.exports.update = function (id, user) {
   return db.update(
@@ -109,6 +168,8 @@ module.exports.update = function (id, user) {
 
 /**
  * Delete users
+ * @param  {number} id User id
+ * @return {promise}    Delete result
  */
 module.exports.delete = function (id) {
   return db.delete(
@@ -116,4 +177,3 @@ module.exports.delete = function (id) {
     [id]
   );
 };
-

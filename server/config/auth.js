@@ -1,9 +1,17 @@
+/** Auth middlewares
+ * @module server/config/auth
+ */
 var Q = require('q');
 var UserModel = require('../user/user-model');
 var GroupsModel = require('../groups/groups-model');
 var CommentsModel = require('../comments/comments-model');
 
-function isAuth(email, callback) {
+/**
+ * Check if session variable email exist
+ * @param  {string}  email Email
+ * @return {Boolean}       If email session variable exist
+ */
+function isAuth(email) {
   if (email === undefined) {
     return false;
   } else if (email === "") {
@@ -13,6 +21,12 @@ function isAuth(email, callback) {
   }
 }
 
+/**
+ * Check user's roles
+ * @param  {Array} roles List of user's roles
+ * @param  {User} user  User object
+ * @return {promise}       result of checking user's roles
+ */
 function checkRoles(roles, user) {
   var deferred = Q.defer();
   var flag = roles.reduce(function (acc, i) {
@@ -31,8 +45,12 @@ function checkRoles(roles, user) {
 }
 
 /**
-Auth without user
-*/
+ * Simple auth without user
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 module.exports.auth = function (req, res, next) {
   if(isAuth(req.session.email)) {
     next();
@@ -42,14 +60,19 @@ module.exports.auth = function (req, res, next) {
 };
 
 /**
-Auth with user
-*/
+ * Auth with user
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 module.exports.withUser = function (req, res, next) {
   if (isAuth(req.session.email)) {
     UserModel.findOneByEmail(req.session.email).then(function (user) {
       req.$user = user;
       next();
     }).fail(function (err) {
+      console.log(err);
       res.sendStatus(401);
     });
   } else {
@@ -58,8 +81,10 @@ module.exports.withUser = function (req, res, next) {
 };
 
 /**
-Auth with users roles
-*/
+ * Auth with users roles closure
+ * @param  {Array} roles List of user's roles
+ * @return {Function}       Middleware with roles closure
+ */
 module.exports.withRole = function (roles) {
   return function authorized(req, res, next) {
     if (isAuth(req.session.email)) {
@@ -68,6 +93,7 @@ module.exports.withRole = function (roles) {
           req.$user = user;
           next();
         }).fail(function (err) {
+          console.log(err);
           res.sendStatus(403);
         });
       }).fail(function (err) {
@@ -81,6 +107,8 @@ module.exports.withRole = function (roles) {
 
 /**
  * Auth comment with role or owner
+ * @param  {Array} roles List of user's roles
+ * @return {Function}       Middleware with roles closure
  */
 module.exports.commentWithRoleOrOwner = function (roles) {
   return function authorized(req, res, next) {
@@ -95,6 +123,7 @@ module.exports.commentWithRoleOrOwner = function (roles) {
             checkRoles(roles, user).then(function () {
               next();
             }).fail(function (err) {
+              console.log(err);
               res.sendStatus(403);
             });
           }
@@ -113,6 +142,8 @@ module.exports.commentWithRoleOrOwner = function (roles) {
 
 /**
  * Auth groups with roles or owner
+ * @param  {Array} roles List of user's roles
+ * @return {Function}       Middleware with roles closure
  */
 module.exports.groupsWithRoleOrOwner = function (roles) {
   return function authorized(req, res, next) {
@@ -127,6 +158,7 @@ module.exports.groupsWithRoleOrOwner = function (roles) {
             checkRoles(roles, user).then(function () {
               next();
             }).fail(function (err) {
+              console.log(err);
               res.sendStatus(403);
             });
           }
@@ -142,6 +174,13 @@ module.exports.groupsWithRoleOrOwner = function (roles) {
   };
 };
 
+/**
+ * Check if user in groups
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 module.exports.inGroups = function (req, res, next) {
   if (isAuth(req.session.email)) {
     console.log("inGroups", req.params.slug);

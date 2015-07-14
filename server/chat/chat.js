@@ -1,20 +1,31 @@
-var log = require('log4js').getLogger();
+/** Chat Module
+ * @module server/chat/chat
+ */
 var MessagesModel = require('./messages-model');
-var GroupsModel = require('../groups/groups-model');
 var UserModel = require('../user/user-model');
 var RoomsModel = require('./rooms-model');
-var config = require('../config/config');
 
+/**
+ * Generate room name
+ * @param  {User} user   User
+ * @param  {User} target User Target
+ * @return {string}      Generated Room Name
+ */
 function makeRoomUserName(user, target) {
   return user.first_name + "_" + user.last_name + "_" + target.first_name + "_" + target.last_name;
 }
 
+/**
+ * Chat Config
+ * @param  {Server} io Server IO
+ * @return {void}
+ */
 module.exports = function(io) {
   io.on('connection', function(socket) {
     UserModel.connect(socket.request.$user.id).then(function (result) {
-      console.log("connect ok", socket.request.$user.email);
+      console.log("connect ok", socket.request.$user.email, "result", result);
     }).fail(function (err) {
-      console.log("connect err", socket.request.$user.email);
+      console.log("connect err", err, socket.request.$user.email);
     });
 
     socket.on('connect', function (msg) {
@@ -23,7 +34,7 @@ module.exports = function(io) {
 
     socket.on('add_user', function (msg) {
       var user = socket.request.$user;
-      console.log("add_user", user.id);
+      console.log("add_user", user.id, "msg", msg);
       socket.room = 'global_chat';
       socket.join(socket.room);
       socket.emit('update_chat', 'SERVER', 'you have connected to global_chat');
@@ -92,7 +103,7 @@ module.exports = function(io) {
           return RoomsModel.addUser({
             rooms_id: room.id,
             users_id: target.id
-          })
+          });
         }).then(function (res) {
           console.log(res);
         });
@@ -101,7 +112,7 @@ module.exports = function(io) {
           RoomsModel.create({
             name: userRoomName
           }).then(function (roomCreatedId) {
-            return RoomsModel.findById(roomCreatedId)
+            return RoomsModel.findById(roomCreatedId);
           }).then(function (room) {
             return RoomsModel.addUser({
               rooms_id: room.id,
@@ -110,14 +121,14 @@ module.exports = function(io) {
               return RoomsModel.addUser({
                 rooms_id: room.id,
                 users_id: target.id
-              })
+              });
             }).then(function (res) {
               console.log(res);
             });
           }).fail(function (err) {
             console.log(err);
             socket.emit('chaterrors', err);
-          })
+          });
         } else {
           console.log(err);
           socket.emit('chaterrors', err);
@@ -132,9 +143,9 @@ module.exports = function(io) {
       socket.broadcast.emit('update_chat', 'SERVER', user.id + ' has disconnected');
       socket.leave(socket.room);
       UserModel.deconnect(socket.request.$user.id).then(function (result) {
-        console.log("deconnect ok", socket.request.$user.email);
+        console.log("deconnect ok", socket.request.$user.email, "result", result);
       }).fail(function (err) {
-        console.log("deconnect err", socket.request.$user.email);
+        console.log("deconnect err", err, socket.request.$user.email);
       });
     });
   });
