@@ -1,3 +1,6 @@
+/** Group Members Router
+ * @module server/groups/members-router
+ */
 var router   = require("express").Router();
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
@@ -6,9 +9,12 @@ var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
 
 /**
-POST /groups/members/join/:slug
-Join group
-*/
+ * Join group
+ * POST /groups/members/join/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function postJoinGroupeAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
@@ -32,7 +38,7 @@ function postJoinGroupeAction (req, res) {
       users_id: user.id,
       groups_id: group.id
     });
-  }).then(function (id) {
+  }).then(function () {
     res.json({
       "message": "ok"
     });
@@ -50,76 +56,76 @@ function postJoinGroupeAction (req, res) {
 router.post('/join/:slug', auth.withUser, postJoinGroupeAction);
 
 /**
-DELETE /groups/members/join/:slug
-Delete member from groupe
-*/
+ * Delete member from groupe
+ * DELETE /groups/members/join/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function deleteMembersFromGroupAction (req, res) {
   var user = req.$user;
   var slug = req.params.slug;
-  GroupsModel.findOneBySlug(slug)
-    .then(function (group) {
-      return MembersModel.delete(user.id, group.id);
-    })
-    .then(function (result) {
-      res.json({
-        "deleted": result
-      });
-    })
-    .fail(function (err) {
-      res.status(400).json(err);
+  GroupsModel.findOneBySlug(slug).then(function (group) {
+    return MembersModel.delete(user.id, group.id);
+  }).then(function (result) {
+    res.json({
+      "deleted": result
     });
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 router.delete('/join/:slug', auth.withUser, deleteMembersFromGroupAction);
 
 /**
-GET /groups/members/:slug
-Get members by groupe slug
-*/
+ * Get members by groupe slug
+ * GET /groups/members/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getMembersByGroupeSlugAction (req, res) {
-  var user = req.$user;
   var slug = req.params.slug;
-  GroupsModel.findOneBySlug(slug)
-    .then(function (group) {
-      return MembersModel.findByStatus(group.id, "accepted");
-    })
-    .then(function (members) {
-      res.json(members);
-    })
-    .fail(function (err) {
-      res.status(400).json(err);
-    });
+  GroupsModel.findOneBySlug(slug).then(function (group) {
+    return MembersModel.findByStatus(group.id, "accepted");
+  }).then(function (members) {
+    res.json(members);
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 router.get('/:slug', auth.withUser, getMembersByGroupeSlugAction);
 
 /**
-GET /groups/members/pending/:slug
-Get members pending by slug
-*/
+ * Get members pending by slug
+ * GET /groups/members/pending/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getMembersPendingBySlugAction (req, res) {
-  var user = req.$user;
   var slug = req.params.slug;
-  GroupsModel.findOneBySlug(slug)
-    .then(function (group) {
-      return MembersModel.findByStatus(group.id, "pending");
-    })
-    .then(function (members) {
-      res.json(members);
-    })
-    .fail(function (err) {
-      res.status(400).json(err);
-    });
+  GroupsModel.findOneBySlug(slug).then(function (group) {
+    return MembersModel.findByStatus(group.id, "pending");
+  }).then(function (members) {
+    res.json(members);
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 router.get('/pending/:slug', auth.withRole([UserModel.roles.CHEF]), getMembersPendingBySlugAction);
 
 /**
- * PUT /groups/members/accept/:groups_id/:users_id
  * Accept Members
+ * PUT /groups/members/accept/:groups_id/:users_id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function acceptMemberAction (req, res) {
-  var user = req.$user;
   var groups_id = req.params.groups_id;
   var users_id = req.params.users_id;
-  MembersModel.getOneMember(users_id, groups_id).then(function (member) {
+  MembersModel.getOneMember(users_id, groups_id).then(function () {
     return MembersModel.accept(users_id, groups_id);
   }).then(function (result) {
     res.json(result);
@@ -130,14 +136,16 @@ function acceptMemberAction (req, res) {
 router.put('/accept/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), acceptMemberAction);
 
 /**
- * PUT /groups/members/refuse/:groups_id/:users_id
  * Refuse Members
+ * PUT /groups/members/refuse/:groups_id/:users_id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function refuseMemberAction (req, res) {
-  var user = req.$user;
   var groups_id = req.params.groups_id;
   var users_id = req.params.users_id;
-  MembersModel.getOneMember(users_id, groups_id).then(function (member) {
+  MembersModel.getOneMember(users_id, groups_id).then(function () {
     return MembersModel.refuse(users_id, groups_id);
   }).then(function (result) {
     res.json(result);

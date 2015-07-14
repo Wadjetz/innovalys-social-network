@@ -1,3 +1,6 @@
+/** User Router
+ * @module server/user/user-router
+ */
 var router = require("express").Router();
 var passwordHash = require('password-hash');
 var generatePassword = require('password-generator');
@@ -7,17 +10,32 @@ var UserModel = require('./user-model');
 var RoomsModel = require('../chat/rooms-model');
 var auth = require('../config/auth');
 
-router.get('/', auth.withUser, function (req, res) {
+/**
+ * Get user
+ * GET /users
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function getUser(req, res) {
   var user = req.$user;
   UserModel.findAll(user).then(function (users) {
     res.json(users);
   }).fail(function (err) {
     res.status(500).json(err);
   });
-});
+}
+router.get('/', auth.withUser, getUser);
 
+/**
+ * User Validator middleware
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 function userValidator(req, res, next) {
-  var newUser = {
+  UserValidator.userValidate({
     email: req.body.email,
     role: req.body.role,
     first_name: req.body.first_name,
@@ -27,17 +45,22 @@ function userValidator(req, res, next) {
     function: req.body.function,
     description: req.body.description,
     arrival_date: req.body.arrival_date
-  };
-
-  UserValidator.userValidate(newUser).then(function (user) {
-    req._new_user = newUser;
+  }).then(function (user) {
+    req._new_user = user;
     next();
   }).fail(function (err) {
     res.status(400).json(err);
   });
 }
 
-router.post('/signup', userValidator, function(req, res) {
+/**
+ * User Signup
+ * POST /users
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function userSignup (req, res) {
   var newUser = req._new_user;
   var generatedPassword = generatePassword(8, false);
   newUser.password = passwordHash.generate(generatedPassword);
@@ -67,8 +90,16 @@ router.post('/signup', userValidator, function(req, res) {
       res.status(400).json(err);
     }
   });
-});
+}
+router.post('/signup', userValidator, userSignup);
 
+/**
+ * User Login Validator middleware
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 function loginValidator(req, res, next) {
   UserValidator.loginsValidate({
     email: req.body.email,
@@ -87,90 +118,138 @@ function loginValidator(req, res, next) {
 var jsonError = {
   error: "Login ou password invalide"
 };
-
-router.post('/login', loginValidator, function(req, res, next) {
+/**
+ * User Login
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function userLogin(req, res) {
   var login = req._login;
-  UserModel.findOneByEmail(login.email.toLowerCase())
-    .then(function(user) {
-      if (passwordHash.verify(login.password, user.password)) {
-        req.session.email = user.email;
-        req.session.isLogged = true;
-        res.json({
-          message: "Hello"
-        });
-      } else {
-        res.status(400).json(jsonError);
-      }
-    })
-    .fail(function(err) {
+  UserModel.findOneByEmail(login.email.toLowerCase()).then(function(user) {
+    if (passwordHash.verify(login.password, user.password)) {
+      req.session.email = user.email;
+      req.session.isLogged = true;
+      res.json({
+        message: "Hello"
+      });
+    } else {
       res.status(400).json(jsonError);
-    });
-});
+    }
+  }).fail(function(err) {
+    console.log(err);
+    res.status(400).json(jsonError);
+  });
+}
+router.post('/login', loginValidator, userLogin);
 
+/**
+ * User Change Password Validator middleware
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 function changePasswordValidator(req, res, next) {
   UserValidator.changePasswordValidate({
     current_password: req.body.current_password,
     new_password: req.body.new_password
   }).then(function (passwords) {
-    req._newPassword = newPassword;
+    req._newPassword = passwords;
     next();
   }).fail(function (err) {
     res.status(400).json(err);
   });
 }
 
-router.put('/password', changePasswordValidator, auth.withUser, function (req, res) {
+/**
+ * Change user password
+ * PUT /users/password
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function changePassword(req, res) {
   var user = req.$user;
   var newPassword = req._newPassword;
   if (passwordHash.verify(newPassword.current_password, user.password)) {
-    UserModel
-      .changePassword(user, { password: passwordHash.generate(newPassword.new_password) })
-      .then(function (result) {
-        res.json({
-          updated: result
-        });
-      })
-      .fail(function (err) {
-        console.log(err);
-        res.status(400).json(jsonError);
+    UserModel.changePassword(user, { password: passwordHash.generate(newPassword.new_password) }).then(function (result) {
+      res.json({
+        updated: result
       });
+    }).fail(function (err) {
+      console.log(err);
+      res.status(400).json(jsonError);
+    });
   } else {
     res.status(400).json(jsonError);
   }
-});
+}
+router.put('/password', changePasswordValidator, auth.withUser, changePassword);
 
-router.put('/profile', auth.withUser, function (req, res) {
-  var user = req.$user;
+/**
+ * User profile (TODO not finished)
+ * PUT /users/profile
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function userProfil(req, res) {
   var file = req.files.file;
-  fs.rename(__dirname + '/../../' + file.path, './public/img/profiles/', function(err){
+  fs.rename(__dirname + '/../../' + file.path, './public/img/profiles/', function (err){
     console.log('done renaming', __dirname);
-    if (err) res.json(err);
-    else res.json({
-      "message": "cool",
-      "pwd": __dirname
-    });
+    if (err) {
+      res.json(err);
+    } else {
+      res.json({
+        "message": "cool",
+        "pwd": __dirname
+      });
+    }
   });
-});
+}
+router.put('/profile', auth.withUser, userProfil);
 
-router.get('/roles', function(req, res) {
+/**
+ * Get user's roles
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function getUserRoles(req, res) {
   var roles = UserModel.roles;
   var result = [];
-  for (key in roles) {
+  for (var key in roles) {
     result.push(roles[key]);
   }
   res.json(result);
-});
+}
+router.get('/roles', getUserRoles);
 
-router.get('/status-connection', function(req, res) {
+/**
+ * Get user's status connections
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function getUserStatusConnection(req, res) {
   var statusConnection = UserModel.status_connection;
   var result = [];
-  for (key in statusConnection) {
+  for (var key in statusConnection) {
     result.push(statusConnection[key]);
   }
   res.json(result);
-});
+}
+router.get('/status-connection', getUserStatusConnection);
 
-router.get('/me', auth.withUser, function(req, res) {
+/**
+ * Get me
+ * GET /users/me
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function me(req, res) {
   var user = req.$user;
   res.json({
     id: user.id,
@@ -186,11 +265,15 @@ router.get('/me', auth.withUser, function(req, res) {
     arrival_date: user.arrival_date,
     last_connection: user.last_connection
   });
-});
+}
+router.get('/me', auth.withUser, me);
 
 /**
- * GET /users/profil/:id
  * Get user profile
+ * GET /users/profil/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function getProfilAction (req, res) {
   var id = req.params.id;
@@ -202,16 +285,27 @@ function getProfilAction (req, res) {
 }
 router.get('/profil/:id', getProfilAction);
 
-router.get('/logout', function (req, res) {
+/**
+ * User logout
+ * GET /users/logout
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function logout(req, res) {
   req.session.destroy(function(err) {
     console.log(err);
-  })
+  });
   res.redirect('/');
-});
+}
+router.get('/logout', logout);
 
 /**
- * DELETE /users/:id
  * Delete user
+ * DELETE /users/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function deleteUserAction(req, res) {
   var id = req.params.id;
@@ -226,15 +320,18 @@ function deleteUserAction(req, res) {
 router.delete('/:id', auth.withRole([UserModel.roles.RH]), deleteUserAction);
 
 /**
- * PUT /users/:id
  * Update user
+ * PUT /users/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function updateUserAction(req, res) {
   var id = req.params.id;
   var user = req._new_user;
   UserModel.findOneById(id).then(function () {
     return UserModel.update(id, user);
-  }).then(function (result) {
+  }).then(function () {
     return UserModel.findOneById(id);
   }).then(function (updatedUser) {
     res.json(updatedUser);
@@ -242,11 +339,14 @@ function updateUserAction(req, res) {
     res.status(404).json(err);
   });
 }
-router.put('/:id', auth.withRole([UserModel.roles.RH]), userValidator, updateUserAction)
+router.put('/:id', auth.withRole([UserModel.roles.RH]), userValidator, updateUserAction);
 
 /**
- * GET /users/:id
  * Get user by id
+ * GET /users/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
  */
 function getOneByIdAction (req, res) {
   var id = req.params.id;

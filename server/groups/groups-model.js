@@ -1,6 +1,12 @@
+/** Groups Model
+ * @module server/groups/groups-model
+ */
 var db = require('../config/database');
-var Q = require('q');
 
+/**
+ * Generate Select user SQL query
+ * @return {string} SQL query
+ */
 function makeSqlUserSelect() {
   return " " +
     "users.email AS users_email, " +
@@ -18,8 +24,10 @@ function makeSqlUserSelect() {
 }
 
 /**
-Create new group
-*/
+ * Create new group
+ * @param  {Group} group Group object
+ * @return {promise}       Insert Result
+ */
 module.exports.create = function (group) {
   return db.insert(
     "INSERT INTO groups SET ?; ",
@@ -28,8 +36,10 @@ module.exports.create = function (group) {
 };
 
 /**
-Find groupe by id
-*/
+ * Find groupe by id
+ * @param  {number} id Group id
+ * @return {promise}    Group object
+ */
 module.exports.findOneById = function (id) {
   return db.findOne(
     "SELECT * FROM groups WHERE groups.id = ? ;",
@@ -38,8 +48,10 @@ module.exports.findOneById = function (id) {
 };
 
 /**
-Find groupe by slug
-*/
+ * Find groupe by slug
+ * @param  {string} slug Group slug
+ * @return {promise}      Group object
+ */
 module.exports.findOneBySlug = function (slug) {
   return db.findOne(
     "SELECT groups.*, " + 
@@ -51,8 +63,10 @@ module.exports.findOneBySlug = function (slug) {
 };
 
 /**
-Find all groups
-*/
+ * Find all groups
+ * @param  {number} page Page
+ * @return {promise}      List of groups
+ */
 module.exports.findAll = function (page) {
   return db.findAll(
     "SELECT * " +
@@ -64,8 +78,11 @@ module.exports.findAll = function (page) {
 };
 
 /**
-Find all not my groups
-*/
+ * Find all not my groups
+ * @param  {number} page Page
+ * @param  {User} user User object
+ * @return {promise}      List of groups
+ */
 module.exports.findAllNotMyGroups = function (page, user) {
   return db.findAll(
     "SELECT groups.* " +
@@ -83,8 +100,10 @@ module.exports.findAllNotMyGroups = function (page, user) {
 };
 
 /**
-Find all my groups
-*/
+ * Find all my groups
+ * @param  {User} user User object
+ * @return {promise}      List of groups
+ */
 module.exports.findMyGroups = function (user) {
   return db.findAll(
     "SELECT groups.*, members.status AS members_status " +
@@ -96,7 +115,10 @@ module.exports.findMyGroups = function (user) {
 };
 
 /**
- * Is user into group
+ * Check if user into group
+ * @param  {string} slug Group slug
+ * @param  {User} user User object
+ * @return {promise}      Group object
  */
 module.exports.inGroup = function (slug, user) {
   return db.findOne(
@@ -106,24 +128,42 @@ module.exports.inGroup = function (slug, user) {
     "WHERE members.status = 'accepted' AND members.users_id = ? AND groups.slug = ? ; ",
     [user.id, slug]
   );
-}
+};
 
+/**
+ * Group Status
+ * @type {Object}
+ */
 module.exports.groupsStatus = {
   open: 'open',
   close: 'close'
 };
 
+/**
+ * Group Access
+ * @type {Object}
+ */
 module.exports.groupsAccess = {
   private: 'private',
   public: 'public'
 };
 
+/**
+ * Group Types
+ * @type {Object}
+ */
 module.exports.groupsTypes = {
   project: 'project',
   discussion: 'discussion',
   other: 'other'
 };
 
+/**
+ * Update group
+ * @param  {number} id    Group id
+ * @param  {Group} group Group object
+ * @return {promise}       Update Result
+ */
 module.exports.update = function (id, group) {
   return db.update(
     "UPDATE groups SET ? WHERE groups.id = ? ; ",
@@ -131,6 +171,11 @@ module.exports.update = function (id, group) {
   );
 };
 
+/**
+ * Delete group
+ * @param  {number} id Group id
+ * @return {promise}    Delete result
+ */
 module.exports.delete = function (id) {
   return db.delete(
     "DELETE FROM groups WHERE groups.id = ? ;",

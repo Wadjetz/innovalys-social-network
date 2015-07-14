@@ -1,3 +1,6 @@
+/** Comment Router
+ * @module server/comments/comments-router
+ */
 var router        = require("express").Router();
 var moment        = require('moment');
 var CommentsModel = require('./comments-model');
@@ -34,34 +37,39 @@ function commentsValidator (req, res, next) {
 }
 
 /**
-POST /comments
-Create comment
-*/
+ * Create new comment
+ * POST /comments
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function postCreateCommentAction (req, res) {
   var user = req.$user;
   var comment = req._new_comment;
   comment.users_id = user.id;
-  NewsModel.findOneById(comment.news_id)
-    .then(function (news) {
-      return CommentsModel.create(comment);
-    })
-    .then(function (createdId) {
-      return CommentsModel.findOneById(createdId);
-    })
-    .then(function (comment) {
-      res.json(comment);
-    })
-    .fail(function (err) {
-      res.status(404).json(err);
-    });
+  NewsModel.findOneById(comment.news_id).then(function (news) {
+    return CommentsModel.create(comment);
+  }).then(function (createdId) {
+    return CommentsModel.findOneById(createdId);
+  }).then(function (comment) {
+    res.json(comment);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
 }
 router.post('/', commentsValidator, auth.withUser, postCreateCommentAction);
 
+/**
+ * Update News Comment
+ * PUT /comments/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function updateCommentAction (req, res) {
-  var user = req.$user;
   var comment = req.$comment;
   var newComment = req._new_comment;
-  CommentsModel.update(comment.id, newComment).then(function (result) {
+  CommentsModel.update(comment.id, newComment).then(function () {
     return CommentsModel.findOneById(comment.id);
   }).then(function (commentUpdated) {
     res.json(commentUpdated);
@@ -72,24 +80,31 @@ function updateCommentAction (req, res) {
 router.put('/:id', commentsValidator, auth.commentWithRoleOrOwner([UserModel.roles.ADMIN]), updateCommentAction);
 
 /**
-GET /comments/news/:slug
-Get all comments by news slug
-*/
+ * Get all comments by news slug
+ * GET /comments/news/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getCommentsByNewsSlug (req, res) {
   var slug = req.params.slug;
   var page = req.query.page || 0;
-  CommentsModel.findAllByNewsSlug(slug, page)
-    .then(function (comments) {
-      res.json(comments);
-    })
-    .fail(function (err) {
-      res.status(404).json(err);
-    });
+  CommentsModel.findAllByNewsSlug(slug, page).then(function (comments) {
+    res.json(comments);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
 }
 router.get('/news/:slug', auth.withUser, getCommentsByNewsSlug);
 
-router.delete('/:comment_id', auth.withUser, function (req, res) {
-  var user = req.$user;
+/**
+ * Delete news comment
+ * DELETE /comments/:comment_id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function deleteComment(req, res) {
   var comment_id = req.params.comment_id;
   CommentsModel.findOneById(comment_id).then(function (comment) {
     return CommentsModel.delete(comment.id);
@@ -98,6 +113,7 @@ router.delete('/:comment_id', auth.withUser, function (req, res) {
   }).fail(function (err) {
     res.status(404).json(err);
   });
-});
+}
+router.delete('/:comment_id', auth.withUser, deleteComment);
 
 module.exports = router;
