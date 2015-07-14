@@ -57,6 +57,20 @@ function postCreateCommentAction (req, res) {
 }
 router.post('/', commentsValidator, auth.withUser, postCreateCommentAction);
 
+function updateCommentAction (req, res) {
+  var user = req.$user;
+  var comment = req.$comment;
+  var newComment = req._new_comment;
+  CommentsModel.update(comment.id, newComment).then(function (result) {
+    return CommentsModel.findOneById(comment.id);
+  }).then(function (commentUpdated) {
+    res.json(commentUpdated);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.put('/:id', commentsValidator, auth.commentWithRoleOrOwner([UserModel.roles.ADMIN]), updateCommentAction);
+
 /**
 GET /comments/news/:slug
 Get all comments by news slug
@@ -74,17 +88,16 @@ function getCommentsByNewsSlug (req, res) {
 }
 router.get('/news/:slug', auth.withUser, getCommentsByNewsSlug);
 
-// TODO not finished
 router.delete('/:comment_id', auth.withUser, function (req, res) {
   var user = req.$user;
   var comment_id = req.params.comment_id;
-  CommentsModel.findOneById(comment_id)
-    .then(function (comment) {
-      res.json(comment);
-    })
-    .fail(function (err) {
-      res.status(404).json(err);
-    });
+  CommentsModel.findOneById(comment_id).then(function (comment) {
+    return CommentsModel.delete(comment.id);
+  }).then(function (result) {
+    res.json(result);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
 });
 
 module.exports = router;

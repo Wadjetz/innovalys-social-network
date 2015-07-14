@@ -2,23 +2,48 @@ import Qajax from 'qajax'
 
 const BASE_URL = document.location.origin;
 
-export default {
-  getAllBySlug: function (slug) {
-    return Qajax({
-      url: BASE_URL + '/comments/news/' + slug,
-      method: 'GET'
-    })
-    .then(Qajax.filterSuccess)
-    .then(Qajax.toJSON)
-  },
+class CommentsService {
+  constructor(base_url) {
+    this.base_url = base_url;
+  }
 
-  create :function (comment) {
+  create(comment) {
     return Qajax({
-      url: BASE_URL + '/comments',
+      url: `${this.base_url}/comments`,
       method: 'POST',
       data: comment
     })
     .then(Qajax.filterSuccess)
-    .then(Qajax.toJSON)
+    .then(Qajax.toJSON);
   }
-};
+
+  update(id, comment) {
+    return Qajax({
+      url: `${this.base_url}/comments/${id}`,
+      method: 'PUT',
+      data: comment
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  delete(id) {
+    return Qajax({
+      url: `${this.base_url}/comments/${id}`,
+      method: 'DELETE'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  getAllBySlug(slug) {
+    return Qajax({
+      url: `${this.base_url}/comments/news/${slug}`,
+      method: 'GET'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+}
+
+export default new CommentsService(BASE_URL);

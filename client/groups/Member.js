@@ -2,12 +2,12 @@ import React from 'react';
 import Bootstrap, { Label, Button } from 'react-bootstrap';
 import moment from 'moment';
 import GroupsService from './GroupsService';
+import If from '../utils/If';
 
 export default React.createClass({
   displayName: "Member",
   render: function () {
     let memeber = this.props.memeber;
-    console.log(memeber);
     return (
       <div className="media">
         <div className="media-left">
@@ -20,25 +20,15 @@ export default React.createClass({
           <p>
             <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
           </p>
-          <p>
-            <Button onClick={this.accept}>Accept</Button>
-            <Button onClick={this.refuse}>Refuse</Button>
-          </p>
+          <If condition={this.props.isAccepted === false}>
+            <p>
+              <Button onClick={this.props.accept}>Accept</Button>
+              <Button onClick={this.props.refuse}>Refuse</Button>
+            </p>
+          </If> 
         </div>
       </div>
     );
-  },
-
-  accept: function () {
-    GroupsService.acceptMember(this.props.memeber.id, this.props.group.id).then(result => {
-      console.log("accept ok", result);
-    }).fail(err => {
-      console.log("accept err", err);
-    });
-  },
-
-  refuse: function () {
-    console.log("refuse");
   }
 
 });

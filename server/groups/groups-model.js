@@ -1,6 +1,22 @@
 var db = require('../config/database');
 var Q = require('q');
 
+function makeSqlUserSelect() {
+  return " " +
+    "users.email AS users_email, " +
+    "users.role AS users_role, " +
+    "users.first_name AS users_first_name, " +
+    "users.last_name AS users_last_name, " +
+    "users.birthday_date AS users_birthday_date, " +
+    "users.status_profile AS users_status_profile, " +
+    "users.status_connection AS users_status_connection, " +
+    "users.function AS users_function, " +
+    "users.adress AS users_adress, " +
+    "users.description AS users_description, " +
+    "users.arrival_date AS users_arrival_date, " +
+    "users.last_connection AS users_last_connection ";
+}
+
 /**
 Create new group
 */
@@ -26,7 +42,10 @@ Find groupe by slug
 */
 module.exports.findOneBySlug = function (slug) {
   return db.findOne(
-    "SELECT * FROM groups WHERE groups.slug = ? ;",
+    "SELECT groups.*, " + 
+      makeSqlUserSelect() + 
+    "FROM groups JOIN users ON groups.users_id = users.id " +
+    "WHERE groups.slug = ? ;",
     [slug]
   );
 };
@@ -71,10 +90,23 @@ module.exports.findMyGroups = function (user) {
     "SELECT groups.*, members.status AS members_status " +
     "FROM groups " +
     "JOIN members ON members.groups_id = groups.id " +
-    "WHERE members.users_id = ? ;",
+    "WHERE members.status = 'accepted' AND members.users_id = ? ;",
     [user.id]
   );
 };
+
+/**
+ * Is user into group
+ */
+module.exports.inGroup = function (slug, user) {
+  return db.findOne(
+    "SELECT groups.*, members.status AS members_status " +
+    "FROM groups " +
+    "JOIN members ON members.groups_id = groups.id " +
+    "WHERE members.status = 'accepted' AND members.users_id = ? AND groups.slug = ? ; ",
+    [user.id, slug]
+  );
+}
 
 module.exports.groupsStatus = {
   open: 'open',
@@ -94,7 +126,7 @@ module.exports.groupsTypes = {
 
 module.exports.update = function (id, group) {
   return db.update(
-    "UPDATE posts SET ? WHERE groups.id = ? ; ",
+    "UPDATE groups SET ? WHERE groups.id = ? ; ",
     [group, id]
   );
 };

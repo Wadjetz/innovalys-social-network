@@ -19,7 +19,7 @@ export default React.createClass({
           <Col xs={8}>
             {articles.map((article, i) => {
               return (
-                <div className="thumbnail" key={article.id}>
+                <div className="thumbnail article" key={article.id}>
                   <h2><Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link></h2>
                   <span className="label label-default">{i18n.__n('publish')} : {moment(article.publish).fromNow()}</span>
                   <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(article.body) }}></div>

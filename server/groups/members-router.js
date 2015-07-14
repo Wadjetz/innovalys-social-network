@@ -1,14 +1,9 @@
 var router   = require("express").Router();
-var moment   = require('moment');
-var validate = require("validate.js");
-var async    = require('async');
-var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
 var RoomsModel = require('../chat/rooms-model');
 var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
-var MessagesModel = require('./messages-model');
 
 /**
 POST /groups/members/join/:slug
@@ -133,5 +128,23 @@ function acceptMemberAction (req, res) {
   });
 }
 router.put('/accept/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), acceptMemberAction);
+
+/**
+ * PUT /groups/members/refuse/:groups_id/:users_id
+ * Refuse Members
+ */
+function refuseMemberAction (req, res) {
+  var user = req.$user;
+  var groups_id = req.params.groups_id;
+  var users_id = req.params.users_id;
+  MembersModel.getOneMember(users_id, groups_id).then(function (member) {
+    return MembersModel.refuse(users_id, groups_id);
+  }).then(function (result) {
+    res.json(result);
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
+}
+router.put('/refuse/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), refuseMemberAction);
 
 module.exports = router;

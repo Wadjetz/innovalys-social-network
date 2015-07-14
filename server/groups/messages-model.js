@@ -51,9 +51,11 @@ module.exports.create = function (message) {
 /**
 Update a message group
 */
-module.exports.update = function (message) {
-  // TODO
-  return null
+module.exports.update = function (id, message) {
+  return db.update(
+    "UPDATE message_groups SET ? WHERE message_groups.id = ? ; ",
+    [message, id]
+  );
 };
 
 /**

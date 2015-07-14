@@ -86,4 +86,13 @@ module.exports.accept = function (users_id, groups_id) {
   );
 };
 
+/**
+ * Refuse Member
+ */
+module.exports.refuse = function (users_id, groups_id) {
+  return db.delete(
+    "DELETE FROM members WHERE members.users_id = ? AND members.groups_id = ? ; ",
+    [users_id, groups_id]
+  );
+};
 
