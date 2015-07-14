@@ -6,7 +6,7 @@
     "devel": true,
     
     // Var names must be camelCase or UPPER_CASE
-    "camelcase": true,
+    "camelcase": false,
     // Loops and conditionals must have curly brackets
     "curly": true,
     // Allow ES6 features

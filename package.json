@@ -8,7 +8,7 @@
     "js-build": "browserify -d client/main.js -t [ babelify --sourceMapRelative .] --outfile server/public/main.js",
     "js-watch": "watchify -d client/main.js -t [ babelify --sourceMapRelative .] --outfile server/public/main.js",
     "watch": "npm run js-watch",
-    "build": "npm run js-build && jsdoc client/* server/*"
+    "build": "npm run js-build && jsdoc server/chat/* server/comments/* server/config/* server/groups/* server/news/* server/user/* server/server.js"
   },
   "repository": {
     "type": "git",
