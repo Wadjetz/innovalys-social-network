@@ -4,9 +4,15 @@ import moment from 'moment';
 import GroupsService from './GroupsService';
 import If from '../utils/If';
 
-export default React.createClass({
-  displayName: "Member",
-  render: function () {
+/**
+ * Member components
+ */
+export default class Member extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     let memeber = this.props.memeber;
     return (
       <div className="media">
@@ -30,5 +36,4 @@ export default React.createClass({
       </div>
     );
   }
-
-});
+}

@@ -1,11 +1,6 @@
 import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
-import ChatActions, {
-  SWITCH_ROOM,
-  SEND_MESSAGE,
-  JOIN_USER_ROOM
-} from './ChatActions';
-import ChatApi from './ChatApi';
+import { SWITCH_ROOM, SEND_MESSAGE, JOIN_USER_ROOM } from './ChatActions';
 import Store from '../flux/Store';
 
 const socket = window.io(document.location.host);
@@ -25,7 +20,7 @@ var ChatStore = _.assign(Store, {
     
     socket.on('new_message', function (msg, room) {
       //console.log("new_message", msg, room);
-      _chatData.messages.push(msg)
+      _chatData.messages.push(msg);
       _chatData.messages = _.uniq(_chatData.messages, 'id');
       ChatStore.emitChange();
     });

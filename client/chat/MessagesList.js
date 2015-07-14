@@ -11,16 +11,22 @@ const messagesStyle = {
   display: 'inline-block'
 };
 
-export default React.createClass({
-  displayName: "MessagesList",
-  render: function () {
-    let messagesView = this.props.messages.map((message, i) =>
-      <div key={i}>{message.first_name} {message.last_name} : {message.content}</div>
-    );
+/**
+ * Messages List components
+ */
+export default class MessagesList extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
+    let messagesView = this.props.messages.map((message, i) => {
+      return (<div key={i}>{message.first_name} {message.last_name} : {message.content}</div>);
+    });
     return (
       <div style={messagesStyle}>
         {messagesView}
       </div>
     );
   }
-});
+}

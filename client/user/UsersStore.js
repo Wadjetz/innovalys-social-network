@@ -1,12 +1,10 @@
 import _ from 'lodash';
 import moment from 'moment';
-import utils from '../../commun/utils';
 import AppDispatcher from '../app/AppDispatcher';
 import Store from '../flux/Store';
 import AppActions from '../app/AppActions';
-import UsersActions, { LOAD_USERS, LOAD_ME, LOAD_ROLES, CREATE_USER, LOGIN, LOGIN_ERROR } from './UsersActions';
+import { LOAD_USERS, LOAD_ME, LOGIN, LOGIN_ERROR } from './UsersActions';
 import UsersApi from './UsersApi';
-import ChatStore from '../chat/ChatStore';
 
 var _usersData = {
    me: {
@@ -51,7 +49,7 @@ var UsersStore = _.assign(Store, {
           })
           .fail(err => {
             console.error(err);
-          })
+          });
         break;
 
       case LOGIN:
@@ -75,7 +73,7 @@ var UsersStore = _.assign(Store, {
           .fail(err => {
             console.error(err);
             if (err.status === 401) { AppActions.unauthorized(); }
-          })
+          });
         break;
     }
     return true;

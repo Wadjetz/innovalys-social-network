@@ -1,13 +1,13 @@
-import React from 'react/addons'
-import moment from 'moment'
-import _ from 'lodash'
-import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap'
-import utils from '../../commun/utils'
-import If  from '../utils/If'
-import UsersActions from './UsersActions'
-import UsersStore from './UsersStore'
-import UsersApi from './UsersApi'
-import i18n from '../../commun/local'
+import React from 'react/addons';
+import moment from 'moment';
+import _ from 'lodash';
+import Bootstrap, { Grid, Row, Col, Input, Button, Alert } from 'react-bootstrap';
+import utils from '../../commun/utils';
+import If  from '../utils/If';
+import UsersActions from './UsersActions';
+import UsersStore from './UsersStore';
+import UsersApi from './UsersApi';
+import i18n from '../../commun/local';
 
 function getMe() {
   return {
@@ -16,7 +16,7 @@ function getMe() {
     newPassword: "",
     changePasswordError: "",
     changePasswordSuccess: ""
-  }
+  };
 }
 
 export default React.createClass({

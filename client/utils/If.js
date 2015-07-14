@@ -1,13 +1,18 @@
-const React = require('react');
+import React from 'react';
 
-const If = React.createClass({
-    render: function() {
-        if (this.props.condition) {
-            return this.props.children;
-        } else {
-            return false;
-        }
+/**
+ * If components
+ */
+export default class If extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
+    if (this.props.condition) {
+      return this.props.children;
+    } else {
+      return false;
     }
-});
-
-module.exports = If;
+  }
+}
