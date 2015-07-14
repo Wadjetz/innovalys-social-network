@@ -1,14 +1,9 @@
 var router   = require("express").Router();
-var moment   = require('moment');
-var validate = require("validate.js");
-var async    = require('async');
-var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
 var RoomsModel = require('../chat/rooms-model');
 var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
-var MessagesModel = require('./messages-model');
 
 /**
 POST /groups/members/join/:slug
