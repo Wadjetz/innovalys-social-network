@@ -24,42 +24,42 @@ var ChatStore = _.assign(Store, {
     });
     
     socket.on('new_message', function (msg, room) {
-      console.log("new_message", msg, room);
+      //console.log("new_message", msg, room);
       _chatData.messages.push(msg)
       _chatData.messages = _.uniq(_chatData.messages, 'id');
       ChatStore.emitChange();
     });
 
     socket.on('update_chat', (type, message) => {
-      console.log("Chat update_chat", type, message);
+      //console.log("Chat update_chat", type, message);
     });
 
     socket.on('update_rooms', (rooms, room) => {
-      console.log("Chat update_rooms = ", rooms, room);
+      //console.log("Chat update_rooms = ", rooms, room);
       _chatData.rooms = rooms;
       ChatStore.emitChange();
     });
 
     socket.on('update_room_messages', (messages, room) => {
-      console.log("Chat update_room_messages = ", messages, room);
+      //console.log("Chat update_room_messages = ", messages, room);
       _chatData.messages = messages;
       ChatStore.emitChange();
     });
 
     socket.on('update_chat', (type, msg) => {
-      console.log("update_chat", type, msg);
+      //console.log("update_chat", type, msg);
     });
 
     socket.on('chaterrors', (err) => {
-      console.log("chaterrors", err);
+      //console.log("chaterrors", err);
     });
 
     socket.on('switch_room', room => {
-      console.log("switch_room", room);
+      //console.log("switch_room", room);
     });
 
     socket.on('auth_errors', msg => {
-      console.log("Chat error = ", msg);
+      //console.log("Chat error = ", msg);
       new Notification('Chat error', { 'body': msg });
     });
   },
@@ -78,23 +78,23 @@ var ChatStore = _.assign(Store, {
       case SWITCH_ROOM:
         if (action.room) {
           _chatData.room = action.room;
-          console.log("switch_room", _chatData.room);
+          //console.log("switch_room", _chatData.room);
           socket.emit('switch_room', _chatData.room);
           ChatStore.emitChange();
         } else {
           _chatData.room = action.room;
           ChatStore.emitChange();
-          console.log("back");
+          //console.log("back");
         }
         break;
 
       case SEND_MESSAGE:
-        console.log('SEND_MESSAGE', _chatData.room, action.message);
+        //console.log('SEND_MESSAGE', _chatData.room, action.message);
         socket.emit('send_message', action.message);
         break;
 
       case JOIN_USER_ROOM:
-        console.log("JOIN_ROOM", action.user);
+        //console.log("JOIN_ROOM", action.user);
         socket.emit('join_user_room', action.user);
         break;
     }

@@ -1,53 +1,83 @@
 import Qajax from 'qajax';
+import { BASE_URL } from '../conf';
 
-const BASE_URL = document.location.origin;
+/**
+ * Articles Service who use server API for articles
+ */
+class ArticlesService {
+  /**
+   * Constructor
+   * @param  {string} url Api Base Url 
+   */
+  constructor(url) {
+    this.url = url;
+  }
 
-export default {
-
-  findAll: function () {
+  /**
+   * Find all articles
+   * @return {promise} List of news
+   */
+  findAll() {
     return Qajax({
-      url: BASE_URL + '/news',
+      url: `${this.url}/news`,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
-  },
+  }
 
-  findMyGroups: function (user) {
-    throw new Error("f  indMyGroups not implemented");
-  },
-
-  get: function (slug) {
+  /**
+   * Get article by slug
+   * @param  {string} slug News slug
+   * @return {promise}      News object
+   */
+  get(slug) {
     return Qajax({
-      url: BASE_URL + '/news/' + slug,
+      url: `${this.url}/news/${slug}`,
       method: 'GET'
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
-  },
+  }
 
-  create: function (article) {
+  /**
+   * Create News
+   * @param  {Article} article Article object
+   * @return {promise}         Created Article
+   */
+  create(article) {
     return Qajax({
-      url: BASE_URL + '/news/',
+      url: `${this.url}/news`,
       method: 'POST',
       data: article
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
-  },
+  }
 
-  delete: function (article) {
+  /**
+   * Delete news
+   * @param  {Article} article Article object
+   * @return {promise}         Delete result
+   */
+  delete(article) {
     return Qajax({
-      url: BASE_URL + '/news/' + article.id,
+      url: `${this.url}/news/${article.id}`,
       method: 'DELETE'
     })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
-  },
+  }
 
-  update: function (id, article) {
+  /**
+   * Update news
+   * @param  {number} id      News id
+   * @param  {Article} article Article object
+   * @return {promise}         Updated Article
+   */
+  update(id, article) {
     return Qajax({
-      url: BASE_URL + '/news/' + id,
+      url: `${this.url}/news/${id}`,
       method: 'PUT',
       data: article
     })
@@ -55,4 +85,6 @@ export default {
     .then(Qajax.toJSON);
   }
 
-};
+}
+
+export default new ArticlesService(BASE_URL);

@@ -1,8 +1,13 @@
+/** Document File Model
+ * @module server/groups/files-model
+ */
 var db = require('../config/database');
 
 /**
-Find file by id
-*/
+ * Find file by id
+ * @param  {number} id Document id
+ * @return {promise}    Document object
+ */
 module.exports.findById = function (id) {
   return db.findOne(
     "SELECT documents.*, " +
@@ -21,8 +26,10 @@ module.exports.findById = function (id) {
 };
 
 /**
-Create file
-*/
+ * Create new document file
+ * @param  {File} file Document file object 
+ * @return {promise}      Insert result
+ */
 module.exports.create = function (file) {
   return db.insert(
     "INSERT INTO documents SET ? ;",
@@ -31,8 +38,10 @@ module.exports.create = function (file) {
 };
 
 /**
-Find all files by groups
-*/
+ * Find all files by groups
+ * @param  {string} slug Group slug
+ * @return {promise}      List of documents files
+ */
 module.exports.findAllByGroupSlug = function (slug) {
   return db.findAll(
     "SELECT documents.*, " +

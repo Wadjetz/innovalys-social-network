@@ -1,6 +1,9 @@
+/** Database helpers
+ * @module server/config/database
+ */
 var Q = require('q');
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
     host     : 'localhost',
     database : 'innavalys',
     user     : 'root',
@@ -9,6 +12,12 @@ var connection = mysql.createConnection({
 
 module.exports = connection;
 
+/**
+ * Insert helper
+ * @param  {string} sql    SQL query
+ * @param  {Array} params List of variables
+ * @return {promise}        DB Result object
+ */
 module.exports.insert = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {
@@ -27,6 +36,12 @@ module.exports.insert = function (sql, params) {
   return deferred.promise;
 };
 
+/**
+ * Find All helper
+ * @param  {string} sql    SQL query
+ * @param  {Array} params List of variables
+ * @return {promise}        List of object
+ */
 module.exports.findAll = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {
@@ -39,6 +54,12 @@ module.exports.findAll = function (sql, params) {
   return deferred.promise;
 };
 
+/**
+ * Find one helper
+ * @param  {string} sql    SQL query
+ * @param  {Array} params List of variables
+ * @return {promise}        Object
+ */
 module.exports.findOne = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {
@@ -53,6 +74,12 @@ module.exports.findOne = function (sql, params) {
   return deferred.promise;
 };
 
+/**
+ * Delete helper
+ * @param  {string} sql    SQL query
+ * @param  {Array} params List of variables
+ * @return {promise}        DB Result object
+ */
 module.exports.delete = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {
@@ -67,6 +94,12 @@ module.exports.delete = function (sql, params) {
   return deferred.promise;
 };
 
+/**
+ * Update helper
+ * @param  {string} sql    SQL query
+ * @param  {Array} params List of variables
+ * @return {promise}        DB Result object
+ */
 module.exports.update = function (sql, params) {
   var deferred = Q.defer();
   connection.query(sql, params, function (err, res) {

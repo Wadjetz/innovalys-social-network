@@ -1,5 +1,5 @@
-import _ from 'lodash'
-import Dispatcher from '../flux/Dispatcher'
+import _ from 'lodash';
+import Dispatcher from '../flux/Dispatcher';
 
 export default _.assign(Dispatcher.prototype, {
   handleViewAction: function (action) {

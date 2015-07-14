@@ -1,22 +1,13 @@
-import React from 'react'
-import Router, { Link, Navigation } from 'react-router'
-import _ from 'lodash'
-import Bootstrap, {
-  Grid,
-  Row,
-  Col,
-  TabbedArea,
-  TabPane,
-  Alert,
-  Input,
-  Button
-} from 'react-bootstrap'
-
-import GroupsService from './GroupsService'
-import GroupView from './GroupView'
-import If from '../utils/If'
-import i18n from '../../commun/local'
-import Users from '../user/Users'
+import React from 'react';
+import Router, { Link, Navigation } from 'react-router';
+import _ from 'lodash';
+import Bootstrap, { Grid, Row, Col, TabbedArea, TabPane, Alert, Input, Button } from 'react-bootstrap';
+import GroupsService from './GroupsService';
+import GroupView from './GroupView';
+import If from '../utils/If';
+import i18n from '../../commun/local';
+import Users from '../user/Users';
+import GroupForm from './GroupForm';
 
 export default React.createClass({
   mixins: [
@@ -55,35 +46,7 @@ export default React.createClass({
                         {i18n.__n('success')}
                       </Alert>
                   </If>
-                  <Input
-                      type='text'
-                      placeholder={i18n.__n('name')}
-                      label={i18n.__n('name')}
-                      ref='name'
-                      valueLink={this.linkState('name')}
-                  />
-                  <Input type='select' label={i18n.__n('accesses')} placeholder={i18n.__n('accesses')} valueLink={this.linkState('access')}>
-                    {this.state.accesses.map((access, i) => {
-                      return (
-                        <option value={access} key={access + i}>{access}</option>
-                      );
-                    })}
-                  </Input>
-                  <Input type='select' label={i18n.__n('types')} placeholder={i18n.__n('types')} valueLink={this.linkState('type')}>
-                    {this.state.types.map((type, i) => {
-                      return (
-                        <option value={type} key={type + i}>{type}</option>
-                      );
-                    })}
-                  </Input>
-                  <Input
-                      type='textarea'
-                      rows={4}
-                      label={i18n.__n('description')}
-                      ref='description'
-                      valueLink={this.linkState('description')}
-                  />
-                  <Button bsStyle='success' onClick={this.createGroup}>{i18n.__n('save')}</Button>
+                  <GroupForm group={{}} successAction={this.createGroup} />
               </TabPane>
             </TabbedArea>
           </Col>
@@ -99,12 +62,6 @@ export default React.createClass({
     return {
       groups: [],
       myGroups: [],
-      description: "",
-      name: "",
-      accesses: [],
-      access: "private",
-      types: [],
-      type: "project",
       createGroupError: false,
       createGroupSuccess: false
     };
@@ -126,34 +83,16 @@ export default React.createClass({
     }, err => {
       if (err.status === 401) { this.context.router.transitionTo('login'); }
     });
-
-    GroupsService.getGroupsTypes().then(types => {
-      this.setState({
-        accesses: types.accesses,
-        types: types.types
-      })
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
   },
 
-  createGroup: function () {
-    // TODO validate data
-    var newGroup = {
-      name: this.state.name,
-      description: this.state.description,
-      access: this.state.access,
-      type: this.state.type
-    };
-
+  createGroup: function (newGroup) {
+    console.log("createGroup", newGroup);
     GroupsService.create(newGroup).then(result => {
       this.state.myGroups.push(result);
       this.setState({
         createGroupSuccess: true,
         createGroupError: false,
         myGroups: this.state.myGroups,
-        name: "",
-        description: ""
       });
 
       window.setTimeout(() => {

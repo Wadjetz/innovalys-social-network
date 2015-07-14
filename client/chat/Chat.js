@@ -1,5 +1,5 @@
 import React from 'react';
-import Bootstrap, { Row, Col, Input, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import ChatActions from './ChatActions';
 import ChatStore from './ChatStore';
 import MessageSender from './MessageSender';

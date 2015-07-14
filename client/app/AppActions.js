@@ -1,20 +1,56 @@
-import AppConstants  from './AppConstants'
-import AppDispatcher from './AppDispatcher'
+import AppDispatcher from './AppDispatcher';
 
-export default {
-  notfound: function () {
+/**
+ * NOT_FOUND Constants
+ * @type {String}
+ */
+export const NOT_FOUND = 'NOT_FOUND';
+
+/**
+ * UNAUTHORIZED Constants
+ * @type {String}
+ */
+export const UNAUTHORIZED = 'UNAUTHORIZED';
+
+/**
+ * FORBIDDEN Constants
+ * @type {String}
+ */
+export const FORBIDDEN = 'FORBIDDEN';
+
+/**
+ * App Actions
+ */
+class AppActions {
+  /**
+   * Send not found action
+   * @return {void}
+   */
+  notfound() {
     AppDispatcher.handleViewAction({
-      actionType: AppConstants.NOT_FOUND
-    });
-  },
-  unauthorized: function () {
-    AppDispatcher.handleViewAction({
-      actionType: AppConstants.UNAUTHORIZED
-    });
-  },
-  forbidden: function () {
-    AppDispatcher.handleViewAction({
-      actionType: AppConstants.FORBIDDEN
+      actionType: NOT_FOUND
     });
   }
-};
+
+  /**
+   * Send unauthorized action
+   * @return {void}
+   */
+  unauthorized() {
+    AppDispatcher.handleViewAction({
+      actionType: UNAUTHORIZED
+    });
+  }
+
+  /**
+   * send forbidden action
+   * @return {void}
+   */
+  forbidden() {
+    AppDispatcher.handleViewAction({
+      actionType: FORBIDDEN
+    });
+  }
+}
+
+export default new AppActions();

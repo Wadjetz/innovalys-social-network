@@ -1,6 +1,6 @@
-import React from 'react'
-import Bootstrap, { Label } from 'react-bootstrap'
-import moment from 'moment'
+import React from 'react';
+import Bootstrap, { Label } from 'react-bootstrap';
+import moment from 'moment';
 
 export default React.createClass({
   render: function () {

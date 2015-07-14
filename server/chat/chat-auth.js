@@ -1,5 +1,13 @@
+/** Chat Auth
+ * @module server/chat/chat-auth
+ */
 var UserModel = require('../user/user-model');
 
+/**
+ * Authenticated config for socket.io
+ * @param  {Server} io Server IO
+ * @return {void}
+ */
 module.exports = function(io) {
   io.use(function(socket, next) {
     if(socket.request.session.email) {

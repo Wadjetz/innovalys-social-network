@@ -1,12 +1,18 @@
-import React from 'react'
+import React from 'react';
 
-export default React.createClass({
-  displayName: "Forbidden",
-  render: function() {
+/**
+ * Forbidden components
+ */
+export default class Forbidden extends React.Component {
+  /**
+   * Render components
+   * @return {ReactDOM} View
+   */
+  render() {
     return (
       <div>
         <h2>Forbidden</h2>
       </div>
     );
   }
-});
+}

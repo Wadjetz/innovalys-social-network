@@ -71,7 +71,7 @@ app.use(bodyParser.json());
 app.use(multer({
   dest: './uploads/files',
   rename: function (fieldname, filename) {
-    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
+    return filename.replace(/\W+/g, '-').toLowerCase() + Date.now();
   }
 }));
 
@@ -98,7 +98,7 @@ app.use('/groups/members', GroupsMembersRouter);
 app.use('/groups/messages', GroupsMessagesRouter);
 app.use('/groups/files', GroupsFilesRouter);
 app.use('/chat', ChatRouter);
-app.use('/chat/rooms', RoomsRouter)
+app.use('/chat/rooms', RoomsRouter);
 
 chatSession(io, cookieParser, sessionStore);
 chatAuth(io);

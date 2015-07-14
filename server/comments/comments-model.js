@@ -1,8 +1,14 @@
+/** Comment Model
+ * @module server/comments/comments-model
+ */
 var db = require('../config/database');
 
 /**
-Find All comments by news slug
-*/
+ * Find All comments by news slug
+ * @param  {string} slug Slug of news
+ * @param  {number} page Page
+ * @return {promise}      List of news comments
+ */
 module.exports.findAllByNewsSlug = function (slug, page) {
   return db.findAll(
     "SELECT " +
@@ -18,11 +24,13 @@ module.exports.findAllByNewsSlug = function (slug, page) {
     "ORDER BY comments.created ASC ; ",
     [slug]
   );
-}
+};
 
 /**
-Find comment by id
-*/
+ * Find comment by id
+ * @param  {number} comment_id Comment id
+ * @return {promise}           Comment object
+ */
 module.exports.findOneById = function (comment_id) {
   return db.findOne(
     "SELECT comments.*, " +
@@ -37,8 +45,10 @@ module.exports.findOneById = function (comment_id) {
 };
 
 /**
-Create comment
-*/
+ * Create new comment
+ * @param  {Comment} comment Comment object
+ * @return {promise}         InsertResult
+ */
 module.exports.create = function (comment) {
   return db.insert(
     "INSERT INTO comments SET ? ;",
@@ -46,11 +56,24 @@ module.exports.create = function (comment) {
   );
 };
 
-// TODO update
+/**
+ * Update comment
+ * @param  {number} id      Comment id
+ * @param  {Comment} comment Comment object
+ * @return {promise}         UpdateResult
+ */
+module.exports.update = function (id, comment) {
+  return db.update(
+    "UPDATE comments SET ? WHERE comments.id = ? ;",
+    [comment, id]
+  );
+};
 
 /**
-Delete comment by id
-*/
+ * Delete comment by id
+ * @param  {number} id Comment id
+ * @return {promise}    DeleteResult
+ */
 module.exports.delete = function (id) {
   return db.delete(
     "DELETE FROM comments WHERE comments.id = ? ;",

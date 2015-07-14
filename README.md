@@ -1,8 +1,3 @@
-#Attention aucun commits directement dans le master
-Créer une nouvelle branche. Développé votre fonctionnalité, une fois qu'elle est finie faite un pull request vers le master. Ça nous évitera des merges conflits.
-
-S'il y a des conflits, faites un merge de master vers votre branche avec 'git merge master' régler les conflits dans votre branche.
-
 # Installation du l'environement de dev
 
 ## Installer
@@ -15,10 +10,9 @@ S'il y a des conflits, faites un merge de master vers votre branche avec 'git me
 
 ```sh
 npm install -g nodemon browserify watchify reactify 
-#windows/
-nom install esprima-fb base62 source-map envify
 npm install
-```n
+// for windows, change your OS or install cygwin
+```
 
 ## Lancer le server
 

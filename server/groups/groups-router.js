@@ -1,21 +1,25 @@
+/** Groups Router
+ * @module server/groups/groups-router
+ */
 var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
-var async    = require('async');
 var utils    = require('../../commun/utils');
 var auth         = require('../config/auth');
 var GroupsModel  = require('./groups-model');
 var MembersModel = require('./members-model');
 var UserModel    = require('../user/user-model');
-var MessagesModel = require('./messages-model');
-var GroupsFilesModel = require('./files-model');
 var RoomsModel = require('../chat/rooms-model');
+var GroupsValidator = require('../../commun/groups-validator');
 validate.moment = moment;
 
 /**
-GET /groups
-Get all groups
-*/
+ * Get all groups
+ * GET /groups
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getGroupsAction (req, res) {
   var user = req.$user;
   var page = req.query.page || 0;
@@ -28,24 +32,29 @@ function getGroupsAction (req, res) {
 router.get('/', auth.withUser, getGroupsAction);
 
 /**
-GET /groups/by-slug/:slug
-Get group by slug
-*/
+ * Get group by slug
+ * GET /groups/by-slug/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getBySlugAction (req, res) {
-  var user = req.$user;
   var slug = req.params.slug;
   GroupsModel.findOneBySlug(slug).then(function (group) {
     res.json(group);
   }).fail(function (err) {
-    res.sendStatus(404);
+    res.sendStatus(404).json(err);
   });
 }
-router.get('/by-slug/:slug', auth.withUser, getBySlugAction);
+router.get('/by-slug/:slug', auth.inGroups, getBySlugAction);
 
 /**
-GET /groups/my-groups
-Get all my groups
-*/
+ * Get all my groups
+ * GET /groups/my-groups
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getMyGroupsAction (req, res) {
   var user = req.$user;
   GroupsModel.findMyGroups(user).then(function (groups) {
@@ -57,37 +66,35 @@ function getMyGroupsAction (req, res) {
 }
 router.get('/my-groups', auth.withUser, getMyGroupsAction);
 
+/**
+ * Group Validator middleware
+ * @param  {request} req request
+ * @param  {result} res result
+ * @param  {Function} next Next middleware
+ * @return {void}
+ */
 function groupsValidator(req, res, next) {
-  var newGroup = {
+  GroupsValidator.groupValidate({
     name: req.body.name,
     description: req.body.description || "",
     status: req.body.status || 'open',
     access: req.body.access || 'private',
     type: req.body.type || 'project'
-  };
-
-  // TOTO Move this in commun module
-  var constraints = {
-    name: {
-      presence: true,
-    }
-  };
-
-  var validatorRes = validate(newGroup, constraints);
-  if (validatorRes === undefined) {
-    req._new_group = newGroup;
+  }).then(function (group) {
+    req._new_group = group;
     next();
-  } else {
-    res.status(400).json({
-      error: true,
-      message: validatorRes
-    });
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 }
 
 /**
-POST /groups
-*/
+ * Create new Group
+ * POST /groups
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function postCreateGroupeAction(req, res) {
   var user = req.$user;
   var group = req._new_group;
@@ -102,7 +109,7 @@ function postCreateGroupeAction(req, res) {
       RoomsModel.addUser({
         rooms_id: createdRoomId,
         users_id: user.id
-      }).then(function (addUserInsertedId) {
+      }).then(function () {
         console.log("RoomsModel.addUser ok", createdRoomId);
       }).fail(function (err) {
         console.log("RoomsModel.addUser err", err);
@@ -135,10 +142,34 @@ function postCreateGroupeAction(req, res) {
 }
 router.post('/', groupsValidator, auth.withUser, postCreateGroupeAction);
 
-/*
-GET /groups/types
-Get type of group
-*/
+/**
+ * Update group, only for Chef and Admin
+ * PUT /groups/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function updateGroupAction (req, res) {
+  var group = req.$group;
+  var newGroup = req._new_group;
+  var slug = req.params.slug;
+  GroupsModel.update(group.id, newGroup).then(function () {
+    return GroupsModel.findOneBySlug(slug);
+  }).then(function (updatedGroup) {
+    res.json(updatedGroup);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.put('/:slug', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), groupsValidator, updateGroupAction);
+
+/**
+ * Get type of group
+ * GET /groups/types
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function getGroupsTypesAction(req, res) {
   var status = GroupsModel.groupsStatus;
   var access = GroupsModel.groupsAccess;
@@ -160,5 +191,27 @@ function getGroupsTypesAction(req, res) {
   });
 }
 router.get('/types', auth.withUser, getGroupsTypesAction);
+
+
+/**
+ * Delete group
+ * DELETE /groups/:slug
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function deleteGroup (req, res) {
+  var group = req.$group;
+  GroupsModel.delete(group.id).then(function () {
+    return RoomsModel.findOneByName(group.slug);
+  }).then(function (room) {
+    return RoomsModel.delete(room.id);
+  }).then(function (result) {
+    res.json(result);
+  }).fail(function (err) {
+    res.status(500).json(err);
+  });
+}
+router.delete('/:slug', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), deleteGroup);
 
 module.exports = router;
