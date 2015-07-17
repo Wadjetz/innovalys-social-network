@@ -116,6 +116,20 @@ class GroupsService {
   }
 
   /**
+   * Delete group message
+   * @param  {Message} message Group message object
+   * @return {promise}         Result
+   */
+  deleteMessageGroup(message) {
+    return Qajax({
+      method: 'DELETE',
+      url: `${this.url}/groups/messages/${message.id}`
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  /**
    * Get group type
    * @return {promise} List of group types
    */

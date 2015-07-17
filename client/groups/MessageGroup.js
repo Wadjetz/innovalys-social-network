@@ -1,5 +1,6 @@
 import React from 'react';
-import Bootstrap, { Label } from 'react-bootstrap';
+import Bootstrap, { Label, Button } from 'react-bootstrap';
+import If from '../utils/If';
 import moment from 'moment';
 
 /**
@@ -7,11 +8,21 @@ import moment from 'moment';
  */
 export default class MessageGroup extends React.Component {
   /**
+   * constructor
+   * @param  {object} props Props
+   */
+  constructor(props) {
+    super(props);
+    this.delete = this.delete.bind(this);
+  }
+
+  /**
    * Render components
    * @return {ReactDOM} View
    */
   render() {
     let message = this.props.message;
+    let me = this.props.me.me;
     return (
       <div className="media">
         <div className="media-left">
@@ -24,8 +35,15 @@ export default class MessageGroup extends React.Component {
           <p>
             <Label bsStyle='primary'>by {message.first_name} {message.last_name}</Label> <Label bsStyle='info'>{message.function}</Label> <Label bsStyle='info'>{message.role}</Label> <Label bsStyle='default'>{moment(message.created).fromNow()}</Label>
           </p>
+          <If condition={me.id === message.users_id}>
+            <Button onClick={this.delete}>Delete</Button>
+          </If>
         </div>
       </div>
     );
   }
-}
+
+  delete() {
+    this.props.deleteMessageGroup(this.props.message);
+  }
+};

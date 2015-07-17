@@ -29,9 +29,9 @@ export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-
+    console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message =>
-      <MessageGroup message={message} key={message.id} />
+      <MessageGroup message={message} key={message.id} me={this.state.me} deleteMessageGroup={this.deleteMessageGroup} />
     );
 
     let filesView = this.state.files.map(file =>
@@ -60,15 +60,7 @@ export default React.createClass({
               <TabPane eventKey={1} tab='Messages'>
                 {messagesView}
                 <h4>{i18n.__n('create_message')}</h4>
-                  <GroupMessageForm />
-                  <Input
-                      type='textarea'
-                      placeholder='Content'
-                      label='Content'
-                      ref='content'
-                      valueLink={this.linkState('newMessage')}
-                  />
-                <Button bsStyle='success' onClick={this.createMessage}>{i18n.__n('save')}</Button>
+                <GroupMessageForm groupMessage={{}} successAction={this.createMessage} />
               </TabPane>
               <TabPane eventKey={2} tab='Files'>
                 <Dropzone style={dropzoneStyle} onDrop={this.onDrop} size={150} >
@@ -130,21 +122,18 @@ export default React.createClass({
     });
   },
 
-  createMessage: function () {
+  createMessage: function (newMessage) {
+    console.log("createMessage", newMessage);
     let slug = this.context.router.getCurrentParams().slug;
-    if (this.state.newMessage !== "") {
-      GroupsService.createMessageGroup(slug, this.state.newMessage).then(result => {
-        this.state.messages.push(result);
-        this.setState({
-          messages: this.state.messages,
-          newMessage: ""
-        })
-      }, err => {
-        console.error(err);
-      });
-    } else {
-      console.error("createMessage error");
-    }
+    GroupsService.createMessageGroup(slug, newMessage.content).then(result => {
+      console.log(result);
+      this.state.messages.push(result);
+      this.setState({
+        messages: this.state.messages,
+      })
+    }, err => {
+      console.error(err);
+    });
   },
 
   getInitialState: function () {
@@ -164,7 +153,6 @@ export default React.createClass({
       members: [],
       newMembers: [],
       messages: [],
-      newMessage: "",
       files: [],
       file: null,
       me: getMe()
@@ -176,7 +164,6 @@ export default React.createClass({
   },
 
   updateGroup: function (group) {
-    console.log("updateGroup", group);
     let slug = this.context.router.getCurrentParams().slug;
     GroupsService.update(slug, group).then(updatedGroup => {
       this.setState({
@@ -191,7 +178,6 @@ export default React.createClass({
   componentWillMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
     GroupsService.getBySlug(slug).then(group => {
-      console.log("getGroupBySlug", group);
       this.setState({
         group: group
       });
@@ -292,6 +278,18 @@ export default React.createClass({
         console.log("refuse err", err);
       });
     }.bind(this);
+  },
+
+  deleteMessageGroup: function (message) {
+    GroupsService.deleteMessageGroup(message).then(result => {
+      console.log("deleteMessageGroup", message, "result", result);
+      let newMessages = this.state.messages.filter(m => m.id !== message.id);
+        this.setState({
+          messages: newMessages
+        });
+    }).fail(err => {
+      console.log("deleteMessageGroup err", err);
+    })
   }
 
 });

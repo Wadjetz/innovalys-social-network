@@ -7,6 +7,7 @@ var validate = require("validate.js");
 var auth = require('../config/auth');
 var GroupsModel = require('./groups-model');
 var MessagesModel = require('./messages-model');
+var GroupsValidator = require('../../commun/groups-validator');
 validate.moment = moment;
 
 /**
@@ -30,26 +31,14 @@ router.get('/:slug', auth.withUser, getMessagesGroups);
 Message group validator
 */
 var messageGroupValidator = function (req, res, next) {
-  var newMessage = {
+  GroupsValidator.groupMessageValidate({
     content: req.body.content
-  };
-
-  var constraints = {
-    content: {
-      presence: true,
-    }
-  };
-
-  var validatorRes = validate(newMessage, constraints);
-  if (validatorRes === undefined) {
+  }).then(function (newMessage) {
     req._new_message = newMessage;
     next();
-  } else {
-    res.status(400).json({
-      error: true,
-      message: validatorRes
-    });
-  }
+  }).fail(function (err) {
+    res.status(400).json(err);
+  });
 };
 
 /**

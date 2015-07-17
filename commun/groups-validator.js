@@ -5,3 +5,9 @@ module.exports.groupValidate = function (group) {
     name: { presence: true }
   });
 };
+
+module.exports.groupMessageValidate = function (messageGroup) {
+  return validator(messageGroup, {
+    content: { presence: true }
+  });
+};
