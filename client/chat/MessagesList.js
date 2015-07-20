@@ -24,9 +24,13 @@ export default class MessagesList extends React.Component {
       return (<div key={i}>{message.first_name} {message.last_name} : {message.content}</div>);
     });
     return (
-      <div style={messagesStyle}>
+      <div ref="chat_message_list" style={messagesStyle}>
         {messagesView}
       </div>
     );
+  }
+
+  componentWillUpdate() {
+    React.findDOMNode(this.refs.chat_message_list).scrollTop = 10000;
   }
 }
