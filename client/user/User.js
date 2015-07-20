@@ -9,6 +9,17 @@ import ChatActions from '../chat/ChatActions';
  */
 export default class User extends React.Component {
   /**
+   * Call ArticlesService for find All news
+   * @param  {object} props Props
+   */
+  constructor(props) {
+    super(props);
+    this.chatRoom = this.chatRoom.bind(this);
+    this.state = {
+      articles: []
+    };
+  }
+  /**
    * Render components
    * @return {ReactDOM} View
    */

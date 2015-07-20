@@ -79,23 +79,22 @@ module.exports = function(io) {
       console.log('switch_room', newRoom);
       socket.leave(socket.room);
       socket.join(newRoom);
-      socket.emit('update_chat', 'SERVER', 'you have connected to '+ newRoom);
-      socket.broadcast.to(socket.room).emit('update_chat', 'SERVER', user.id+' has left this room');
       socket.room = newRoom;
       MessagesModel.findAllByRoomName(socket.room).then(function (messages) {
         socket.emit('update_room_messages', messages, socket.room);
       }).fail(function (err) {
         socket.emit('chaterrors', err);
       });
-      socket.broadcast.to(newRoom).emit('update_chat', 'SERVER', user.id+' has joined this room');
     });
 
     socket.on('join_user_room', function (target) {
       var user = socket.request.$user;
       var userRoomName = makeRoomUserName(user, target);
       console.log("join_user_room", userRoomName);
+      // if room exist
       RoomsModel.findOneByName(userRoomName).then(function (room) {
-        console.log(room);
+        console.log("findOneByName", room);
+        // Add users into room
         return RoomsModel.addUser({
           rooms_id: room.id,
           users_id: user.id
@@ -105,7 +104,8 @@ module.exports = function(io) {
             users_id: target.id
           });
         }).then(function (res) {
-          console.log(res);
+          console.log("user_join_room addUser", user.id, 'target', target.id, "res", res);
+          socket.emit('user_join_room', userRoomName);
         });
       }).fail(function (err) {
         if (err.error === 'Not Found') {
@@ -123,12 +123,16 @@ module.exports = function(io) {
                 users_id: target.id
               });
             }).then(function (res) {
-              console.log(res);
+              console.log("user_join_room create addUser", user.id, 'target', target.id, "res", res);
+              socket.emit('user_join_room', userRoomName);
             });
           }).fail(function (err) {
             console.log(err);
             socket.emit('chaterrors', err);
           });
+        } else if (err.error === "Already exist") {
+          console.log("user_join_room Already exist");
+          socket.emit('user_join_room', userRoomName);
         } else {
           console.log(err);
           socket.emit('chaterrors', err);
@@ -137,10 +141,6 @@ module.exports = function(io) {
     });
 
     socket.on('disconnect', function() {
-      var user = socket.request.$user;
-      io.sockets.emit('update_users', user.id);
-      // echo globally that this client has left
-      socket.broadcast.emit('update_chat', 'SERVER', user.id + ' has disconnected');
       socket.leave(socket.room);
       UserModel.deconnect(socket.request.$user.id).then(function (result) {
         console.log("deconnect ok", socket.request.$user.email, "result", result);
