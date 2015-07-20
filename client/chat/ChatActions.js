@@ -19,6 +19,12 @@ export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const JOIN_USER_ROOM = 'JOIN_USER_ROOM';
 
 /**
+ * LEAVE_ROOM Constants
+ * @type {String}
+ */
+export const LEAVE_ROOM = 'LEAVE_ROOM';
+
+/**
  * Chat Actions
  */
 class ChatActions {
@@ -54,6 +60,12 @@ class ChatActions {
     AppDispatcher.handleViewAction({
       actionType: JOIN_USER_ROOM,
       user: user
+    });
+  }
+
+  leaveRoom() {
+    AppDispatcher.handleViewAction({
+      actionType: LEAVE_ROOM
     });
   }
 }

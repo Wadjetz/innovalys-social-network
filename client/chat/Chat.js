@@ -88,7 +88,7 @@ export default React.createClass({
   },
 
   handleBack: function () {
-    ChatActions.switchRoom("");
+    ChatActions.leaveRoom();
   },
 
   getInitialState: function () {
@@ -100,6 +100,7 @@ export default React.createClass({
   componentDidMount: function () {
     ChatStore.disconnect();
     ChatStore.connect();
+    ChatActions.switchRoom('global_chat');
     ChatStore.addChangeListener(this.onChange);
   },
   componentWillUnmount: function () {

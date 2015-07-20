@@ -32,31 +32,30 @@ module.exports = function(io) {
       console.log("io connect", msg);
     });
 
-    socket.on('add_user', function (msg) {
+    socket.on('leave_room', function () {
+      socket.broadcast.to(socket.room).emit('user_leave', socket.request.$user);
+    });
+
+    socket.on('get_rooms', function () {
       var user = socket.request.$user;
-      console.log("add_user", user.id, "msg", msg);
-      socket.room = 'global_chat';
-      socket.join(socket.room);
-      socket.emit('update_chat', 'SERVER', 'you have connected to global_chat');
-      socket.broadcast.to(socket.room).emit('update_chat', 'SERVER', user.id + ' has connected to this room');
-      
       RoomsModel.findAll(user).then(function (rooms) {
         socket.emit('update_rooms', rooms, socket.room);
       }).fail(function (err) {
         socket.emit('chaterrors', err);
       });
+    });
 
-      MessagesModel.findAllByRoomName(socket.room).then(function (messages) {
+    socket.on('get_room_messages', function (room) {
+      MessagesModel.findAllByRoomName(room).then(function (messages) {
         socket.emit('update_room_messages', messages, socket.room);
       }).fail(function (err) {
         socket.emit('chaterrors', err);
       });
-
     });
 
     socket.on('send_message', function (msg) {
       var user = socket.request.$user;
-      console.log("send_message", msg, socket.room, user.id);
+      console.log("io send_message receive", msg, socket.room, user.id);
       RoomsModel.findOneByName(socket.room).then(function (room) {
         MessagesModel.create({
           content: msg,
@@ -65,7 +64,8 @@ module.exports = function(io) {
         }).then(function(insertedId) {
           return MessagesModel.getById(insertedId);
         }).then(function(createdMessage) {
-          io.sockets.in(socket.room).emit('new_message', createdMessage, socket.room);
+          console.log('io send new_message', socket.room, createdMessage.content);
+          io.sockets.in(socket.room).emit('new_message', createdMessage);
         }).fail(function(err) {
           socket.emit('chaterrors', err);
         });
