@@ -16,18 +16,18 @@ var ChatStore = _.assign(Store, {
   connect: function () {
     socket.connect();
     socket.on('connect', function() {
-      console.debug('io receive connect and send get_rooms');
+      //console.debug('io receive connect and send get_rooms');
       socket.emit('get_rooms');
     });
 
     socket.on('update_rooms', (rooms) => {
-      console.debug('io receive update_rooms', rooms);
+      //console.debug('io receive update_rooms', rooms);
       _chatData.rooms = rooms;
       ChatStore.emitChange();
     });
 
     socket.on('user_leave', user => {
-      console.debug('io receive user_leave', user);
+      //console.debug('io receive user_leave', user);
       _chatData.messages.push({
         id: -(Math.random()),
         content: 'leave room',
@@ -38,28 +38,28 @@ var ChatStore = _.assign(Store, {
     });
 
     socket.on('new_message', function (message) {
-      console.debug("io receive new_message", message);
+      //console.debug("io receive new_message", message);
       _chatData.messages.push(message);
       ChatStore.emitChange();
     });
 
     socket.on('update_room_messages', (messages, room) => {
-      console.debug("io recive update_room_messages", messages, room);
+      //console.debug("io recive update_room_messages", messages, room);
       _chatData.messages = messages;
       ChatStore.emitChange();
     });
 
     socket.on('user_join_room', room => {
-      console.debug('io receive user_join_room', room);
+      //console.debug('io receive user_join_room', room);
       ChatActions.switchRoom(room);
     });
 
     socket.on('chaterrors', (err) => {
-      console.debug("chaterrors", err);
+      //console.debug("chaterrors", err);
     });
 
     socket.on('auth_errors', err => {
-      console.debug("io receive auth_errors", err);
+      //console.debug("io receive auth_errors", err);
       new Notification('Chat error', { 'body': err });
     });
   },
@@ -76,7 +76,7 @@ var ChatStore = _.assign(Store, {
     let action = payload.action;
     switch(action.actionType) {
       case SWITCH_ROOM:
-          console.debug('SWITCH_ROOM', action.room);
+          //console.debug('SWITCH_ROOM', action.room);
           _chatData.room = action.room;
           _chatData.messages = [];
           socket.emit('switch_room', _chatData.room);
@@ -85,7 +85,7 @@ var ChatStore = _.assign(Store, {
         break;
 
       case LEAVE_ROOM:
-        console.debug('LEAVE_ROOM', _chatData.room);
+        //console.debug('LEAVE_ROOM', _chatData.room);
         _chatData.room = "";
         _chatData.messages = [];
         socket.emit('get_rooms');
@@ -93,12 +93,12 @@ var ChatStore = _.assign(Store, {
         break;
 
       case SEND_MESSAGE:
-        console.debug('SEND_MESSAGE', _chatData.room, action.message);
+        //console.debug('SEND_MESSAGE', _chatData.room, action.message);
         socket.emit('send_message', action.message);
         break;
 
       case JOIN_USER_ROOM:
-        console.debug("JOIN_USER_ROOM io emit join_user_room", action.user);
+        //console.debug("JOIN_USER_ROOM io emit join_user_room", action.user);
         socket.emit('join_user_room', action.user);
         break;
     }

@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
-import { LOAD_GROUP, LOAD_GROUP_MESSAGES, LOAD_GROUP_FILES, LOAD_GROUP_MEMBERS, LOAD_GROUP_NEW_MEMBERS } from './GroupActions';
+import {
+  LOAD_GROUP, LOAD_GROUP_MESSAGES, LOAD_GROUP_FILES, LOAD_GROUP_MEMBERS, LOAD_GROUP_NEW_MEMBERS,
+  CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER
+} from './GroupActions';
 import Store from '../flux/Store';
 
 var _groupData = {
@@ -56,6 +59,17 @@ var GroupStore = _.assign(Store, {
           console.debug('LOAD_GROUP_NEW_MEMBERS', action);
           _groupData.newMembers = action.newMembers;
           GroupStore.emitChange();
+        break;
+      case CREATE_GROUP_MESSAGE:
+          console.debug('CREATE_GROUP_MESSAGE', action);
+          _groupData.messages.push(action.createdMessage);
+          GroupStore.emitChange();
+        break;
+      case DELETE_GROUP_MEMBER:
+        console.debug('DELETE_GROUP_MEMBER', action);
+        _groupData.newMembers = _groupData.newMembers.filter(m => m.id !== action.id);
+        _groupData.members = _groupData.members.filter(m => m.id !== action.id);
+        GroupStore.emitChange();
         break;
     }
     return true;

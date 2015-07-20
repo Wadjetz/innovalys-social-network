@@ -57,9 +57,20 @@ export default React.createClass({
       <FileGroup file={file} key={file.name + file.id}  />
     );
 
-    let membersView = this.state.members.map(memeber =>
-      <Member memeber={memeber} group={this.state.group} key={memeber.id} isAccepted={true}/>
-    );
+    let membersView = this.state.members.map(memeber => {
+      if (this.state.me.me.id === memeber.id) {
+        return null;
+      } else {
+        return (
+          <Member
+            memeber={memeber}
+            group={this.state.group}
+            key={memeber.id}
+            isAccepted={true}
+            refuse={this.refuse(this.state.group, memeber)} />
+        );
+      }
+    });
 
     let newMembersView = this.state.newMembers.map(memeber =>
       <Member
@@ -144,15 +155,7 @@ export default React.createClass({
   createMessage: function (newMessage) {
     console.log("createMessage", newMessage);
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.createMessageGroup(slug, newMessage.content).then(result => {
-      console.log(result);
-      this.state.messages.push(result);
-      this.setState({
-        messages: this.state.messages,
-      })
-    }, err => {
-      console.error(err);
-    });
+    GroupActions.createGroupMessage(slug, newMessage.content);
   },
 
   updateMessage: function (newMessage, groupMessage) {
@@ -284,14 +287,7 @@ export default React.createClass({
 
   refuse: function (group, memeber) {
     return function (e) {
-      GroupsService.refuseMember(memeber.id, group.id).then(result => {
-        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
-        this.setState({
-          newMembers: newMembers
-        });
-      }).fail(err => {
-        console.log("refuse err", err);
-      });
+      GroupActions.deleteGroupMember(memeber.id, group.id);
     }.bind(this);
   },
 

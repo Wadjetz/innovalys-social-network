@@ -31,7 +31,8 @@ module.exports.findAllByGroupSlug = function (slug, page) {
     "FROM message_groups " +
     "JOIN users ON users.id = message_groups.users_id " +
     "JOIN groups ON groups.id = message_groups.groups_id " +
-    "WHERE groups.slug = ? ; ",
+    "WHERE groups.slug = ? " +
+    "ORDER BY message_groups.created ASC ; ",
     [slug]
   );
 };

@@ -11,16 +11,53 @@ export const LOAD_GROUP_FILES = 'LOAD_GROUP_FILES';
 export const LOAD_GROUP_MEMBERS = 'LOAD_GROUP_MEMBERS';
 export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
 
+export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
+
 /**
- * CREATE_MESSAGE Constants
+ * CREATE_GROUP_MESSAGE Constants
  * @type {String}
  */
-export const CREATE_MESSAGE = 'CREATE_MESSAGE';
+export const CREATE_GROUP_MESSAGE = 'CREATE_GROUP_MESSAGE';
 
 /**
  * Group Actions
  */
 class GroupActions {
+
+  /**
+   * Send CREATE_GROUP_MESSAGE action
+   * @return {void}
+   */
+  deleteGroupMember(memberId, groupId) {
+    GroupsService.refuseMember(memberId, groupId).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: DELETE_GROUP_MEMBER,
+        id: memberId,
+        result: result
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteGroupMember err", err);
+    });
+  }
+
+  /**
+   * Send CREATE_GROUP_MESSAGE action
+   * @return {void}
+   */
+  createGroupMessage(slug, newMessageContent) {
+    GroupsService.createMessageGroup(slug, newMessageContent).then(createdMessage => {
+      AppDispatcher.handleViewAction({
+        actionType: CREATE_GROUP_MESSAGE,
+        createdMessage: createdMessage
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions createGroupMessage err", err);
+    });
+  }
+
+
   /**
    * Send SWITCH_ROOM action
    * @return {void}
@@ -33,7 +70,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions.loadGroup err", err);
+      console.debug("GroupActions loadGroup err", err);
     });
   }
 
@@ -49,7 +86,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions.loadGroup err", err);
+      console.debug("GroupActions loadGroupMessages err", err);
     });
   }
 
@@ -65,7 +102,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions.loadGroup err", err);
+      console.debug("GroupActions loadGroupFiles err", err);
     });
   }
 
@@ -81,7 +118,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions.loadGroup err", err);
+      console.debug("GroupActions loadGroupMembers err", err);
     });
   }
   /**
@@ -96,7 +133,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions.loadGroup err", err);
+      console.debug("GroupActions loadGroupNewMembers err", err);
     });
   }
 
