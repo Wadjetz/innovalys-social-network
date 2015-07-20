@@ -30,9 +30,22 @@ export default React.createClass({
 
   render: function() {
     console.log("Group render", this.state);
-    let messagesView = this.state.messages.map(message =>
-      <MessageGroup message={message} key={message.id} me={this.state.me} deleteMessageGroup={this.deleteMessageGroup} />
-    );
+    let messagesView = this.state.messages.map(message => {
+      if (this.state.wantToUpdateMessage === message.id) {
+        return (
+          <GroupMessageForm key={message.id} groupMessage={message} successAction={this.updateMessage} />
+        );
+      } else {
+        return (
+          <MessageGroup
+            message={message}
+            key={message.id}
+            me={this.state.me}
+            deleteAction={this.deleteMessageGroup}
+            updateAction={this.wantToUpdateMessageToggle(message)} />
+        );
+      }
+    });
 
     let filesView = this.state.files.map(file =>
       <FileGroup file={file} key={file.name + file.id}  />
@@ -136,6 +149,28 @@ export default React.createClass({
     });
   },
 
+  updateMessage: function (newMessage, groupMessage) {
+    groupMessage.content = newMessage.content;
+    console.log("updateMessage", newMessage.content, groupMessage);
+    GroupsService.updateMessageGroup(groupMessage).then(result => {
+      console.debug("updateMessage result", result);
+      this.setState({
+        wantToUpdateMessage: ""
+      });
+    }).fail(err => {
+      console.debug("updateMessage error", err);
+    });
+  },
+
+  wantToUpdateMessageToggle: function (message) {
+    return function (e) {
+      console.log("wantToUpdateMessageToggle", message);
+      this.setState({
+        wantToUpdateMessage: message.id
+      });
+    }.bind(this);
+  },
+
   getInitialState: function () {
     return {
       group: {
@@ -155,7 +190,8 @@ export default React.createClass({
       messages: [],
       files: [],
       file: null,
-      me: getMe()
+      me: getMe(),
+      wantToUpdateMessage: ""
     }
   },
 

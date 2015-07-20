@@ -130,6 +130,22 @@ class GroupsService {
   }
 
   /**
+   * Update group message
+   * @param  {Message} message Group message object
+   * @return {promise}         Result
+   */
+  updateMessageGroup(message) {
+    console.log("updateMessageGroup", message);
+    return Qajax({
+      method: 'PUT',
+      url: `${this.url}/groups/messages/${message.id}`,
+      data: message
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
+
+  /**
    * Get group type
    * @return {promise} List of group types
    */

@@ -29,7 +29,7 @@ export default React.createClass({
     }).then(newMessage => {
       console.log("successAction", newMessage, this.state, this.props);
       this.setState({ errors: {}, content: "" });
-      this.props.successAction(newMessage);
+      this.props.successAction(newMessage, this.props.groupMessage);
     }).fail(err => {
       console.log(err);
       this.setState({ errors: err });

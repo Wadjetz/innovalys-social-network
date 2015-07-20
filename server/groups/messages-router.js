@@ -87,4 +87,36 @@ function deleteMessageGroupAction(req, res) {
 }
 router.delete('/:id', auth.withUser, deleteMessageGroupAction);
 
+/**
+ * Update a message group
+ * PUT /groups/messages/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function updateMessageGroupAction(req, res) {
+  var user = req.$user;
+  var id = req.params.id;
+  var newMessage = req._new_message;
+  console.log("updateMessageGroupAction", id, newMessage);
+  MessagesModel.findById(id).then(function (message) {
+    if(message.users_id === user.id || user.role === "admin") {
+      MessagesModel.update(id, {
+        content: newMessage.content
+      }).then(function (result) {
+        res.json(newMessage);
+      }).fail(function (err) {
+        res.status(400).json(err);
+      });
+    } else {
+      res.status(403).json({
+        error: "Forbbiden"
+      });
+    }
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.put('/:id', auth.withUser, messageGroupValidator, updateMessageGroupAction);
+
 module.exports = router;
