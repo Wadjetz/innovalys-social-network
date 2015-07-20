@@ -10,7 +10,7 @@
     "doc-server": "jsdoc -d server/public/doc-server server/chat/* server/comments/* server/config/* server/groups/* server/news/* server/user/* server/server.js",
     "doc-client": "esdoc -c esdoc.json",
     "watch": "npm run js-watch",
-    "build": "npm run js-build & npm run doc-server & npm run doc-client"
+    "build": "npm run js-build && npm run doc-server && npm run doc-client"
   },
   "repository": {
     "type": "git",

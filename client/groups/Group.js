@@ -35,6 +35,7 @@ export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
+    let slug = this.context.router.getCurrentParams().slug;
     //console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message => {
       if (this.state.wantToUpdateMessage === message.id) {
@@ -54,7 +55,7 @@ export default React.createClass({
     });
 
     let filesView = this.state.files.map(file =>
-      <FileGroup file={file} key={file.name + file.id}  />
+      <FileGroup file={file} key={file.name + file.id} slug={slug}  />
     );
 
     let membersView = this.state.members.map(memeber => {

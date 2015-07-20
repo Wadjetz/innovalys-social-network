@@ -1,6 +1,6 @@
-import React from 'react'
-import Bootstrap, { Label } from 'react-bootstrap'
-import moment from 'moment'
+import React from 'react';
+import Bootstrap, { Label } from 'react-bootstrap';
+import moment from 'moment';
 
 export default React.createClass({
   render: function () {
@@ -17,6 +17,7 @@ export default React.createClass({
           <p>
             <Label bsStyle='primary'>by {file.first_name} {file.last_name}</Label> <Label bsStyle='info'>{file.function}</Label> <Label bsStyle='info'>{file.role}</Label> <Label bsStyle='default'>{moment(file.created).fromNow()}</Label>
           </p>
+          <a href={`/groups/files/download/${this.props.slug}/${file.id}`}>download</a>
         </div>
       </div>
     );

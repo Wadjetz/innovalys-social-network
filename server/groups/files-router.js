@@ -70,4 +70,20 @@ function getAllGroupBySlugAction (req, res) {
 }
 router.get('/:slug', auth.withUser, getAllGroupBySlugAction);
 
+function downloadFileAction(req, res) {
+  var user = req.$user;
+  var id = req.params.id;
+  console.log('downloadFileAction', id);
+  GroupsFilesModel.findById(id).then(function (file) {
+    GroupsModel.inGroup(req.params.slug, user).then(function (result) {
+      res.download(file.path);
+    }).fail(function (err) {
+      res.status(404).json(err);
+    });
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.get('/download/:slug/:id', auth.inGroups, downloadFileAction);
+
 module.exports = router;
