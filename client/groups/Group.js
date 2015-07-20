@@ -13,6 +13,12 @@ import If from '../utils/If';
 import i18n from '../../commun/local';
 import GroupForm from './GroupForm';
 import GroupMessageForm from './GroupMessageForm';
+import GroupActions from './GroupActions';
+import GroupStore from './GroupStore';
+
+function getData() {
+  return GroupStore.getGroupData();
+}
 
 function getMe() {
   return {
@@ -29,7 +35,7 @@ export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-    console.log("Group render", this.state);
+    //console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message => {
       if (this.state.wantToUpdateMessage === message.id) {
         return (
@@ -213,45 +219,11 @@ export default React.createClass({
 
   componentWillMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.getBySlug(slug).then(group => {
-      this.setState({
-        group: group
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getMessagesGroups(slug).then(messages => {
-      this.setState({
-        messages: messages
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getFiles(slug).then(files => {
-      this.setState({
-        files: files
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getMembers(slug).then(members => {
-      this.setState({
-        members: members
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getPendingMembers(slug).then(newMembers => {
-      this.setState({
-        newMembers: newMembers
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
+    GroupActions.loadGroup(slug);
+    GroupActions.loadGroupMessages(slug);
+    GroupActions.loadGroupFiles(slug);
+    GroupActions.loadGroupMembers(slug);
+    GroupActions.loadGroupNewMembers(slug);
   },
 
   onDrop: function (files) {
@@ -280,11 +252,18 @@ export default React.createClass({
     });
   },
 
+  onGroupChange: function () {
+    console.log("onGroupChange", getData());
+    this.setState(getData());
+  },
+
   componentDidMount: function () {
+    GroupStore.addChangeListener(this.onGroupChange);
     UsersStore.addChangeListener(this.onChange);
   },
 
   componentWillUnmount: function () {
+    GroupStore.removeChangeListener(this.onGroupChange)
     UsersStore.removeChangeListener(this.onChange);
   },
 
