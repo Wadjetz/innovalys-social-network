@@ -36,7 +36,9 @@ export default React.createClass({
                 <span className="icon-bar"></span>
                 <span className="icon-bar"></span>
               </button>
-              <a className="navbar-brand" href="#">{i18n.__n('brand')}</a>
+              <a className="navbar-brand" href="#">
+                <img style={{height:50, top: -6, position: 'relative'}} src="/img/logo.png" />
+              </a>
             </div>
             <div className={(this.state.callapse)?"collapse navbar-collapse in":"collapse navbar-collapse"} id="bs-example-navbar-collapse-1">
               <If condition={this.state.connected}>
