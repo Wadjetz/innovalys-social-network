@@ -10,6 +10,7 @@ import Events from '../flux/Events';
 import Chat from '../chat/Chat';
 import If from '../utils/If';
 import i18n, { locales, changeLocale } from '../../commun/local';
+import moment from 'moment';
 
 function getMe() {
   return {
@@ -83,6 +84,7 @@ export default React.createClass({
     return function (e) {
       e.preventDefault();
       changeLocale(locale);
+      moment.locale(locale);
       this.setState({
         locale: locale
       });
