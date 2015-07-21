@@ -4,6 +4,26 @@
 var db = require('../config/database');
 
 /**
+ * Generate Select user SQL query
+ * @return {string} SQL query
+ */
+function makeSqlUserSelect() {
+  return " " +
+    "users.email, " +
+    "users.role, " +
+    "users.first_name, " +
+    "users.last_name, " +
+    "users.birthday_date, " +
+    "users.status_profile, " +
+    "users.status_connection, " +
+    "users.function, " +
+    "users.adress, " +
+    "users.description, " +
+    "users.arrival_date, " +
+    "users.last_connection ";
+}
+
+/**
  * Create group messages
  * @param  {Member} member Group Member object
  * @return {promise}        Insert Result
@@ -24,16 +44,8 @@ module.exports.create = function (member) {
 module.exports.findByStatus = function (groupeId, status) {
   return db.findAll(
     "SELECT " +
-      "users.id, " +
-      "users.role, " +
-      "users.first_name, " +
-      "users.last_name, " +
-      "users.status_profile, " +
-      "users.status_connection, " +
-      "users.function, " +
-      "users.last_connection, " +
-      "users.arrival_date, " +
-      "members.status AS memeber_status " +
+      "members.status AS memeber_status, " +
+      makeSqlUserSelect() +
     "FROM members " +
     "JOIN users ON users.id = members.users_id " +
     "WHERE members.groups_id = ? " +
@@ -62,7 +74,10 @@ module.exports.delete = function (user_id, groupe_id) {
  */
 module.exports.findAllByGroupSlug = function (slug) {
   return db.findAll(
-    "SELECT users.*, members.status AS member_status FROM users " +
+    "SELECT users.*, " +
+      "members.status AS member_status, " +
+      makeSqlUserSelect() +
+      "FROM users " +
     "JOIN members ON members.users_id = users.id " +
     "JOIN groups ON groups.users_id = users.id " +
     "WHERE groups.slug = ? ; ",
@@ -77,7 +92,10 @@ module.exports.findAllByGroupSlug = function (slug) {
  */
 module.exports.findAllByGroupId = function (groupId) {
   return db.findAll(
-    "SELECT users.*, members.status AS member_status FROM users " +
+    "SELECT " +
+      "members.status AS member_status " +
+      makeSqlUserSelect() +
+    "FROM users " +
     "JOIN members ON members.users_id = users.id " +
     "JOIN groups ON groups.users_id = users.id " +
     "WHERE groups.id = ? ;",
