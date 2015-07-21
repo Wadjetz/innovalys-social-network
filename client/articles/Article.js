@@ -34,7 +34,7 @@ export default React.createClass({
               <span className="label label-default">{i18n.__n('publish')} : {moment(this.state.publish).fromNow()}</span>
               <div dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(this.state.body) }}></div>
             </div>
-            <div className="thumbnail">
+            <div>
               {this.state.comments.map(comment => {
                 if (this.state.wouldUpdateComment && this.state.wouldUpdateComment.id === comment.id) {
                   return (
@@ -45,16 +45,16 @@ export default React.createClass({
                   );
                 } else {
                   return (
-                    <Well key={comment.id}>
+                    <div className="thumbnail">
                       <h5>{comment.email}</h5>
                       <p dangerouslySetInnerHTML={{__html: markdown.markdown.toHTML(comment.content) }}></p>
                       <If condition={this.state.me.me.id === comment.users_id}>
                         <div>
                           <Button bsStyle='danger' bsSize='xsmall' onClick={this.delete(comment)}>{i18n.__n('delete')}</Button>
-                          <Button bsStyle='warning' bsSize='xsmall' onClick={this.wouldUpdateComment(comment)}>{i18n.__n('update')}</Button>
+                          <Button bsStyle='info' bsSize='xsmall' onClick={this.wouldUpdateComment(comment)}>{i18n.__n('update')}</Button>
                         </div>
                       </If>
-                    </Well>
+                    </div>
                   );
                 }
               })}

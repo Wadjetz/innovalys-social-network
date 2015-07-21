@@ -12,7 +12,7 @@ export default React.createClass({
   render: function () {
     let err = this.state.errors;
     return (
-      <div>
+      <div className="thumbnail">
         <div className={ (err.name) ? 'form-group has-error' : 'form-group'}>
           <label className="control-label" htmlFor="name">{ (err.name) ? err.name : i18n.__n('name')}</label>
           <input type="text" className="form-control" id="name" placeholder={i18n.__n('name')} ref='name' valueLink={this.linkState('name')} />

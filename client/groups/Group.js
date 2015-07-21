@@ -123,7 +123,7 @@ export default React.createClass({
               </TabPane>
             </TabbedArea>
           </Col>
-          <Col xs={4}>
+          <Col xs={4} className="thumbnail">
             <h1>{this.state.group.name}</h1>
             <p>
               <Label bsStyle='default'>{this.state.group.type}</Label>
