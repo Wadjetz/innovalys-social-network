@@ -37,7 +37,7 @@ export default React.createClass({
             <div className="panel panel-default">
               <div className="panel-heading">{i18n.__n('birthday_date')}</div>
               <div className="panel-body">
-                {moment(profil.birthday_date).fromNow()}
+                {moment(profil.birthday_date).format("DD MMMM YYYY")}
               </div>
             </div>
 
