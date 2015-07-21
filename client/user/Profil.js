@@ -4,18 +4,61 @@ import i18n from '../../commun/local';
 import UsersApi from '../user/UsersApi';
 import UsersStore from '../user/UsersStore';
 import Router, { Link, Navigation } from 'react-router';
+import Users from '../user/Users';
+import moment from 'moment';
 
 export default React.createClass({
   displayName: "Profil",
   mixins: [React.addons.LinkedStateMixin, Navigation],
   render: function () {
     var profil = this.state.profil;
+    console.log(profil);
     return (
       <Grid>
         <Row>
           <Col xs={8}>
-            <h2>{profil.first_name} {profil.last_name}</h2>
-            <p>{profil.description}</p>
+            <h1>{i18n.__n('profile')}</h1>
+            <div className="panel panel-default">
+              <div className="panel-body">
+                <h2><i style={{fontSize: '1em'}} className="mdi-action-account-box"></i> {profil.first_name} {profil.last_name}</h2>
+                <p>
+                  <span class="label label-primary">{profil.role}</span>
+                  <span class="label label-success">{profil.function}</span>
+                </p>
+              </div>
+            </div>
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('description')}</div>
+              <div className="panel-body">
+                {profil.description}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('birthday_date')}</div>
+              <div className="panel-body">
+                {moment(profil.birthday_date).fromNow()}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('email')}</div>
+              <div className="panel-body">
+                {profil.email}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('arrival_date')}</div>
+              <div className="panel-body">
+                {moment(profil.arrival_date).format("DD MMMM YYYY")}
+              </div>
+            </div>
+
+
+          </Col>
+          <Col xs={4}>
+            <Users />
           </Col>
         </Row>
       </Grid>
