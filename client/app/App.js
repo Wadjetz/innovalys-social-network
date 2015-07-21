@@ -27,7 +27,7 @@ export default React.createClass({
     let me = this.state.me;
     return (
       <div>
-        <nav className="navbar navbar-material-light-blue-300">
+        <nav className="navbar navbar-inverse">
           <div className="container-fluid">
             <div className="navbar-header">
               <button onClick={this.callapse} type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
