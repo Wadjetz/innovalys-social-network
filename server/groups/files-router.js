@@ -1,6 +1,7 @@
 /** Document File Router
  * @module server/groups/files-router
  */
+var fs = require('fs');
 var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
@@ -99,9 +100,14 @@ router.get('/download/:slug/:id', auth.inGroups, downloadFileAction);
 function deleteFileAction(req, res) {
   var id = req.params.id;
   console.log('deleteFileAction', id);
-  GroupsFilesModel.delete(id).then(function (result) {
-    // TODO delete file in file systeme
-    res.json(result);
+  GroupsFilesModel.findById(id).then(function (file) {
+    GroupsFilesModel.delete(id).then(function (result) {
+      fs.unlink(file.path, function (result) {
+        res.json(result);
+      });
+    }).fail(function (err) {
+      res.status(404).json(err);
+    });
   }).fail(function (err) {
     res.status(404).json(err);
   });
