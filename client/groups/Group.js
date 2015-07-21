@@ -277,15 +277,7 @@ export default React.createClass({
   },
 
   deleteMessageGroup: function (message) {
-    GroupsService.deleteMessageGroup(message).then(result => {
-      console.log("deleteMessageGroup", message, "result", result);
-      let newMessages = this.state.messages.filter(m => m.id !== message.id);
-        this.setState({
-          messages: newMessages
-        });
-    }).fail(err => {
-      console.log("deleteMessageGroup err", err);
-    })
+    GroupActions.deleteMessageGroup(message);
   }
 
 });

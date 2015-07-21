@@ -13,6 +13,7 @@ export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
 
 export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
 export const DELETE_GROUP_FILE = 'DELETE_GROUP_FILE';
+export const DELETE_GROUP_MESSAGE = 'DELETE_GROUP_MESSAGE';
 
 export const UPDATE_GROUP = 'UPDATE_GROUP';
 
@@ -29,6 +30,19 @@ export const CREATE_GROUP_MESSAGE = 'CREATE_GROUP_MESSAGE';
  */
 class GroupActions {
 
+  deleteMessageGroup(message) {
+    GroupsService.deleteMessageGroup(message).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: DELETE_GROUP_MESSAGE,
+        result: result,
+        message: message
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteMessageGroup err", err);
+    });
+  }
+
   acceptMember(memeber, group) {
     GroupsService.acceptMember(memeber.id, group.id).then(result => {
       AppDispatcher.handleViewAction({
@@ -38,7 +52,7 @@ class GroupActions {
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
-      console.debug("GroupActions deleteGroupMember err", err);
+      console.debug("GroupActions acceptMember err", err);
     });
   }
 
