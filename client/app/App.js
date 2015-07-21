@@ -57,6 +57,15 @@ export default React.createClass({
                       <li><Link to="user">{i18n.__n('profile')}</Link></li>
                       <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
                     </DropdownButton>
+                    <DropdownButton eventKey={6} title={i18n.getLocale().toUpperCase()} navItem={true}>
+                      {locales.map((locale, i) => {
+                        return (
+                          <li key={i}>
+                              <a href="#" onClick={this.changeLocal(locale)}>{locale.toUpperCase()}</a>
+                          </li>
+                        );
+                      })}
+                    </DropdownButton>
                   </ul>
                 </div>
               </If>
