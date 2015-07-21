@@ -26,41 +26,43 @@ export default React.createClass({
     let me = this.state.me;
     return (
       <div>
-        <Navbar brand={i18n.__n('brand')} toggleNavKey={0} fluid>
-          <CollapsableNav eventKey={1}>
-            <If condition={this.state.connected}>
-              <Nav navbar>
-                  <li><Link to="articles">{i18n.__n('news')}</Link></li>
-                  <li><Link to="groups">{i18n.__n('groups')}</Link></li>
-                  <If condition={me.role === "admin" || me.role === "rh"}>
-                    <DropdownButton eventKey={4} title='RH' navItem={true}>
-                      <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
-                      <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
-                      <li><Link to="adminNews">{i18n.__n('admin_news')}</Link></li>
-                      <li><Link to="adminUsers">{i18n.__n('admin_users')}</Link></li>
-                    </DropdownButton>
-                  </If>
-              </Nav>
-            </If>
-            <Nav navbar right>
+        <nav className="navbar navbar-default">
+          <div className="container-fluid">
+            <div className="navbar-header">
+              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+              <a className="navbar-brand" href="#">{i18n.__n('brand')}</a>
+            </div>
+            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <If condition={this.state.connected}>
-                <DropdownButton eventKey={5} title={me.first_name} navItem={true}>
-                  <li><Link to="user">{i18n.__n('profile')}</Link></li>
-                  <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
-                </DropdownButton>
+                <div>
+                  <ul className="nav navbar-nav">
+                    <li><Link to="articles">{i18n.__n('news')}</Link></li>
+                    <li><Link to="groups">{i18n.__n('groups')}</Link></li>
+                    <If condition={me.role === "admin" || me.role === "rh"}>
+                      <DropdownButton eventKey={0} title='RH' navItem={true}>
+                        <li><Link to="createArticle">{i18n.__n('create_news')}</Link></li>
+                        <li><Link to="signup">{i18n.__n('create_user')}</Link></li>
+                        <li><Link to="adminNews">{i18n.__n('admin_news')}</Link></li>
+                        <li><Link to="adminUsers">{i18n.__n('admin_users')}</Link></li>
+                      </DropdownButton>
+                    </If>
+                  </ul>
+                  <ul className="nav navbar-nav navbar-right">
+                    <DropdownButton eventKey={1} title={me.first_name} navItem={true}>
+                      <li><Link to="user">{i18n.__n('profile')}</Link></li>
+                      <li><a href="/users/logout">{i18n.__n('logout')}</a></li>
+                    </DropdownButton>
+                  </ul>
+                </div>
               </If>
-              <DropdownButton eventKey={6} title={i18n.getLocale().toUpperCase()} navItem={true}>
-                {locales.map((locale, i) => {
-                  return (
-                    <li key={i}>
-                        <a href="#" onClick={this.changeLocal(locale)}>{locale.toUpperCase()}</a>
-                    </li>
-                  );
-                })}
-              </DropdownButton>
-            </Nav>
-          </CollapsableNav>
-        </Navbar>
+            </div>
+          </div>
+        </nav>
         <RouteHandler />
         <If condition={this.state.connected}>
           <Chat />
