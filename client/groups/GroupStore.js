@@ -2,7 +2,7 @@ import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
 import {
   LOAD_GROUP, LOAD_GROUP_MESSAGES, LOAD_GROUP_FILES, LOAD_GROUP_MEMBERS, LOAD_GROUP_NEW_MEMBERS,
-  CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER
+  CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER, DELETE_GROUP_FILE
 } from './GroupActions';
 import Store from '../flux/Store';
 
@@ -70,6 +70,9 @@ var GroupStore = _.assign(Store, {
         _groupData.newMembers = _groupData.newMembers.filter(m => m.id !== action.id);
         _groupData.members = _groupData.members.filter(m => m.id !== action.id);
         GroupStore.emitChange();
+        break;
+      case DELETE_GROUP_FILE:
+        console.log('DELETE_GROUP_FILE', action);
         break;
     }
     return true;

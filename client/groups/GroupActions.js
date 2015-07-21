@@ -12,6 +12,7 @@ export const LOAD_GROUP_MEMBERS = 'LOAD_GROUP_MEMBERS';
 export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
 
 export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
+export const DELETE_GROUP_FILE = 'DELETE_GROUP_FILE';
 
 /**
  * CREATE_GROUP_MESSAGE Constants
@@ -134,6 +135,19 @@ class GroupActions {
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
       console.debug("GroupActions loadGroupNewMembers err", err);
+    });
+  }
+
+  deleteGroupFile(file) {
+    GroupsService.deleteGroupFile(file).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: DELETE_GROUP_FILE,
+        result: result,
+        file: file
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteGroupFile err", err);
     });
   }
 

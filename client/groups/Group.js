@@ -55,7 +55,7 @@ export default React.createClass({
     });
 
     let filesView = this.state.files.map(file =>
-      <FileGroup file={file} key={file.name + file.id} slug={slug}  />
+      <FileGroup file={file} key={file.name + file.id} slug={slug} me={this.state.me.me}  />
     );
 
     let membersView = this.state.members.map(memeber => {

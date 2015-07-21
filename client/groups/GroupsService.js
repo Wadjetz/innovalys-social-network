@@ -286,6 +286,20 @@ class GroupsService {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON);
   }
+
+  /**
+   * Delete group file
+   * @param  {File} file Group file
+   * @return {promise}      Result
+   */
+  deleteGroupFile(file) {
+    return Qajax({
+      url: `${this.url}/groups/files/${file.id}`,
+      method: 'DELETE'
+    })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON);
+  }
 }
 
 export default new GroupsService(BASE_URL);
