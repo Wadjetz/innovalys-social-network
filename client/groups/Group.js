@@ -211,14 +211,7 @@ export default React.createClass({
 
   updateGroup: function (group) {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.update(slug, group).then(updatedGroup => {
-      this.setState({
-        group: updatedGroup
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-      console.log("updateGroup err", err);
-    });
+    GroupActions.updateGroup(slug, group);
   },
 
   componentWillMount: function () {
@@ -257,7 +250,7 @@ export default React.createClass({
   },
 
   onGroupChange: function () {
-    console.log("onGroupChange", getData());
+    //console.log("onGroupChange", getData());
     this.setState(getData());
   },
 

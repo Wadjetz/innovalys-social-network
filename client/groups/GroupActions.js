@@ -14,6 +14,8 @@ export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
 export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
 export const DELETE_GROUP_FILE = 'DELETE_GROUP_FILE';
 
+export const UPDATE_GROUP = 'UPDATE_GROUP';
+
 /**
  * CREATE_GROUP_MESSAGE Constants
  * @type {String}
@@ -24,6 +26,18 @@ export const CREATE_GROUP_MESSAGE = 'CREATE_GROUP_MESSAGE';
  * Group Actions
  */
 class GroupActions {
+
+  updateGroup(slug, group) {
+    GroupsService.update(slug, group).then(updatedGroup => {
+      AppDispatcher.handleViewAction({
+        actionType: UPDATE_GROUP,
+        updatedGroup: updatedGroup
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteGroupMember err", err);
+    });
+  }
 
   /**
    * Send CREATE_GROUP_MESSAGE action
