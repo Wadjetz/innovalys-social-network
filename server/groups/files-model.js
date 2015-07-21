@@ -59,3 +59,16 @@ module.exports.findAllByGroupSlug = function (slug) {
     [slug]
   );
 };
+
+/**
+ * Delete file group
+ * @param  {number} id File Group id
+ * @return {promise}    Delete result
+ */
+module.exports.delete = function (id) {
+  return db.delete(
+    "DELETE FROM documents WHERE documents.id = ? ;",
+    [id]
+  );
+};
+

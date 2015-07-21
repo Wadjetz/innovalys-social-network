@@ -73,6 +73,10 @@ var GroupStore = _.assign(Store, {
         break;
       case DELETE_GROUP_FILE:
         console.log('DELETE_GROUP_FILE', action);
+        _groupData.files = _groupData.files.filter(f => {
+          return f.id !== action.file.id
+        });
+        GroupStore.emitChange();
         break;
     }
     return true;

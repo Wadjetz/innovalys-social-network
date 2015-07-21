@@ -70,20 +70,42 @@ function getAllGroupBySlugAction (req, res) {
 }
 router.get('/:slug', auth.withUser, getAllGroupBySlugAction);
 
+/**
+ * Download Group File
+ * GET /groups/files/download/:slug/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
 function downloadFileAction(req, res) {
   var user = req.$user;
   var id = req.params.id;
   console.log('downloadFileAction', id);
   GroupsFilesModel.findById(id).then(function (file) {
-    GroupsModel.inGroup(req.params.slug, user).then(function (result) {
-      res.download(file.path);
-    }).fail(function (err) {
-      res.status(404).json(err);
-    });
+    res.download(file.path);
   }).fail(function (err) {
     res.status(404).json(err);
   });
 }
 router.get('/download/:slug/:id', auth.inGroups, downloadFileAction);
+
+/**
+ * Delete Group File
+ * GET /groups/files/download/:slug/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function deleteFileAction(req, res) {
+  var id = req.params.id;
+  console.log('deleteFileAction', id);
+  GroupsFilesModel.delete(id).then(function (result) {
+    // TODO delete file in file systeme
+    res.json(result);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.delete('/:slug/:id', auth.inGroups, deleteFileAction);
 
 module.exports = router;

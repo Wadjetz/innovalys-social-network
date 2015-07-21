@@ -138,8 +138,8 @@ class GroupActions {
     });
   }
 
-  deleteGroupFile(file) {
-    GroupsService.deleteGroupFile(file).then(result => {
+  deleteGroupFile(file, slug) {
+    GroupsService.deleteGroupFile(file, slug).then(result => {
       AppDispatcher.handleViewAction({
         actionType: DELETE_GROUP_FILE,
         result: result,
