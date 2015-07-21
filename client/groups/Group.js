@@ -13,6 +13,12 @@ import If from '../utils/If';
 import i18n from '../../commun/local';
 import GroupForm from './GroupForm';
 import GroupMessageForm from './GroupMessageForm';
+import GroupActions from './GroupActions';
+import GroupStore from './GroupStore';
+
+function getData() {
+  return GroupStore.getGroupData();
+}
 
 function getMe() {
   return {
@@ -29,7 +35,8 @@ export default React.createClass({
   mixins: [React.addons.LinkedStateMixin, Navigation],
 
   render: function() {
-    console.log("Group render", this.state);
+    let slug = this.context.router.getCurrentParams().slug;
+    //console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message => {
       if (this.state.wantToUpdateMessage === message.id) {
         return (
@@ -48,12 +55,23 @@ export default React.createClass({
     });
 
     let filesView = this.state.files.map(file =>
-      <FileGroup file={file} key={file.name + file.id}  />
+      <FileGroup file={file} key={file.name + file.id} slug={slug} me={this.state.me.me}  />
     );
 
-    let membersView = this.state.members.map(memeber =>
-      <Member memeber={memeber} group={this.state.group} key={memeber.id} isAccepted={true}/>
-    );
+    let membersView = this.state.members.map(memeber => {
+      if (this.state.me.me.id === memeber.id) {
+        return null;
+      } else {
+        return (
+          <Member
+            memeber={memeber}
+            group={this.state.group}
+            key={memeber.id}
+            isAccepted={true}
+            refuse={this.refuse(this.state.group, memeber)} />
+        );
+      }
+    });
 
     let newMembersView = this.state.newMembers.map(memeber =>
       <Member
@@ -138,15 +156,7 @@ export default React.createClass({
   createMessage: function (newMessage) {
     console.log("createMessage", newMessage);
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.createMessageGroup(slug, newMessage.content).then(result => {
-      console.log(result);
-      this.state.messages.push(result);
-      this.setState({
-        messages: this.state.messages,
-      })
-    }, err => {
-      console.error(err);
-    });
+    GroupActions.createGroupMessage(slug, newMessage.content);
   },
 
   updateMessage: function (newMessage, groupMessage) {
@@ -213,45 +223,11 @@ export default React.createClass({
 
   componentWillMount: function () {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.getBySlug(slug).then(group => {
-      this.setState({
-        group: group
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getMessagesGroups(slug).then(messages => {
-      this.setState({
-        messages: messages
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getFiles(slug).then(files => {
-      this.setState({
-        files: files
-      });
-    }, err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getMembers(slug).then(members => {
-      this.setState({
-        members: members
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
-
-    GroupsService.getPendingMembers(slug).then(newMembers => {
-      this.setState({
-        newMembers: newMembers
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-    });
+    GroupActions.loadGroup(slug);
+    GroupActions.loadGroupMessages(slug);
+    GroupActions.loadGroupFiles(slug);
+    GroupActions.loadGroupMembers(slug);
+    GroupActions.loadGroupNewMembers(slug);
   },
 
   onDrop: function (files) {
@@ -280,11 +256,18 @@ export default React.createClass({
     });
   },
 
+  onGroupChange: function () {
+    console.log("onGroupChange", getData());
+    this.setState(getData());
+  },
+
   componentDidMount: function () {
+    GroupStore.addChangeListener(this.onGroupChange);
     UsersStore.addChangeListener(this.onChange);
   },
 
   componentWillUnmount: function () {
+    GroupStore.removeChangeListener(this.onGroupChange)
     UsersStore.removeChangeListener(this.onChange);
   },
 
@@ -305,14 +288,7 @@ export default React.createClass({
 
   refuse: function (group, memeber) {
     return function (e) {
-      GroupsService.refuseMember(memeber.id, group.id).then(result => {
-        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
-        this.setState({
-          newMembers: newMembers
-        });
-      }).fail(err => {
-        console.log("refuse err", err);
-      });
+      GroupActions.deleteGroupMember(memeber.id, group.id);
     }.bind(this);
   },
 

@@ -27,11 +27,9 @@ export default class Member extends React.Component {
             <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
           </p>
           <If condition={this.props.isAccepted === false}>
-            <p>
-              <Button onClick={this.props.accept}>Accept</Button>
-              <Button onClick={this.props.refuse}>Refuse</Button>
-            </p>
-          </If> 
+            <Button onClick={this.props.accept}>Accept</Button>
+          </If>
+          <Button onClick={this.props.refuse}>Refuse</Button>
         </div>
       </div>
     );

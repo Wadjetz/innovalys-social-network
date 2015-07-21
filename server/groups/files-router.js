@@ -1,6 +1,7 @@
 /** Document File Router
  * @module server/groups/files-router
  */
+var fs = require('fs');
 var router   = require("express").Router();
 var moment   = require('moment');
 var validate = require("validate.js");
@@ -69,5 +70,48 @@ function getAllGroupBySlugAction (req, res) {
     });
 }
 router.get('/:slug', auth.withUser, getAllGroupBySlugAction);
+
+/**
+ * Download Group File
+ * GET /groups/files/download/:slug/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function downloadFileAction(req, res) {
+  var user = req.$user;
+  var id = req.params.id;
+  console.log('downloadFileAction', id);
+  GroupsFilesModel.findById(id).then(function (file) {
+    res.download(file.path);
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.get('/download/:slug/:id', auth.inGroups, downloadFileAction);
+
+/**
+ * Delete Group File
+ * GET /groups/files/download/:slug/:id
+ * @param  {request} req request
+ * @param  {result} res result
+ * @return {void}
+ */
+function deleteFileAction(req, res) {
+  var id = req.params.id;
+  console.log('deleteFileAction', id);
+  GroupsFilesModel.findById(id).then(function (file) {
+    GroupsFilesModel.delete(id).then(function (result) {
+      fs.unlink(file.path, function (result) {
+        res.json(result);
+      });
+    }).fail(function (err) {
+      res.status(404).json(err);
+    });
+  }).fail(function (err) {
+    res.status(404).json(err);
+  });
+}
+router.delete('/:slug/:id', auth.inGroups, deleteFileAction);
 
 module.exports = router;
