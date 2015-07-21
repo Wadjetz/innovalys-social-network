@@ -266,16 +266,7 @@ export default React.createClass({
 
   accept: function (group, memeber) {
     return function (e) {
-      GroupsService.acceptMember(memeber.id, group.id).then(result => {
-        this.state.members.push(memeber);
-        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
-        this.setState({
-          members: this.state.members,
-          newMembers: newMembers
-        });
-      }).fail(err => {
-        console.log("accept err", err);
-      });
+      GroupActions.acceptMember(memeber, group);
     }.bind(this);
   },
 

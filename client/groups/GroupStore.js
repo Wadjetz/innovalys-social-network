@@ -2,7 +2,7 @@ import _ from 'lodash';
 import AppDispatcher from '../app/AppDispatcher';
 import {
   LOAD_GROUP, LOAD_GROUP_MESSAGES, LOAD_GROUP_FILES, LOAD_GROUP_MEMBERS, LOAD_GROUP_NEW_MEMBERS,
-  CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER, DELETE_GROUP_FILE, UPDATE_GROUP
+  CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER, DELETE_GROUP_FILE, UPDATE_GROUP, ACCEPT_MEMBER
 } from './GroupActions';
 import Store from '../flux/Store';
 
@@ -72,14 +72,21 @@ var GroupStore = _.assign(Store, {
         GroupStore.emitChange();
         break;
       case DELETE_GROUP_FILE:
-        //console.log('DELETE_GROUP_FILE', action);
+        //console.debug('DELETE_GROUP_FILE', action);
         _groupData.files = _groupData.files.filter(f => {
           return f.id !== action.file.id;
         });
         GroupStore.emitChange();
         break;
       case UPDATE_GROUP:
+        //console.debug('UPDATE_GROUP', action);
         _groupData.group = action.updatedGroup;
+        GroupStore.emitChange();
+        break;
+      case ACCEPT_MEMBER:
+        console.debug('ACCEPT_MEMBER', action);
+        _groupData.members.push(action.memeber);
+        _groupData.newMembers = _groupData.newMembers.filter(m => m.id !== action.memeber.id);
         GroupStore.emitChange();
         break;
     }
