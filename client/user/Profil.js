@@ -16,7 +16,7 @@ export default React.createClass({
     return (
       <Grid>
         <Row>
-          <Col xs={8}>
+          <Col xs={12}>
             <h1>{i18n.__n('profile')}</h1>
             <div className="panel panel-default">
               <div className="panel-body">
@@ -55,10 +55,6 @@ export default React.createClass({
               </div>
             </div>
 
-
-          </Col>
-          <Col xs={4}>
-            <Users />
           </Col>
         </Row>
       </Grid>
