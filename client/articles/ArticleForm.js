@@ -15,8 +15,9 @@ export default React.createClass({
   render: function () {
     let err = this.state.errors;
     return (
-      <Row>
+      <Row className="thumbnail">
         <Col xs={12} sm={6}>
+          <h1>{i18n.__n('create_news')}</h1>
           <div className={ (err.title) ? 'form-group has-error' : 'form-group'}>
             <label className="control-label" htmlFor="title">{ (err.title) ? err.title : i18n.__n('title')}</label>
             <input type="text" className="form-control" id="title" placeholder={i18n.__n('title')} ref='title' valueLink={this.linkState('title')} />

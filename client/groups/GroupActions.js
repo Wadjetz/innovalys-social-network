@@ -10,9 +10,16 @@ export const LOAD_GROUP_MESSAGES = 'LOAD_GROUP_MESSAGES';
 export const LOAD_GROUP_FILES = 'LOAD_GROUP_FILES';
 export const LOAD_GROUP_MEMBERS = 'LOAD_GROUP_MEMBERS';
 export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
+export const LOAD_GROUP_POTANTIAL_MEMBERS = 'LOAD_GROUP_POTANTIAL_MEMBERS';
+export const ADD_GROUP_MEMBERS = 'ADD_GROUP_MEMBERS';
 
 export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
 export const DELETE_GROUP_FILE = 'DELETE_GROUP_FILE';
+export const DELETE_GROUP_MESSAGE = 'DELETE_GROUP_MESSAGE';
+
+export const UPDATE_GROUP = 'UPDATE_GROUP';
+
+export const ACCEPT_MEMBER = 'ACCEPT_MEMBER';
 
 /**
  * CREATE_GROUP_MESSAGE Constants
@@ -24,6 +31,70 @@ export const CREATE_GROUP_MESSAGE = 'CREATE_GROUP_MESSAGE';
  * Group Actions
  */
 class GroupActions {
+
+  loadPotantialMembers(slug) {
+    GroupsService.loadPotantialMembers(slug).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: LOAD_GROUP_POTANTIAL_MEMBERS,
+        result: result
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions loadGroupPotentialUsers err", err);
+    });
+  }
+
+  addGroupMember(slug, member) {
+    GroupsService.addGroupMember(slug, member).then(result => {
+      console.log("addGroupMember", result);
+      AppDispatcher.handleViewAction({
+        actionType: ADD_GROUP_MEMBERS,
+        result: result,
+        member: member
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions loadGroupPotentialUsers err", err);
+    });
+  }
+
+  deleteMessageGroup(message) {
+    GroupsService.deleteMessageGroup(message).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: DELETE_GROUP_MESSAGE,
+        result: result,
+        message: message
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteMessageGroup err", err);
+    });
+  }
+
+  acceptMember(memeber, group) {
+    GroupsService.acceptMember(memeber.id, group.id).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: ACCEPT_MEMBER,
+        result: result,
+        memeber: memeber
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions acceptMember err", err);
+    });
+  }
+
+  updateGroup(slug, group) {
+    GroupsService.update(slug, group).then(updatedGroup => {
+      AppDispatcher.handleViewAction({
+        actionType: UPDATE_GROUP,
+        updatedGroup: updatedGroup
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions deleteGroupMember err", err);
+    });
+  }
 
   /**
    * Send CREATE_GROUP_MESSAGE action

@@ -19,10 +19,9 @@ export default React.createClass({
     let createdArticle = this.state.createdArticle;
     let createArticleError = this.state.createArticleError;
     return (
-      <Grid fluid>
+      <Grid>
         <Row>
           <Col xs={12}>
-            <h1>{i18n.__n('create_news')}</h1>
             <If condition={createArticleError}>
               <Alert bsStyle='danger'>
                 {i18n.__n('error')}

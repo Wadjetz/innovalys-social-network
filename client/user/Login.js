@@ -23,28 +23,30 @@ export default React.createClass({
       <Grid>
         <Row>
           <Col xs={12} md={6} mdOffset={3}>
-            <h1>{i18n.__n('login')}</h1>
-            <If condition={loginError !== ""}>
-              <Alert bsStyle='danger'>
-                {loginError}
-              </Alert>
-            </If>
-            <Input
-                id="login"
-                type='email'
-                placeholder={i18n.__n('email')}
-                label={i18n.__n('email')}
-                ref='login'
-                valueLink={this.linkState('login')}
-                onKeyDown={this.onKeyDown} />
-            <Input
-                type='password'
-                placeholder={i18n.__n('password')}
-                label={i18n.__n('password')}
-                ref='password'
-                valueLink={this.linkState('password')}
-                onKeyDown={this.onKeyDown} />
-            <Button bsStyle='success' onClick={this.submit}>{i18n.__n('login')}</Button>
+            <h1 style={{textAlign: 'center'}}>{i18n.__n('login')}</h1>
+            <div className="thumbnail" style={{padding: 20}}>
+              <If condition={loginError !== ""}>
+                <Alert bsStyle='danger'>
+                  {loginError}
+                </Alert>
+              </If>
+              <Input
+                  id="login"
+                  type='email'
+                  placeholder={i18n.__n('email')}
+                  label={i18n.__n('email')}
+                  ref='login'
+                  valueLink={this.linkState('login')}
+                  onKeyDown={this.onKeyDown} />
+              <Input
+                  type='password'
+                  placeholder={i18n.__n('password')}
+                  label={i18n.__n('password')}
+                  ref='password'
+                  valueLink={this.linkState('password')}
+                  onKeyDown={this.onKeyDown} />
+              <Button bsStyle='success' onClick={this.submit}>{i18n.__n('login')}</Button>
+            </div>
           </Col>
         </Row>
       </Grid>

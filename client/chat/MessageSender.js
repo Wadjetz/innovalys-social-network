@@ -11,24 +11,25 @@ export default React.createClass({
   mixins: [ React.addons.LinkedStateMixin ],
   render: function () {
     return (
-      <div className="input-group">
-        <input
-          type="text"
-          className="form-control"
-          placeholder={i18n.__n('message')}
-          ref='message'
-          onKeyDown={this.onKeyDown}
-          valueLink={this.linkState('message')} />
-
-        <span className="input-group-btn">
+      <Row>
+        <Col xs={8}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder={i18n.__n('message')}
+            ref='message'
+            onKeyDown={this.onKeyDown}
+            valueLink={this.linkState('message')} />
+        </Col>
+        <Col xs={4}>
           <button
-            className="btn btn-success"
+            className="btn btn-success btn-sm"
             disabled={this.state.message === ""}
             onClick={this.submit}>
             {i18n.__n('send')}
           </button>
-        </span>
-      </div>
+        </Col>
+      </Row>
     );
   },
   onKeyDown: function (e) {

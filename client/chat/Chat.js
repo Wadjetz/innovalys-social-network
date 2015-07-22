@@ -25,13 +25,13 @@ const wrapStyle = {
 const buttonStyle = {
   position: 'absolute',
   right: 3,
-  top: 7
+  top: 0
 };
 
 const buttonBackStyle = {
   position: 'absolute',
-  right: 50,
-  top: 7
+  right: 60,
+  top: 0
 };
 
 function getMessages() {
@@ -53,7 +53,7 @@ export default React.createClass({
     return (
       <div style={wrapStyle}>
         <h4>{i18n.__n('chat')} {i18n.__n('room') + ": " + this.state.room}</h4>
-        <button style={buttonStyle} type="button" className="btn btn-default btn-sm" onClick={this.hideChat}>
+        <button style={buttonStyle} type="button" className="btn btn-primary btn-sm" onClick={this.hideChat}>
           <span className={(hideChat === "true") ? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-up"}></span>
         </button>
         <If condition={hideChat === "true"}>
@@ -63,7 +63,7 @@ export default React.createClass({
             </If>
             <If condition={this.state.room !== ""}>
               <div>
-                <button style={buttonBackStyle} type="button" className="btn btn-default btn-sm" onClick={this.handleBack}>
+                <button style={buttonBackStyle} type="button" className="btn btn-primary btn-sm" onClick={this.handleBack}>
                   {i18n.__n('back')}
                 </button>
                 <MessagesList messages={this.state.messages} />

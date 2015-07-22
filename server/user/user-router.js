@@ -9,6 +9,7 @@ var UserValidator = require('../../commun/user-validator');
 var UserModel = require('./user-model');
 var RoomsModel = require('../chat/rooms-model');
 var auth = require('../config/auth');
+var mail = require('../config/mail');
 
 /**
  * Get user
@@ -65,11 +66,29 @@ function userSignup (req, res) {
   var generatedPassword = generatePassword(8, false);
   newUser.password = passwordHash.generate(generatedPassword);
   UserModel.create(newUser).then(function(id) {
-    res.status(201).json({
-      access: {
-        email: newUser.email,
-        password: generatedPassword
-      }
+    console.log("Will send mail");
+    mail.send({
+      from: "Innovalys <egor.neon@gmail.com>", // sender address
+      to: newUser.email, // list of receivers
+      subject: "Innovalys Signup", // Subject line
+      text: "Your accesses to Innovalys http://berezovskiy.fr:8888/ email: " + newUser.email + " password: " + newUser.password, // plaintext body
+    }).then(function (result) {
+      res.status(201).json({
+        access: {
+          email: newUser.email,
+          password: generatedPassword,
+          result: result
+        }
+      });
+    }).fail(function (err) {
+      console.log("Send mail error", err);
+      res.status(201).json({
+        access: {
+          email: newUser.email,
+          password: generatedPassword,
+          err: err
+        }
+      });
     });
     RoomsModel.findOneByName('global_chat').then(function (room) {
       return RoomsModel.addUser({

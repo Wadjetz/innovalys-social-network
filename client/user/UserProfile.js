@@ -30,11 +30,44 @@ export default React.createClass({
 
     return (
       <Grid>
-        <Row>
+        <Row className="thumbnail">
           <Col xs={12}>
-            <h1>{me.first_name} {me.last_name}</h1>
-            <h2>{me.email}</h2>
-            <p>{me.description}</p>
+            <div className="panel panel-default">
+              <div className="panel-body">
+                <h2><i style={{fontSize: '1em'}} className="mdi-action-account-box"></i> {me.first_name} {me.last_name}</h2>
+                <p>
+                  <span class="label label-primary">{me.role}</span>
+                  <span class="label label-success">{me.function}</span>
+                </p>
+              </div>
+            </div>
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('description')}</div>
+              <div className="panel-body">
+                {me.description}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('birthday_date')}</div>
+              <div className="panel-body">
+                {moment(me.birthday_date).format("DD MMMM YYYY")}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('email')}</div>
+              <div className="panel-body">
+                {me.email}
+              </div>
+            </div>
+
+            <div className="panel panel-default">
+              <div className="panel-heading">{i18n.__n('arrival_date')}</div>
+              <div className="panel-body">
+                {moment(me.arrival_date).format("DD MMMM YYYY")}
+              </div>
+            </div>
           </Col>
           <Col xs={12}>
             <h1>{i18n.__n('change_password')}</h1>

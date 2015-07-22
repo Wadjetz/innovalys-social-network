@@ -67,7 +67,7 @@ export default React.createClass({
             memeber={memeber}
             group={this.state.group}
             key={memeber.id}
-            isAccepted={true}
+            isAuthorized={isAuthorized(this.state.me.me, this.state.group)}
             refuse={this.refuse(this.state.group, memeber)} />
         );
       }
@@ -80,8 +80,19 @@ export default React.createClass({
         key={memeber.id}
         accept={this.accept(this.state.group, memeber)}
         refuse={this.refuse(this.state.group, memeber)}
-        isAccepted={false} />
+        isAuthorized={isAuthorized(this.state.me.me, this.state.group)}  />
     );
+    let potantialMembers = this.state.potantialMembers.filter(m => m.id !== this.state.me.me.id);
+    let potantialMembersView = potantialMembers.map(memeber => {
+      return (
+        <Member
+          memeber={memeber}
+          group={this.state.group}
+          key={memeber.id}
+          add={this.add(this.state.group, memeber)}
+          isAuthorized={isAuthorized(this.state.me.me, this.state.group)} />
+      );
+    });
 
     return (
       <Grid>
@@ -115,15 +126,16 @@ export default React.createClass({
                   <div>
                     <h2>Update group</h2>
                     <GroupForm group={this.state.group} successAction={this.updateGroup}/>
-                    <h1>Add members</h1>
                     <h1>Delete group</h1>
                     <Button onClick={this.delete} bsStyle='danger'>{i18n.__n('delete')}</Button>
+                    <h1>Add members</h1>
+                    {potantialMembersView}
                   </div>
                 </If>
               </TabPane>
             </TabbedArea>
           </Col>
-          <Col xs={4}>
+          <Col xs={4} className="thumbnail">
             <h1>{this.state.group.name}</h1>
             <p>
               <Label bsStyle='default'>{this.state.group.type}</Label>
@@ -201,7 +213,8 @@ export default React.createClass({
       files: [],
       file: null,
       me: getMe(),
-      wantToUpdateMessage: ""
+      wantToUpdateMessage: "",
+      potantialMembers: []
     }
   },
 
@@ -211,14 +224,7 @@ export default React.createClass({
 
   updateGroup: function (group) {
     let slug = this.context.router.getCurrentParams().slug;
-    GroupsService.update(slug, group).then(updatedGroup => {
-      this.setState({
-        group: updatedGroup
-      });
-    }).fail(err => {
-      if (err.status === 401) { this.context.router.transitionTo('login'); }
-      console.log("updateGroup err", err);
-    });
+    GroupActions.updateGroup(slug, group);
   },
 
   componentWillMount: function () {
@@ -228,6 +234,7 @@ export default React.createClass({
     GroupActions.loadGroupFiles(slug);
     GroupActions.loadGroupMembers(slug);
     GroupActions.loadGroupNewMembers(slug);
+    GroupActions.loadPotantialMembers(slug);
   },
 
   onDrop: function (files) {
@@ -257,7 +264,7 @@ export default React.createClass({
   },
 
   onGroupChange: function () {
-    console.log("onGroupChange", getData());
+    //console.log("onGroupChange", getData());
     this.setState(getData());
   },
 
@@ -271,37 +278,28 @@ export default React.createClass({
     UsersStore.removeChangeListener(this.onChange);
   },
 
-  accept: function (group, memeber) {
+  accept: function (group, member) {
     return function (e) {
-      GroupsService.acceptMember(memeber.id, group.id).then(result => {
-        this.state.members.push(memeber);
-        let newMembers = this.state.newMembers.filter(m => m.id !== memeber.id);
-        this.setState({
-          members: this.state.members,
-          newMembers: newMembers
-        });
-      }).fail(err => {
-        console.log("accept err", err);
-      });
+      GroupActions.acceptMember(member, group);
     }.bind(this);
   },
 
-  refuse: function (group, memeber) {
+  add: function (group, member) {
     return function (e) {
-      GroupActions.deleteGroupMember(memeber.id, group.id);
+      console.log("Group.add", group.slug, member);
+      GroupActions.addGroupMember(group.slug, member)
+    }.bind(this);
+  },
+
+  refuse: function (group, member) {
+    return function (e) {
+      console.log("Group.js.refuse", group, member);
+      GroupActions.deleteGroupMember(member.id, group.id);
     }.bind(this);
   },
 
   deleteMessageGroup: function (message) {
-    GroupsService.deleteMessageGroup(message).then(result => {
-      console.log("deleteMessageGroup", message, "result", result);
-      let newMessages = this.state.messages.filter(m => m.id !== message.id);
-        this.setState({
-          messages: newMessages
-        });
-    }).fail(err => {
-      console.log("deleteMessageGroup err", err);
-    })
+    GroupActions.deleteMessageGroup(message);
   }
 
 });

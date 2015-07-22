@@ -13,6 +13,21 @@ class GroupsService {
     this.url = url;
   }
 
+  loadPotantialMembers() {
+    return Qajax({
+      url: `${this.url}/users`,
+      method: 'GET'
+    }).then(Qajax.filterSuccess).then(Qajax.toJSON);
+  }
+
+  addGroupMember(slug, member) {
+    return Qajax({
+      url: `${this.url}/groups/members/add/${slug}/${member.id}`,
+      method: 'POST',
+      data: member
+    }).then(Qajax.filterSuccess).then(Qajax.toJSON);
+  }
+
   /**
    * Get all groups
    * @return {promise} list of groups

@@ -19,7 +19,7 @@ export default React.createClass({
     let signupError  = this.state.signupError;
     return (
       <Grid>
-        <Row>
+        <Row className="thumbnail">
           <Col xs={12}>
             <h1>{i18n.__n('create_user')}</h1>
             <If condition={!_.isEmpty(signupError)}>

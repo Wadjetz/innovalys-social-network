@@ -45,6 +45,13 @@ module.exports.addUser = function (user) {
   );
 };
 
+module.exports.deleteUser = function (userId, roomsId) {
+  return db.delete(
+    "DELETE FROM rooms_users WHERE rooms_users.users_id = ? AND rooms_users.rooms_id ? ;",
+    [userId, roomsId]
+  );
+}
+
 /**
  * Find chat room by id
  * @param  {number} id Room Id

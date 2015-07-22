@@ -38,8 +38,8 @@ export default class AdminUsers extends React.Component {
             <Link to="profil" params={{id: user.id}}>{user.first_name} {user.last_name}</Link>
           </h2>
           <p>
-            <Link className="btn btn-default" to="updateUser" params={{id: user.id}}>{i18n.__n('update')}</Link>
-            <Button bsStyle='danger' onClick={this.deleteUser(user)}>{i18n.__n('delete')}</Button>
+            <Link className="btn btn-xs btn-primary" to="updateUser" params={{id: user.id}}>{i18n.__n('update')}</Link>
+            <Button bsSize='xsmall' bsStyle='danger' onClick={this.deleteUser(user)}>{i18n.__n('delete')}</Button>
           </p>
         </Panel>
       );
