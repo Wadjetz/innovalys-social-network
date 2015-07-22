@@ -55,13 +55,14 @@ export default React.createClass({
   submit: function (user) {
     UsersApi.create(user).then(createdUser => {
       this.setState({
-        signupResult: createdUser
+        signupResult: createdUser,
+        signupError: ""
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }
       console.log(err);
       this.setState({
-        signupError: err
+        signupError: JSON.parse(err.responseText)
       });
     });
   },

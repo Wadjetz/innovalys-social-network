@@ -115,16 +115,6 @@ export default React.createClass({
               placeholder={i18n.__n('adress')}
               valueLink={this.linkState('adress')} />
           </div>
-          <div className={ (err.arrival_date) ? 'form-group has-error' : 'form-group'}>
-            <label className="control-label" htmlFor="arrival_date">{ (err.arrival_date) ? err.arrival_date : i18n.__n('arrival_date')}</label>
-            <input
-              id="arrival_date"
-              type="date"
-              ref='arrival_date'
-              className="form-control"
-              placeholder={i18n.__n('arrival_date')}
-              valueLink={this.linkState('arrival_date')} />
-          </div>
           <div className={ (err.description) ? 'form-group has-error' : 'form-group'}>
             <label className="control-label" htmlFor="content">{ (err.description) ? err.description : i18n.__n('description')}</label>
             <textarea
