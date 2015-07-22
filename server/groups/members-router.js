@@ -146,6 +146,11 @@ function refuseMemberAction (req, res) {
   var groups_id = req.params.groups_id;
   var users_id = req.params.users_id;
   MembersModel.getOneMember(users_id, groups_id).then(function () {
+    RoomsModel.deleteUser(users_id, groups_id).then(function (result) {
+      console.log("RoomsModel.deleteUser ok", result);
+    }).fail(function (err) {
+      console.log("RoomsModel.deleteUser err", err);
+    })
     return MembersModel.refuse(users_id, groups_id);
   }).then(function (result) {
     res.json(result);
