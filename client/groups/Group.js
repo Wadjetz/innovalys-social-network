@@ -36,7 +36,7 @@ export default React.createClass({
 
   render: function() {
     let slug = this.context.router.getCurrentParams().slug;
-    console.log("Group render", this.state);
+    //console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message => {
       if (this.state.wantToUpdateMessage === message.id) {
         return (
@@ -84,8 +84,9 @@ export default React.createClass({
         isAccepted={false}
         isPotantial={false} />
     );
-
-    let potantialMembersView = this.state.potantialMembers.filter(m => m.id === this.state.me.me.id).map(memeber => {
+    let potantialMembers = this.state.potantialMembers.filter(m => m.id !== this.state.me.me.id);
+    console.log(potantialMembers);
+    let potantialMembersView = potantialMembers.map(memeber => {
       return (
         <Member
           memeber={memeber}
