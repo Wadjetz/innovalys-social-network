@@ -9,6 +9,7 @@ var db = require('../config/database');
  */
 function makeSqlUserSelect() {
   return " " +
+    "users.id, " +
     "users.email, " +
     "users.role, " +
     "users.first_name, " +

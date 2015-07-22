@@ -36,7 +36,7 @@ export default React.createClass({
 
   render: function() {
     let slug = this.context.router.getCurrentParams().slug;
-    //console.log("Group render", this.state);
+    console.log("Group render", this.state);
     let messagesView = this.state.messages.map(message => {
       if (this.state.wantToUpdateMessage === message.id) {
         return (
@@ -68,6 +68,7 @@ export default React.createClass({
             group={this.state.group}
             key={memeber.id}
             isAccepted={true}
+            isPotantial={false}
             refuse={this.refuse(this.state.group, memeber)} />
         );
       }
@@ -80,8 +81,21 @@ export default React.createClass({
         key={memeber.id}
         accept={this.accept(this.state.group, memeber)}
         refuse={this.refuse(this.state.group, memeber)}
-        isAccepted={false} />
+        isAccepted={false}
+        isPotantial={false} />
     );
+
+    let potantialMembersView = this.state.potantialMembers.filter(m => m.id === this.state.me.me.id).map(memeber => {
+      return (
+        <Member
+          memeber={memeber}
+          group={this.state.group}
+          key={memeber.id}
+          add={this.add(this.state.group, memeber)}
+          isAccepted={false}
+          isPotantial={true} />
+      );
+    });
 
     return (
       <Grid>
@@ -115,9 +129,10 @@ export default React.createClass({
                   <div>
                     <h2>Update group</h2>
                     <GroupForm group={this.state.group} successAction={this.updateGroup}/>
-                    <h1>Add members</h1>
                     <h1>Delete group</h1>
                     <Button onClick={this.delete} bsStyle='danger'>{i18n.__n('delete')}</Button>
+                    <h1>Add members</h1>
+                    {potantialMembersView}
                   </div>
                 </If>
               </TabPane>
@@ -201,7 +216,8 @@ export default React.createClass({
       files: [],
       file: null,
       me: getMe(),
-      wantToUpdateMessage: ""
+      wantToUpdateMessage: "",
+      potantialMembers: []
     }
   },
 
@@ -221,6 +237,7 @@ export default React.createClass({
     GroupActions.loadGroupFiles(slug);
     GroupActions.loadGroupMembers(slug);
     GroupActions.loadGroupNewMembers(slug);
+    GroupActions.loadPotantialMembers(slug);
   },
 
   onDrop: function (files) {
@@ -264,15 +281,22 @@ export default React.createClass({
     UsersStore.removeChangeListener(this.onChange);
   },
 
-  accept: function (group, memeber) {
+  accept: function (group, member) {
     return function (e) {
-      GroupActions.acceptMember(memeber, group);
+      GroupActions.acceptMember(member, group);
     }.bind(this);
   },
 
-  refuse: function (group, memeber) {
+  add: function (group, member) {
     return function (e) {
-      GroupActions.deleteGroupMember(memeber.id, group.id);
+      console.log("Group.add", group, member);
+    }.bind(this);
+  },
+
+  refuse: function (group, member) {
+    return function (e) {
+      console.log("Group.js.refuse", group, member);
+      GroupActions.deleteGroupMember(member.id, group.id);
     }.bind(this);
   },
 

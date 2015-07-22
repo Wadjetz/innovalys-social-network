@@ -10,6 +10,7 @@ export const LOAD_GROUP_MESSAGES = 'LOAD_GROUP_MESSAGES';
 export const LOAD_GROUP_FILES = 'LOAD_GROUP_FILES';
 export const LOAD_GROUP_MEMBERS = 'LOAD_GROUP_MEMBERS';
 export const LOAD_GROUP_NEW_MEMBERS = 'LOAD_GROUP_NEW_MEMBERS';
+export const LOAD_GROUP_POTANTIAL_MEMBERS = 'LOAD_GROUP_POTANTIAL_MEMBERS';
 export const ADD_GROUP_MEMBERS = 'ADD_GROUP_MEMBERS';
 
 export const DELETE_GROUP_MEMBER = 'DELETE_GROUP_MEMBER';
@@ -30,6 +31,18 @@ export const CREATE_GROUP_MESSAGE = 'CREATE_GROUP_MESSAGE';
  * Group Actions
  */
 class GroupActions {
+
+  loadPotantialMembers(slug) {
+    GroupsService.loadPotantialMembers(slug).then(result => {
+      AppDispatcher.handleViewAction({
+        actionType: LOAD_GROUP_POTANTIAL_MEMBERS,
+        result: result
+      });
+    }).fail(err => {
+      if (err.status === 401) { AppActions.unauthorized(); }
+      console.debug("GroupActions loadGroupPotentialUsers err", err);
+    });
+  }
 
   addGroupMember(member) {
     GroupsService.addGroupMember(member).then(result => {
