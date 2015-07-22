@@ -21,7 +21,10 @@ var _usersData = {
   },
   connected: false,
   loginError: "",
-  users: []
+  users: [],
+  form: {
+    
+  }
 };
 
 var UsersStore = _.assign(Store, {

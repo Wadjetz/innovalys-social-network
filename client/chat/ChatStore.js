@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import AppDispatcher from '../app/AppDispatcher';
+import ChatDispatcher from './ChatDispatcher';
 import ChatActions from './ChatActions';
 import { SWITCH_ROOM, SEND_MESSAGE, JOIN_USER_ROOM, LEAVE_ROOM } from './ChatActions';
 import Store from '../flux/Store';
+import Events from '../flux/Events';
 
 const socket = window.io(document.location.host);
 
@@ -23,7 +24,7 @@ var ChatStore = _.assign(Store, {
     socket.on('update_rooms', (rooms) => {
       //console.debug('io receive update_rooms', rooms);
       _chatData.rooms = rooms;
-      ChatStore.emitChange();
+      ChatStore.emitEvent(Events.CHAT_EVENT);
     });
 
     socket.on('user_leave', user => {
@@ -34,19 +35,19 @@ var ChatStore = _.assign(Store, {
         first_name: user.first_name,
         last_name: user.last_name
       });
-      ChatStore.emitChange();
+      ChatStore.emitEvent(Events.CHAT_EVENT);
     });
 
     socket.on('new_message', function (message) {
       //console.debug("io receive new_message", message);
       _chatData.messages.push(message);
-      ChatStore.emitChange();
+      ChatStore.emitEvent(Events.CHAT_EVENT);
     });
 
     socket.on('update_room_messages', (messages, room) => {
       //console.debug("io recive update_room_messages", messages, room);
       _chatData.messages = messages;
-      ChatStore.emitChange();
+      ChatStore.emitEvent(Events.CHAT_EVENT);
     });
 
     socket.on('user_join_room', room => {
@@ -72,7 +73,7 @@ var ChatStore = _.assign(Store, {
     return _chatData;
   },
 
-  dispatcherIndex: AppDispatcher.register((payload) => {
+  dispatcherIndex: ChatDispatcher.register((payload) => {
     let action = payload.action;
     switch(action.actionType) {
       case SWITCH_ROOM:
@@ -81,7 +82,7 @@ var ChatStore = _.assign(Store, {
           _chatData.messages = [];
           socket.emit('switch_room', _chatData.room);
           socket.emit('get_room_messages', _chatData.room);
-          ChatStore.emitChange();
+          ChatStore.emitEvent(Events.CHAT_EVENT);
         break;
 
       case LEAVE_ROOM:

@@ -135,6 +135,14 @@ export default React.createClass({
     );
   },
 
+  componentWillMount: function () {
+
+  },
+
+  componentWillUnmount: function () {
+
+  },
+
   successAction: function (e) {
     UserValidator.userValidate({
       email: this.state.email,

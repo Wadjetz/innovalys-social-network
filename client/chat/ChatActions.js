@@ -1,4 +1,4 @@
-import AppDispatcher from '../app/AppDispatcher';
+import ChatDispatcher from './ChatDispatcher';
 
 /**
  * SWITCH_ROOM Constants
@@ -33,7 +33,7 @@ class ChatActions {
    * @return {void}
    */
   switchRoom(room) {
-    AppDispatcher.handleViewAction({
+    ChatDispatcher.handleChatAction({
       actionType: SWITCH_ROOM,
       room: room
     });
@@ -45,7 +45,7 @@ class ChatActions {
    * @return {void}
    */
   sendMessage(message) {
-    AppDispatcher.handleViewAction({
+    ChatDispatcher.handleChatAction({
       actionType: SEND_MESSAGE,
       message: message
     });
@@ -57,14 +57,14 @@ class ChatActions {
    * @return {void}
    */
   joinUserRoom(user) {
-    AppDispatcher.handleViewAction({
+    ChatDispatcher.handleChatAction({
       actionType: JOIN_USER_ROOM,
       user: user
     });
   }
 
   leaveRoom() {
-    AppDispatcher.handleViewAction({
+    ChatDispatcher.handleChatAction({
       actionType: LEAVE_ROOM
     });
   }

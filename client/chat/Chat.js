@@ -7,6 +7,7 @@ import i18n from '../../commun/local';
 import If from '../utils/If';
 import ChatRoomsList from './ChatRoomsList';
 import MessagesList from './MessagesList';
+import Events from '../flux/Events';
 
 const Storage = localStorage;
 
@@ -101,11 +102,11 @@ export default React.createClass({
     ChatStore.disconnect();
     ChatStore.connect();
     ChatActions.switchRoom('global_chat');
-    ChatStore.addChangeListener(this.onChange);
+    ChatStore.addEventListener(Events.CHAT_EVENT, this.onChange);
   },
   componentWillUnmount: function () {
     ChatStore.disconnect();
-    ChatStore.removeChangeListener(this.onChange);
+    ChatStore.removeEventListener(Events.CHAT_EVENT, this.onChange);
   }
 });
 
