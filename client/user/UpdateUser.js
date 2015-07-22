@@ -22,12 +22,12 @@ export default React.createClass({
         <Row className="thumbnail">
           <Col xs={12}>
             <h1>{i18n.__n('update_user')}</h1>
-            <If condition={this.state.createArticleError}>
+            <If condition={this.state.createUserError}>
               <Alert bsStyle='danger'>
                 {i18n.__n('error')}
               </Alert>
             </If>
-            <If condition={this.state.createArticleSuccess}>
+            <If condition={this.state.createUserSuccess}>
               <Alert bsStyle='success'>
                 {i18n.__n('success')}
               </Alert>
@@ -43,6 +43,7 @@ export default React.createClass({
     let id = this.state.user.id;
     UsersApi.update(id, user).then(result => {
       user.id = this.state.user.id;
+      console.debug("UpdateUser update", result);
       this.setState({
         user: user,
         createUserError: false,
