@@ -58,7 +58,8 @@ module.exports.findByRoomId = function (roomId) {
     "FROM messages " +
       "JOIN users ON users.id = messages.users_id " +
       "JOIN rooms ON messages.rooms_id = rooms.id " +
-    "WHERE rooms.id = ? ; ",
+    "WHERE rooms.id = ? " +
+    "ORDER BY messages.created ASC ; ",
     [roomId]
   );
 };

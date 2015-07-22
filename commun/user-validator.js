@@ -5,11 +5,21 @@ module.exports.userValidate = function (user) {
     email: { email: true, presence: true },
     first_name: { presence: true },
     last_name: { presence: true },
-    birthday_date: { presence: true },
+    birthday_date: {
+      presence: true,
+      datetime: {
+        dateOnly: true
+      }
+    },
     adress: { presence: true },
     function: { presence: true },
     description: { presence: true },
-    arrival_date: { presence: true },
+    arrival_date: {
+      presence: true,
+      datetime: {
+        dateOnly: true
+      }
+    },
     role: { presence: true }
   });
 };

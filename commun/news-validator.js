@@ -6,7 +6,9 @@ module.exports.newsValidate = function (news) {
     body: { presence: true },
     publish: {
       presence: true,
-      datetime: true
+      datetime: {
+        dateOnly: true
+      }
     }
   });
 };
