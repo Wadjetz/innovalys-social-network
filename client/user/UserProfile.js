@@ -36,8 +36,8 @@ export default React.createClass({
               <div className="panel-body">
                 <h2><i style={{fontSize: '1em'}} className="mdi-action-account-box"></i> {me.first_name} {me.last_name}</h2>
                 <p>
-                  <span class="label label-primary">{me.role}</span>
-                  <span class="label label-success">{me.function}</span>
+                  <span className="label label-primary">{me.role}</span>
+                  <span className="label label-success">{me.function}</span>
                 </p>
               </div>
             </div>
