@@ -15,11 +15,7 @@ export default React.createClass({
     let err = this.state.errors;
     let user = this.state.user;
     let rolesView = this.state.roles.map((role, i) => {
-      if (user && user.role && user.role === role) {
-        return <option selected value={role} key={i}>{role}</option>
-      } else {
-        return <option value={role} key={i}>{role}</option>
-      }
+      return <option value={role} key={i}>{role}</option>
     });
     return (
       <Row>
@@ -102,9 +98,17 @@ export default React.createClass({
               </div>
             </Col>
           </Row>
-          <Input type='select' label={i18n.__n('roles')} placeholder={i18n.__n('roles')} ref='role' valueLink={this.linkState('role')}>
-            {rolesView}
-          </Input>
+          <div className={ (err.role) ? 'form-group has-error' : 'form-group'}>
+            <label className="control-label" htmlFor="role">{ (err.arrival_date) ? err.arrival_date : i18n.__n('roles')}</label>
+            <select
+              id="role"
+              defaultValue={this.state.role || "user"}
+              className="form-control"
+              ref='role'
+              valueLink={this.linkState('role')}>
+              {rolesView}
+            </select>
+          </div>
           <div className={ (err.adress) ? 'form-group has-error' : 'form-group'}>
             <label className="control-label" htmlFor="adress">{ (err.adress) ? err.adress : i18n.__n('adress')}</label>
             <input
@@ -161,7 +165,7 @@ export default React.createClass({
       last_name: props.user.last_name || "",
       birthday_date: moment(this.props.user.birthday_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       adress: props.user.adress || "",
-      role: props.user.role || "",
+      role: props.user.role || "user",
       function: props.user['function'] || "",
       description: props.user.description || "",
       arrival_date: moment(this.props.user.arrival_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
@@ -176,7 +180,7 @@ export default React.createClass({
       last_name: this.props.user.last_name || "",
       birthday_date: moment(this.props.user.birthday_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),
       adress: this.props.user.adress || "",
-      role: this.props.user.role || "",
+      role: this.props.user.role || "user",
       function: this.props.user['function'] || "",
       description: this.props.user.description || "",
       arrival_date: moment(this.props.user.arrival_date).format(utils.mysqlDateFormat) || moment().format(utils.mysqlDateFormat),

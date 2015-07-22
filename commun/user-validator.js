@@ -9,7 +9,8 @@ module.exports.userValidate = function (user) {
     adress: { presence: true },
     function: { presence: true },
     description: { presence: true },
-    arrival_date: { presence: true }
+    arrival_date: { presence: true },
+    role: { presence: true }
   });
 };
 
