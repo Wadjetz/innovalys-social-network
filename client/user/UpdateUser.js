@@ -18,8 +18,8 @@ export default React.createClass({
 
   render: function() {
     return (
-      <Grid fluid>
-        <Row>
+      <Grid>
+        <Row className="thumbnail">
           <Col xs={12}>
             <h1>{i18n.__n('update_user')}</h1>
             <If condition={this.state.createArticleError}>
@@ -32,9 +32,9 @@ export default React.createClass({
                 {i18n.__n('success')}
               </Alert>
             </If>
+            <UserForm user={this.state.user} successAction={this.update} roles={this.state.roles} />
           </Col>
         </Row>
-        <UserForm user={this.state.user} successAction={this.update} roles={this.state.roles} />
       </Grid>
     );
   },

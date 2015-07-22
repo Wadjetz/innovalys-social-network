@@ -40,8 +40,8 @@ export default class AdminNews extends React.Component {
             <Link to="singleArticle" params={{slug: article.slug}}>{article.title}</Link>
           </h2>
           <p>
-            <Link className="btn btn-default" to="updateArticle" params={{slug: article.slug}}>{i18n.__n('update')}</Link>
-            <Button bsStyle='danger' onClick={this.deleteNews(article)}>{i18n.__n('delete')}</Button>
+            <Link className="btn btn-xs btn-primary" to="updateArticle" params={{slug: article.slug}}>{i18n.__n('update')}</Link>
+            <Button bsSize='xsmall' bsStyle='danger' onClick={this.deleteNews(article)}>{i18n.__n('delete')}</Button>
           </p>
         </Panel>
       );

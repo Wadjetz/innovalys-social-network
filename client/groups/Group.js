@@ -67,8 +67,7 @@ export default React.createClass({
             memeber={memeber}
             group={this.state.group}
             key={memeber.id}
-            isAccepted={true}
-            isPotantial={false}
+            isAuthorized={isAuthorized(this.state.me.me, this.state.group)}
             refuse={this.refuse(this.state.group, memeber)} />
         );
       }
@@ -81,8 +80,7 @@ export default React.createClass({
         key={memeber.id}
         accept={this.accept(this.state.group, memeber)}
         refuse={this.refuse(this.state.group, memeber)}
-        isAccepted={false}
-        isPotantial={false} />
+        isAuthorized={isAuthorized(this.state.me.me, this.state.group)}  />
     );
     let potantialMembers = this.state.potantialMembers.filter(m => m.id !== this.state.me.me.id);
     let potantialMembersView = potantialMembers.map(memeber => {
@@ -92,8 +90,7 @@ export default React.createClass({
           group={this.state.group}
           key={memeber.id}
           add={this.add(this.state.group, memeber)}
-          isAccepted={false}
-          isPotantial={true} />
+          isAuthorized={isAuthorized(this.state.me.me, this.state.group)} />
       );
     });
 

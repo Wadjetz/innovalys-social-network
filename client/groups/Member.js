@@ -20,14 +20,14 @@ export default class Member extends React.Component {
         <p>
           <Label bsStyle='info'>{memeber.function}</Label> <Label bsStyle='info'>{memeber.role}</Label>
         </p>
-        <If condition={this.props.isAccepted === false && this.props.isPotantial === false}>
+        <If condition={this.props.accept !== undefined && this.props.isAuthorized}>
           <Button bsStyle='primary' bsSize='xsmall' onClick={this.props.accept}>Accept</Button>
         </If>
-        <If condition={this.props.isPotantial === true}>
-          <Button bsStyle='warning' bsSize='xsmall' onClick={this.props.add}>Add</Button>
-        </If>
-        <If condition={this.props.isPotantial === false}>
+        <If condition={this.props.refuse !== undefined && this.props.isAuthorized}>
           <Button bsStyle='warning' bsSize='xsmall' onClick={this.props.refuse}>Refuse</Button>
+        </If>
+        <If condition={this.props.add !== undefined && this.props.isAuthorized}>
+          <Button bsStyle='warning' bsSize='xsmall' onClick={this.props.add}>Add</Button>
         </If>
       </div>
     );
