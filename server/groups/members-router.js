@@ -155,4 +155,30 @@ function refuseMemberAction (req, res) {
 }
 router.put('/refuse/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), refuseMemberAction);
 
+function addGroupMember(req, res) {
+  var group = req.$group;
+  var id = req.params.id;
+  RoomsModel.findOneByName(group.slug).then(function (room) {
+    console.log("Join room", room);
+    RoomsModel.addUser({
+      rooms_id: room.id,
+      users_id: id
+    }).then(function (addUserInsertedId) {
+      console.log("RoomsModel.addUser ok", addUserInsertedId);
+    }).fail(function (err) {
+      console.log("RoomsModel.addUser err", err);
+    });
+  }).fail(function (err) {
+    console.log("RoomsModel.findOneByName err", err);
+  });
+  MembersModel.create({
+    users_id: id,
+    groups_id: group.id,
+    status: 'accepted'
+  }).then(function (result) {
+    res.json(result);
+  });
+}
+router.post('/add/:slug/:id', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), addGroupMember);
+
 module.exports = router;

@@ -44,11 +44,13 @@ class GroupActions {
     });
   }
 
-  addGroupMember(member) {
-    GroupsService.addGroupMember(member).then(result => {
+  addGroupMember(slug, member) {
+    GroupsService.addGroupMember(slug, member).then(result => {
+      console.log("addGroupMember", result);
       AppDispatcher.handleViewAction({
         actionType: ADD_GROUP_MEMBERS,
-        result: result
+        result: result,
+        member: member
       });
     }).fail(err => {
       if (err.status === 401) { AppActions.unauthorized(); }

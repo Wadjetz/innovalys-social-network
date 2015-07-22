@@ -85,7 +85,6 @@ export default React.createClass({
         isPotantial={false} />
     );
     let potantialMembers = this.state.potantialMembers.filter(m => m.id !== this.state.me.me.id);
-    console.log(potantialMembers);
     let potantialMembersView = potantialMembers.map(memeber => {
       return (
         <Member
@@ -290,7 +289,8 @@ export default React.createClass({
 
   add: function (group, member) {
     return function (e) {
-      console.log("Group.add", group, member);
+      console.log("Group.add", group.slug, member);
+      GroupActions.addGroupMember(group.slug, member)
     }.bind(this);
   },
 

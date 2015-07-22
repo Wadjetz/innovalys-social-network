@@ -3,7 +3,7 @@ import AppDispatcher from '../app/AppDispatcher';
 import {
   LOAD_GROUP, LOAD_GROUP_MESSAGES, LOAD_GROUP_FILES, LOAD_GROUP_MEMBERS, LOAD_GROUP_NEW_MEMBERS,
   CREATE_GROUP_MESSAGE, DELETE_GROUP_MEMBER, DELETE_GROUP_FILE, UPDATE_GROUP, ACCEPT_MEMBER,
-  DELETE_GROUP_MESSAGE, LOAD_GROUP_POTANTIAL_MEMBERS
+  DELETE_GROUP_MESSAGE, LOAD_GROUP_POTANTIAL_MEMBERS, ADD_GROUP_MEMBERS
 } from './GroupActions';
 import Store from '../flux/Store';
 
@@ -100,6 +100,12 @@ var GroupStore = _.assign(Store, {
         console.log('LOAD_GROUP_POTANTIAL_MEMBERS', action.result);
         _groupData.potantialMembers = action.result;
         GroupStore.emitChange();
+        break;
+      case ADD_GROUP_MEMBERS:
+        _groupData.members.push(action.member);
+        _groupData.potantialMembers = _groupData.potantialMembers.filter(m => m.id !== action.member.id)
+        GroupStore.emitChange();
+        console.log('ADD_GROUP_MEMBERS', action);
         break;
     }
     return true;

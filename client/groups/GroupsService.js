@@ -20,9 +20,9 @@ class GroupsService {
     }).then(Qajax.filterSuccess).then(Qajax.toJSON);
   }
 
-  addGroupMember(member) {
+  addGroupMember(slug, member) {
     return Qajax({
-      url: `${this.url}/groups/members/add/${slug}`,
+      url: `${this.url}/groups/members/add/${slug}/${member.id}`,
       method: 'POST',
       data: member
     }).then(Qajax.filterSuccess).then(Qajax.toJSON);
