@@ -69,8 +69,8 @@ export default React.createClass({
   },
   getInitialState: function() {
     return {
-      login: "root@root.com",
-      password: "uYK4UQZ_",
+      login: "",
+      password: "",
       loginError: UsersStore.getLoginError()
     };
   },
