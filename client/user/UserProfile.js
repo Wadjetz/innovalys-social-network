@@ -30,7 +30,7 @@ export default React.createClass({
 
     return (
       <Grid>
-        <Row>
+        <Row className="thumbnail">
           <Col xs={12}>
             <h1>{me.first_name} {me.last_name}</h1>
             <h2>{me.email}</h2>
