@@ -113,7 +113,7 @@ function getMembersPendingBySlugAction (req, res) {
     res.status(400).json(err);
   });
 }
-router.get('/pending/:slug', auth.withRole([UserModel.roles.CHEF]), getMembersPendingBySlugAction);
+router.get('/pending/:slug', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), getMembersPendingBySlugAction);
 
 /**
  * Accept Members
@@ -133,7 +133,7 @@ function acceptMemberAction (req, res) {
     res.status(400).json(err);
   });
 }
-router.put('/accept/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), acceptMemberAction);
+router.put('/accept/:groups_id/:users_id', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), acceptMemberAction);
 
 /**
  * Refuse Members
@@ -158,7 +158,7 @@ function refuseMemberAction (req, res) {
     res.status(400).json(err);
   });
 }
-router.put('/refuse/:groups_id/:users_id', auth.withRole([UserModel.roles.CHEF]), refuseMemberAction);
+router.put('/refuse/:groups_id/:users_id', auth.groupsWithRoleOrOwner([UserModel.roles.CHEF]), refuseMemberAction);
 
 function addGroupMember(req, res) {
   var group = req.$group;
