@@ -28,7 +28,7 @@ export default class GroupView extends React.Component {
         <Label bsStyle='default'>{group.type}</Label>
         <p>{group.description}</p>
         <If condition={isJoin}>
-          <Button onClick={this.join} onClick={this.props.handleJoinGroup}>{i18n.__n('join')}</Button>
+          <Button bsStyle='success' onClick={this.join}>{i18n.__n('join')}</Button>
         </If>
       </div>
     );
